@@ -10,107 +10,390 @@
       <div class="container">
         <section>
           <div></div>
-          <div class="columnLine-chart">
-            <div id="chart-columnLine"></div>
-            <script>
-              const el = document.getElementById("chart-columnLine");
-
-              const chart = toastui.Chart.columnLineChart({
-                el,
-                data: {
-                  categories: [
-                    "1",
-                    "2",
-                    "3",
-                    "4",
-                    "5",
-                    "6",
-                    "7",
-                    "8",
-                    "9",
-                    "10",
-                    "11",
-                    "12",
-                  ],
-                  series: {
-                    column: [
-                      {
-                        name: "매출액",
-                        data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 200, 100, 0],
-                      },
-                    ],
-                    line: [
-                      {
-                        name: "목표",
-                        data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 200, 300, 0],
-                        showDot: true,
-                        spline: true,
-                      },
-                    ],
-                  },
-                },
-                options: {
-                  chart: { width: 600, height: 300 },
-                },
-              });
-
-              const ctx = el.querySelector("canvas").getContext("2d");
-
-              const gradient = ctx.createLinearGradient(0, 0, 0, 300);
-              gradient.addColorStop(0, "#ff7e5f");
-              gradient.addColorStop(1, "#feb47b");
-
-              chart.updateOptions({
-                theme: {
-                  series: {
-                    bar: {
-                      colors: [gradient],
-                    },
-                  },
-                },
-              });
-            </script>
+          <div>
+            <canvas id="chart-columnLine"></canvas>
           </div>
         </section>
-        <section class="sales"></section>
-        <section>
-          <div id="chart-bar"></div>
-
-          <script>
-            const el2 = document.getElementById("chart-bar");
-
-            const chart2 = toastui.Chart.barChart({
-              el: el2,
-              data: {
-                categories: ["1주차", "2주차", "3주차", "4주차", "5주차"],
-                series: [{ name: "Sales", data: [10, 20, 30, 30] }],
-              },
-              options: {
-                chart: { width: 600, height: 300 },
-              },
-            });
-
-            const ctx2 = el2.querySelector("canvas").getContext("2d");
-
-            const gradient2 = ctx2.createLinearGradient(0, 0, 0, 300);
-            gradient2.addColorStop(0, "#ff7e5f");
-            gradient2.addColorStop(1, "#feb47b");
-
-            chart.updateOptions({
-              theme: {
-                series: {
-                  bar: {
-                    colors: [gradient],
-                  },
-                },
-              },
-            });
-          </script>
+        <section class="sales">
+          <div>
+            <canvas id="chart-linearea"></canvas>
+          </div>
         </section>
-        <section></section>
+        <section>
+          <div></div>
+          <div><canvas id="chart-bar"></canvas></div>
+        </section>
+        <section>
+          <div></div>
+          <div>
+            <canvas id="chart-doughnut"></canvas>
+          </div>
+        </section>
         <section></section>
       </div>
       <!-- // container -->
     </div>
+
+    <script>
+      // ---------------------------
+      // 공통 색상 그라데이션
+      // ---------------------------
+      const gradientColors = [
+        { stop: 0, color: "#918050" },
+        { stop: 0.3399, color: "#968860" },
+        { stop: 0.4981, color: "#8C7D50" },
+        { stop: 1, color: "#6D5A21" },
+      ];
+
+      // ---------------------------
+      // 공통: 막대 그라데이션 생성
+      // ---------------------------
+      function createGradient(ctx, bar, colors, isHorizontal = false) {
+        if (!bar || (isHorizontal ? !bar.height : !bar.width))
+          return colors[0].color;
+        const gradient = isHorizontal
+          ? ctx.createLinearGradient(0, bar.y, 0, bar.y + bar.height)
+          : ctx.createLinearGradient(bar.x, 0, bar.x + bar.width, 0);
+        colors.forEach((c) => gradient.addColorStop(c.stop, c.color));
+        return gradient;
+      }
+
+      // ---------------------------
+      // 공통: 값 표시 플러그인
+      // ---------------------------
+      function createValuePlugin(isHorizontal = false, padding = 10) {
+        return {
+          id: "valuePlugin",
+          afterDatasetsDraw(chart) {
+            const ctx = chart.ctx;
+            chart.data.datasets.forEach((dataset, i) => {
+              chart.getDatasetMeta(i).data.forEach((bar, index) => {
+                const value = dataset.data[index];
+
+                // 0이거나 값이 없으면 표시 안 함
+                if (!value || value === 0) return;
+
+                ctx.fillStyle = "#000";
+                ctx.font = "bold 14px Arial";
+
+                let xPos, yPos;
+
+                if (isHorizontal) {
+                  // 가로 막대: 막대 끝(오른쪽)에 표시
+                  ctx.textAlign = "left";
+                  ctx.textBaseline = "middle";
+                  xPos = bar.x + bar.width + padding;
+                  yPos = bar.y + bar.height / 2;
+                } else {
+                  // 세로 막대: 막대 끝(위쪽)에 표시
+                  ctx.textAlign = "center";
+                  ctx.textBaseline = "bottom";
+                  xPos = bar.x;
+                  yPos = bar.y - padding;
+                }
+
+                ctx.fillText(value, xPos, yPos);
+              });
+            });
+          },
+        };
+      }
+      // ---------------------------
+      // 세로 막대 차트
+      // ---------------------------
+      const columnCtx = document
+        .getElementById("chart-columnLine")
+        .getContext("2d");
+      new Chart(columnCtx, {
+        type: "bar",
+        data: {
+          labels: [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11",
+            "12",
+          ],
+          datasets: [
+            {
+              label: "판매량",
+              data: [
+                " ",
+                " ",
+                " ",
+                " ",
+                " ",
+                " ",
+                " ",
+                " ",
+                100,
+                1000,
+                100,
+                " ",
+              ],
+              backgroundColor: function (context) {
+                const chart = context.chart;
+                const meta = chart.getDatasetMeta(context.datasetIndex);
+                const bar = meta.data[context.dataIndex];
+                return createGradient(chart.ctx, bar, gradientColors);
+              },
+              borderRadius: {
+                topLeft: 2,
+                topRight: 2,
+                bottomLeft: 0,
+                bottomRight: 0,
+              },
+              borderSkipped: false,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { display: false }, tooltip: { enabled: true } },
+          scales: {
+            y: {
+              display: false,
+              beginAtZero: true,
+              grid: { color: "#eee" },
+              ticks: {
+                display: false, // Y축 레이블(값) 숨기기
+              },
+            },
+            x: {
+              grid: {
+                drawTicks: false, // X축 틱 라인(튀어나오는 선) 숨기기
+                // 필요시 그리드 선(세로 선) 숨기기
+                // display: false
+              },
+              ticks: {
+                color: function (context) {
+                  // 색상도 같이 변경 가능
+                  if (context.tick.label === "11") {
+                    return "#121212";
+                  }
+                  return "rgba(18, 18, 18, 0.60)";
+                },
+                font: function (context) {
+                  // 특정 레이블일 경우 폰트 설정 객체를 반환
+
+                  if (context.tick.label === "11") {
+                    return {
+                      weight: "bold", // 굵게 설정
+                      size: 12, // 크기도 약간 키울 수 있음
+                    };
+                  }
+                  // 기본 폰트 설정 반환
+                  return {
+                    weight: "normal",
+                    size: 12,
+                  };
+                },
+              },
+              border: {
+                display: true, // 보더 표시 (기본값 true)
+                dash: [3, 3], // 5px 길이의 선, 5px 길이의 공백 (점선/대시)
+                color: "rgba(0, 0, 0, 0.30)", // 보더 색상 설정 (선명하게 보이도록)
+                width: 1, // 보더 두께 설정
+              },
+            },
+          },
+        },
+        plugins: [createValuePlugin(false, -16)],
+      });
+
+      // ---------------------------
+      // 가로 막대 차트
+      // ---------------------------
+      const barCtx = document.getElementById("chart-bar").getContext("2d");
+      new Chart(barCtx, {
+        type: "bar",
+        data: {
+          labels: ["1주차", "2주차", "3주차", "4주차"],
+          datasets: [
+            {
+              label: "판매량",
+              data: [12, 19, 7, 15],
+              backgroundColor: function (context) {
+                const chart = context.chart;
+                const meta = chart.getDatasetMeta(context.datasetIndex);
+                const bar = meta.data[context.dataIndex];
+                return createGradient(chart.ctx, bar, gradientColors, true);
+              },
+              borderRadius: {
+                topLeft: 0,
+                topRight: 8,
+                bottomLeft: 0,
+                bottomRight: 8,
+              },
+              borderSkipped: false,
+            },
+          ],
+        },
+        options: {
+          indexAxis: "y",
+          responsive: true,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: {
+              display: false,
+              beginAtZero: true,
+              grid: { color: "#eee" },
+              ticks: {
+                display: false, // Y축 레이블(값) 숨기기
+              },
+            },
+            y: {
+              grid: {
+                drawTicks: false, // X축 틱 라인(튀어나오는 선) 숨기기
+                // 필요시 그리드 선(세로 선) 숨기기
+                // display: false
+              },
+              border: {
+                display: false, // 보더 표시 (기본값 true)
+                dash: [3, 3], // 5px 길이의 선, 5px 길이의 공백 (점선/대시)
+                color: "rgba(0, 0, 0, 0.30)", // 보더 색상 설정 (선명하게 보이도록)
+                width: 1, // 보더 두께 설정
+              },
+              ticks: {
+                color: function (context) {
+                  // 색상도 같이 변경 가능
+                  if (context.tick.label === "3주차") {
+                    return "#121212";
+                  }
+                  return "rgba(18, 18, 18, 0.60)";
+                },
+                font: function (context) {
+                  // 특정 레이블일 경우 폰트 설정 객체를 반환
+
+                  if (context.tick.label === "3주차") {
+                    return {
+                      weight: "bold", // 굵게 설정
+                      size: 12, // 크기도 약간 키울 수 있음
+                    };
+                  }
+                  // 기본 폰트 설정 반환
+                  return {
+                    weight: "normal",
+                    size: 12,
+                  };
+                },
+              },
+            },
+          },
+        },
+        plugins: [createValuePlugin(false, -16)],
+      });
+
+      // ---------------------------
+      // 라인+영역 차트
+      // ---------------------------
+      const lineCtx = document
+        .getElementById("chart-linearea")
+        .getContext("2d");
+      const gradientLine = lineCtx.createLinearGradient(0, 0, 0, 400);
+      gradientLine.addColorStop(0, "rgba(145,128,80,0.6)");
+      gradientLine.addColorStop(1, "rgba(145,128,80,0)");
+
+      const isCurve = false; // true=곡선, false=직선
+
+      function radialDotGradient(context) {
+        const element = context.element;
+        if (!element || !element.x || !element.y || !element.radius)
+          return "#4FFFCB";
+        const { x, y, radius } = element;
+        const grad = context.chart.ctx.createRadialGradient(
+          x,
+          y,
+          0,
+          x,
+          y,
+          radius
+        );
+        grad.addColorStop(0.0648, "#4FFFCB");
+        grad.addColorStop(0.3914, "#249473");
+        return grad;
+      }
+
+      new Chart(lineCtx, {
+        type: "line",
+        data: {
+          labels: ["A", "B", "C", "D", "E"],
+          datasets: [
+            {
+              label: "판매량",
+              data: [12, 19, 7, 15, 10],
+              fill: true,
+              backgroundColor: gradientLine,
+              borderColor: "#918050",
+              borderWidth: 2,
+              tension: isCurve ? 0.4 : 0,
+              pointBackgroundColor: radialDotGradient,
+              pointRadius: 8,
+              pointHoverRadius: 10,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { display: true } },
+          scales: {
+            y: { beginAtZero: true, grid: { color: "#eee" } },
+            x: { grid: { color: "#eee" } },
+          },
+        },
+      });
+
+      // ---------------------------
+      // 도넛 차트
+      // ---------------------------
+      const doughnutCtx = document
+        .getElementById("chart-doughnut")
+        .getContext("2d");
+
+      const totalCenterPlugin = {
+        id: "totalCenter",
+        beforeDraw(chart) {
+          const {
+            ctx,
+            chartArea: { width, height },
+          } = chart;
+          ctx.save();
+          ctx.font = "bold 24px Arial";
+          ctx.fillStyle = "#333";
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          const total = chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+          ctx.fillText(total, width / 2, height / 2);
+          ctx.restore();
+        },
+      };
+
+      new Chart(doughnutCtx, {
+        type: "doughnut",
+        data: {
+          labels: ["A", "B", "C", "D"],
+          datasets: [
+            {
+              data: [12, 19, 7, 15],
+              backgroundColor: ["#918050", "#968860", "#8C7D50", "#6D5A21"],
+              borderWidth: 0,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { position: "bottom" } },
+          cutout: "60%",
+        },
+        plugins: [totalCenterPlugin],
+      });
+    </script>
   </body>
 </html>

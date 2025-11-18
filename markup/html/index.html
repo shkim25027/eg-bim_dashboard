@@ -9,29 +9,32 @@
       <!-- container -->
       <div class="container">
         <section>
-          <div></div>
+          <h2>세로 막대 차트</h2>
           <div>
             <canvas id="chart-columnLine"></canvas>
           </div>
         </section>
         <section class="sales">
+          <h2>라인+영역 차트</h2>
           <div>
-            <canvas id="chart-linearea"></canvas>
+            <canvas
+              id="chart-linearea"
+              style="width: 500px; height: 500px"
+            ></canvas>
           </div>
         </section>
         <section>
-          <div></div>
+          <h2>가로 막대 차트</h2>
           <div><canvas id="chart-bar"></canvas></div>
         </section>
         <section>
-          <div></div>
+          <h2>도넛 차트</h2>
           <div>
             <canvas id="chart-doughnut"></canvas>
           </div>
         </section>
         <section></section>
       </div>
-      <!-- // container -->
     </div>
 
     <script>
@@ -59,9 +62,9 @@
       }
 
       // ---------------------------
-      // 공통: 값 표시 플러그인
+      // 공통: 값 표시 플러그인 (세로/가로 구분)
       // ---------------------------
-      function createValuePlugin(align = "center", offsetX = 0, offsetY = -8) {
+      function createValuePlugin(isHorizontal = false, padding = 10) {
         return {
           id: "valuePlugin",
           afterDatasetsDraw(chart) {
@@ -69,15 +72,30 @@
             chart.data.datasets.forEach((dataset, i) => {
               chart.getDatasetMeta(i).data.forEach((bar, index) => {
                 const value = dataset.data[index];
+
+                // 0이거나 값이 없으면 표시 안 함
+                if (!value || value === 0) return;
+
                 ctx.fillStyle = "#000";
                 ctx.font = "bold 14px Arial";
-                ctx.textAlign = align;
-                ctx.textBaseline = "middle";
-                ctx.fillText(
-                  value,
-                  bar.x + offsetX,
-                  bar.y + bar.height / 2 + offsetY
-                );
+
+                let xPos, yPos;
+
+                if (isHorizontal) {
+                  // 가로 막대: 막대 끝(오른쪽)에 표시
+                  ctx.textAlign = "left";
+                  ctx.textBaseline = "middle";
+                  xPos = bar.x + bar.width + padding;
+                  yPos = bar.y + bar.height / 2;
+                } else {
+                  // 세로 막대: 막대 끝(위쪽)에 표시
+                  ctx.textAlign = "center";
+                  ctx.textBaseline = "bottom";
+                  xPos = bar.x;
+                  yPos = bar.y - padding;
+                }
+
+                ctx.fillText(value, xPos, yPos);
               });
             });
           },
@@ -93,11 +111,24 @@
       new Chart(columnCtx, {
         type: "bar",
         data: {
-          labels: ["A", "B", "C", "D", "E"],
+          labels: [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11",
+            "12",
+          ],
           datasets: [
             {
               label: "판매량",
-              data: [12, 19, 7, 15, 9],
+              data: [0, 0, 0, 0, 0, 0, 0, 0, 100, 1000, 100, 0],
               backgroundColor: function (context) {
                 const chart = context.chart;
                 const meta = chart.getDatasetMeta(context.datasetIndex);
@@ -105,8 +136,8 @@
                 return createGradient(chart.ctx, bar, gradientColors);
               },
               borderRadius: {
-                topLeft: 8,
-                topRight: 8,
+                topLeft: 2,
+                topRight: 2,
                 bottomLeft: 0,
                 bottomRight: 0,
               },
@@ -116,17 +147,53 @@
         },
         options: {
           responsive: true,
-          plugins: { legend: { display: false }, tooltip: { enabled: true } },
+          plugins: {
+            legend: { display: false },
+            tooltip: { enabled: true },
+          },
           scales: {
             y: {
+              display: false,
               beginAtZero: true,
               grid: { color: "#eee" },
-              ticks: { color: "#333", font: { size: 12 } },
+              ticks: {
+                display: false,
+              },
             },
-            x: { ticks: { color: "#333", font: { size: 12 } } },
+            x: {
+              grid: {
+                drawTicks: false,
+              },
+              ticks: {
+                color: function (context) {
+                  if (context.tick.label === "11") {
+                    return "#121212";
+                  }
+                  return "rgba(18, 18, 18, 0.60)";
+                },
+                font: function (context) {
+                  if (context.tick.label === "11") {
+                    return {
+                      weight: "bold",
+                      size: 12,
+                    };
+                  }
+                  return {
+                    weight: "normal",
+                    size: 12,
+                  };
+                },
+              },
+              border: {
+                display: true,
+                dash: [3, 3],
+                color: "rgba(0, 0, 0, 0.30)",
+                width: 1,
+              },
+            },
           },
         },
-        plugins: [createValuePlugin()],
+        plugins: [createValuePlugin(false, 10)], // 세로 막대, padding 10px
       });
 
       // ---------------------------
@@ -136,7 +203,7 @@
       new Chart(barCtx, {
         type: "bar",
         data: {
-          labels: ["A", "B", "C", "D"],
+          labels: ["1주차", "2주차", "3주차", "4주차"],
           datasets: [
             {
               label: "판매량",
@@ -162,11 +229,48 @@
           responsive: true,
           plugins: { legend: { display: false } },
           scales: {
-            x: { beginAtZero: true, grid: { color: "#eee" } },
-            y: { ticks: { color: "#333", font: { size: 12 } } },
+            x: {
+              display: false,
+              beginAtZero: true,
+              grid: { color: "#eee" },
+              ticks: {
+                display: false,
+              },
+            },
+            y: {
+              grid: {
+                drawTicks: false,
+              },
+              border: {
+                display: false,
+                dash: [3, 3],
+                color: "rgba(0, 0, 0, 0.30)",
+                width: 1,
+              },
+              ticks: {
+                color: function (context) {
+                  if (context.tick.label === "3주차") {
+                    return "#121212";
+                  }
+                  return "rgba(18, 18, 18, 0.60)";
+                },
+                font: function (context) {
+                  if (context.tick.label === "3주차") {
+                    return {
+                      weight: "bold",
+                      size: 12,
+                    };
+                  }
+                  return {
+                    weight: "normal",
+                    size: 12,
+                  };
+                },
+              },
+            },
           },
         },
-        plugins: [createValuePlugin("left", 5, 0)],
+        plugins: [createValuePlugin(true, 10)], // 가로 막대, padding 10px
       });
 
       // ---------------------------
@@ -175,55 +279,146 @@
       const lineCtx = document
         .getElementById("chart-linearea")
         .getContext("2d");
-      const gradientLine = lineCtx.createLinearGradient(0, 0, 0, 400);
-      gradientLine.addColorStop(0, "rgba(145,128,80,0.6)");
-      gradientLine.addColorStop(1, "rgba(145,128,80,0)");
 
-      const isCurve = false; // true=곡선, false=직선
+      // 곡선 모드
+      const isCurve = false;
 
+      // radial gradient 포인트 색상 함수
       function radialDotGradient(context) {
+        const chart = context.chart;
         const element = context.element;
-        if (!element || !element.x || !element.y || !element.radius)
-          return "#4FFFCB";
-        const { x, y, radius } = element;
-        const grad = context.chart.ctx.createRadialGradient(
-          x,
-          y,
-          0,
-          x,
-          y,
-          radius
-        );
-        grad.addColorStop(0.0648, "#4FFFCB");
-        grad.addColorStop(0.3914, "#249473");
+
+        if (!element || !element.x || !element.y || !element.radius) {
+          return "#C1A770";
+        }
+
+        const { x, y } = element;
+        const radius = element.radius;
+
+        const grad = chart.ctx.createRadialGradient(x, y, 0, x, y, radius);
+        grad.addColorStop(0.0648, "#FAE2B0");
+        grad.addColorStop(0.3914, "#C1A770");
         return grad;
       }
 
       new Chart(lineCtx, {
         type: "line",
         data: {
-          labels: ["A", "B", "C", "D", "E"],
+          labels: [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11",
+            "12",
+          ],
           datasets: [
             {
               label: "판매량",
-              data: [12, 19, 7, 15, 10],
+              data: [
+                350, 400, 380, 450, 520, 300, 280, 1000, 490, 350, 450, 600,
+              ],
               fill: true,
-              backgroundColor: gradientLine,
+              backgroundColor: function (context) {
+                const chart = context.chart;
+                const gradient = chart.ctx.createLinearGradient(
+                  0,
+                  0,
+                  0,
+                  chart.height
+                );
+                gradient.addColorStop(0, "rgba(145,128,80,0.6)");
+                gradient.addColorStop(0.8, "rgba(145,128,80,0)");
+                return gradient;
+              },
               borderColor: "#918050",
               borderWidth: 2,
               tension: isCurve ? 0.4 : 0,
               pointBackgroundColor: radialDotGradient,
-              pointRadius: 8,
-              pointHoverRadius: 10,
+              pointRadius: 4,
+              pointHoverRadius: 6,
+            },
+            {
+              label: "매출",
+              data: [450, 250, 280, 270, 280, 290, 300, 290, 10, 350, 320, 340],
+              fill: true,
+              backgroundColor: function (context) {
+                const chart = context.chart;
+                const gradient = chart.ctx.createLinearGradient(
+                  0,
+                  0,
+                  0,
+                  chart.height
+                );
+                gradient.addColorStop(0, "rgba(36,148,115,0.6)");
+                gradient.addColorStop(0.9, "rgba(36,148,115,0)");
+                return gradient;
+              },
+              borderColor: "#249473",
+              borderWidth: 2,
+              tension: isCurve ? 0.4 : 0,
+              pointBackgroundColor: radialDotGradient,
+              pointRadius: 4,
+              pointHoverRadius: 6,
             },
           ],
         },
         options: {
           responsive: true,
           plugins: { legend: { display: true } },
+          layout: {
+            padding: {
+              top: 50, // 상단 패딩
+              bottom: 10, // 하단 패딩
+              left: 30, // 왼쪽 패딩 (Y축과 차트 사이)
+              right: 30, // 오른쪽 패딩
+            },
+          },
           scales: {
-            y: { beginAtZero: true, grid: { color: "#eee" } },
-            x: { grid: { color: "#eee" } },
+            y: {
+              min: 0, // 최소값
+              max: 1200, // 최대값
+              ticks: {
+                maxTicksLimit: 4, // 최대 5개의 Y축 라벨/선 표시
+              },
+              beginAtZero: true,
+              grid: { color: "#eee" },
+            },
+            x: {
+              grid: { color: "#eee" },
+              border: {
+                display: true,
+                dash: [3, 3],
+                color: "rgba(0, 0, 0, 0.30)",
+                width: 1,
+              },
+              ticks: {
+                color: function (context) {
+                  if (context.tick.label === "11") {
+                    return "#121212";
+                  }
+                  return "rgba(18, 18, 18, 0.60)";
+                },
+                font: function (context) {
+                  if (context.tick.label === "11") {
+                    return {
+                      weight: "bold",
+                      size: 12,
+                    };
+                  }
+                  return {
+                    weight: "normal",
+                    size: 12,
+                  };
+                },
+              },
+            },
           },
         },
       });
@@ -256,11 +451,11 @@
       new Chart(doughnutCtx, {
         type: "doughnut",
         data: {
-          labels: ["A", "B", "C", "D"],
+          labels: ["일반", "교육", "공공", "기타"],
           datasets: [
             {
-              data: [12, 19, 7, 15],
-              backgroundColor: ["#918050", "#968860", "#8C7D50", "#6D5A21"],
+              data: [139, 14, 12, 3],
+              backgroundColor: ["#249473", "#EC8F53", "#90C9FF", "#C1A770"],
               borderWidth: 0,
             },
           ],

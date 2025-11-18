@@ -81,11 +81,18 @@
       // ---------------------------
       // 공통: 값 표시 플러그인 (세로/가로 구분)
       // ---------------------------
-      function createValuePlugin(isHorizontal = false, padding = 10) {
+      function createValuePlugin(isHorizontal = false, padding = 0) {
         return {
           id: "valuePlugin",
           afterDatasetsDraw(chart) {
             const ctx = chart.ctx;
+
+            // ✨ 텍스트 그림자(Text Shadow) 설정
+            ctx.shadowColor = "rgba(255, 255, 255, 0.6)"; // 흰색 그림자로 설정 (값이 잘 보이도록)
+            ctx.shadowBlur = 3;
+            ctx.shadowOffsetX = 0;
+            ctx.shadowOffsetY = 0;
+
             chart.data.datasets.forEach((dataset, i) => {
               chart.getDatasetMeta(i).data.forEach((bar, index) => {
                 const value = dataset.data[index];
@@ -115,6 +122,12 @@
                 ctx.fillText(value, xPos, yPos);
               });
             });
+
+            // ⚠️ 중요: 그림자 초기화
+            ctx.shadowColor = "rgba(0, 0, 0, 0)";
+            ctx.shadowBlur = 0;
+            ctx.shadowOffsetX = 0;
+            ctx.shadowOffsetY = 0;
           },
         };
       }
@@ -134,7 +147,6 @@
                 const value = dataset.data[index];
                 if (!value || value === 0) return;
 
-                ctx.fillStyle = "#000";
                 ctx.font = "bold 12px Arial";
                 ctx.textAlign = "center";
 
@@ -142,12 +154,14 @@
 
                 // 막대 차트인 경우
                 if (dataset.type === "bar") {
+                  ctx.fillStyle = "#000"; // 막대는 검은색
                   ctx.textBaseline = "bottom";
                   xPos = element.x;
                   yPos = element.y - padding;
                 }
                 // 라인 차트인 경우
                 else if (dataset.type === "line") {
+                  ctx.fillStyle = "#FF5C00"; // 라인은 오렌지색
                   ctx.textBaseline = "top";
                   xPos = element.x;
                   yPos = element.y - padding - 5; // 라인 포인트 위쪽
@@ -159,6 +173,60 @@
           },
         };
       }
+
+      // 복합 차트용 포인트 그라데이션 플러그인 (보더 추가)
+      const mixedPointGradientPlugin = {
+        id: "mixedPointGradient",
+        afterDatasetsDraw(chart) {
+          const ctx = chart.ctx;
+          chart.data.datasets.forEach((dataset, datasetIndex) => {
+            const meta = chart.getDatasetMeta(datasetIndex);
+            if (dataset.type !== "line") return;
+
+            meta.data.forEach((point, index) => {
+              const { x, y } = point;
+              const radius = dataset.pointRadius || 4;
+
+              // -----------------------------------------------------
+              // ✨ CSS 스타일을 캔버스 API로 변환 (기존 그라데이션 로직)
+              // -----------------------------------------------------
+              const gradCenterX = x - radius + 2 * radius * 0.3333;
+              const gradCenterY = y - radius + 2 * radius * 0.3333;
+              const outerRadius = radius * 0.7862;
+
+              const gradient = ctx.createRadialGradient(
+                gradCenterX,
+                gradCenterY,
+                0,
+                gradCenterX,
+                gradCenterY,
+                outerRadius
+              );
+
+              gradient.addColorStop(0.1475, "#FFBB89");
+              gradient.addColorStop(0.5805, "#E5690D");
+              gradient.addColorStop(0.9277, "#AE3607");
+              // -----------------------------------------------------
+
+              // 포인트 다시 그리기
+              ctx.save();
+              ctx.beginPath();
+              ctx.arc(x, y, radius, 0, 2 * Math.PI);
+
+              // 1. 그라데이션 채우기
+              ctx.fillStyle = gradient;
+              ctx.fill();
+
+              // 2. ✨ 흰색 반투명 보더(Border) 그리기
+              ctx.strokeStyle = "rgba(255, 255, 255, 0.8)"; // 흰색, 70% 투명도
+              ctx.lineWidth = 2; // 보더 두께 (원하는 두께로 조절)
+              ctx.stroke(); // 보더 그리기
+
+              ctx.restore();
+            });
+          });
+        },
+      };
 
       // ---------------------------
       // 세로 막대 차트
@@ -212,6 +280,7 @@
           scales: {
             y: {
               display: false,
+              suggestedMax: 1200,
               beginAtZero: true,
               grid: { color: "#eee" },
               ticks: {
@@ -305,7 +374,7 @@
               data: [
                 250, 380, 320, 420, 480, 300, 260, 580, 470, 330, 430, 500,
               ],
-              borderColor: "#249473",
+              borderColor: "#FF5C00",
               backgroundColor: "rgba(36,148,115,0.1)",
               borderWidth: 2,
               tension: 0,
@@ -380,7 +449,7 @@
             },
           },
         },
-        plugins: [createMixedValuePlugin(10)],
+        plugins: [createMixedValuePlugin(10), mixedPointGradientPlugin],
       });
 
       // ---------------------------
@@ -507,6 +576,65 @@
         return grad;
       }
 
+      // X축 하이라이트 플러그인
+      const xAxisHighlightPlugin = {
+        id: "xAxisHighlight",
+        beforeDatasetsDraw(chart) {
+          if (chart.tooltip?._active?.length) {
+            const ctx = chart.ctx;
+            const activePoint = chart.tooltip._active[0];
+            const x = activePoint.element.x;
+            const { top, bottom } = chart.chartArea;
+
+            ctx.save();
+            ctx.beginPath();
+            ctx.moveTo(x, top);
+            ctx.lineTo(x, bottom);
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = "rgba(0, 0, 0, 0.3)";
+            ctx.stroke();
+            ctx.restore();
+          }
+        },
+      };
+
+      // 포인트 그라데이션 플러그인
+      const pointGradientPlugin = {
+        id: "pointGradient",
+        afterDatasetsDraw(chart) {
+          const ctx = chart.ctx;
+          chart.data.datasets.forEach((dataset, datasetIndex) => {
+            const meta = chart.getDatasetMeta(datasetIndex);
+            if (meta.type !== "line") return;
+
+            meta.data.forEach((point, index) => {
+              const { x, y } = point;
+              const radius = dataset.pointRadius || 4;
+
+              // 데이터셋별 그라데이션 색상
+              let gradient;
+              if (dataset.label === "판매량") {
+                gradient = ctx.createRadialGradient(x, y, 0, x, y, radius);
+                gradient.addColorStop(0.0648, "#FAE2B0");
+                gradient.addColorStop(0.3914, "#C1A770");
+              } else if (dataset.label === "매출") {
+                gradient = ctx.createRadialGradient(x, y, 0, x, y, radius);
+                gradient.addColorStop(0.0648, "#4FFFCB");
+                gradient.addColorStop(0.3914, "#249473");
+              }
+
+              // 포인트 다시 그리기
+              ctx.save();
+              ctx.beginPath();
+              ctx.arc(x, y, radius, 0, 2 * Math.PI);
+              ctx.fillStyle = gradient;
+              ctx.fill();
+              ctx.restore();
+            });
+          });
+        },
+      };
+
       new Chart(lineCtx, {
         type: "line",
         data: {
@@ -557,6 +685,7 @@
               pointBackgroundColor: goldDotGradient,
               pointRadius: 4,
               pointHoverRadius: 6,
+              order: 2, // 뒤로
             },
             {
               label: "매출",
@@ -588,13 +717,24 @@
               pointBackgroundColor: greenDotGradient,
               pointRadius: 4,
               pointHoverRadius: 6,
+              order: 1, // 앞으로
             },
           ],
         },
         options: {
           responsive: true,
           maintainAspectRatio: true,
-          plugins: { legend: { display: true } },
+          interaction: {
+            mode: "index",
+            intersect: false,
+          },
+          plugins: {
+            legend: { display: true },
+            tooltip: {
+              mode: "index",
+              intersect: false,
+            },
+          },
           layout: {
             padding: {
               top: 50,
@@ -643,6 +783,7 @@
             },
           },
         },
+        plugins: [xAxisHighlightPlugin, pointGradientPlugin],
       });
 
       // ---------------------------
@@ -655,17 +796,19 @@
       const totalCenterPlugin = {
         id: "totalCenter",
         beforeDraw(chart) {
-          const {
-            ctx,
-            chartArea: { width, height },
-          } = chart;
+          const { ctx, chartArea } = chart;
+          if (!chartArea) return;
+
+          const centerX = (chartArea.left + chartArea.right) / 2;
+          const centerY = (chartArea.top + chartArea.bottom) / 2;
+
           ctx.save();
           ctx.font = "bold 24px Arial";
           ctx.fillStyle = "#333";
           ctx.textAlign = "center";
           ctx.textBaseline = "middle";
           const total = chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
-          ctx.fillText(total, width / 2, height / 2);
+          ctx.fillText(total, centerX, centerY);
           ctx.restore();
         },
       };
@@ -677,27 +820,63 @@
           const dataset = chart.data.datasets[0];
           const meta = chart.getDatasetMeta(0);
 
+          // 전체 합계 계산
+          const total = dataset.data.reduce((a, b) => a + b, 0);
+
           meta.data.forEach((arc, index) => {
             const value = dataset.data[index];
+
+            // 퍼센트 계산
+            const percentage = ((value / total) * 100).toFixed(1);
 
             // 각도 계산
             const { startAngle, endAngle, innerRadius, outerRadius } = arc;
             const midAngle = (startAngle + endAngle) / 2;
+            const angleDiff = endAngle - startAngle;
 
-            // 값을 표시할 위치 (도넛 중간쯤)
-            const radius = (innerRadius + outerRadius) / 2;
-            const x = arc.x + Math.cos(midAngle) * radius;
-            const y = arc.y + Math.sin(midAngle) * radius;
+            // 영역이 작은지 확인 (10% 미만)
+            const isSmallSection = value / total < 0.05;
 
-            // 텍스트 스타일
             ctx.save();
             ctx.fillStyle = "#fff";
-            ctx.font = "bold 14px Arial";
+            ctx.font = "bold 12px Arial";
             ctx.textAlign = "center";
             ctx.textBaseline = "middle";
 
-            // 값 표시
-            ctx.fillText(value, x, y);
+            if (isSmallSection) {
+              // 작은 영역: 바깥쪽에 표시
+              const lineStartRadius = outerRadius + 5;
+              const lineEndRadius = outerRadius + 25;
+              const textRadius = outerRadius + 35;
+
+              const lineStartX = arc.x + Math.cos(midAngle) * lineStartRadius;
+              const lineStartY = arc.y + Math.sin(midAngle) * lineStartRadius;
+              const lineEndX = arc.x + Math.cos(midAngle) * lineEndRadius;
+              const lineEndY = arc.y + Math.sin(midAngle) * lineEndRadius;
+              const textX = arc.x + Math.cos(midAngle) * textRadius;
+              const textY = arc.y + Math.sin(midAngle) * textRadius;
+
+              // 선 그리기
+              ctx.strokeStyle = "#666";
+              ctx.lineWidth = 1;
+              ctx.beginPath();
+              ctx.moveTo(lineStartX, lineStartY);
+              ctx.lineTo(lineEndX, lineEndY);
+              ctx.stroke();
+
+              // 텍스트 표시
+              ctx.fillStyle = "#333";
+              ctx.fillText(percentage + "%", textX, textY);
+            } else {
+              // 큰 영역: 안쪽에 표시
+              const radius = (innerRadius + outerRadius) / 2;
+              const x = arc.x + Math.cos(midAngle) * radius;
+              const y = arc.y + Math.sin(midAngle) * radius;
+
+              ctx.fillStyle = "#fff";
+              ctx.fillText(percentage + "%", x, y);
+            }
+
             ctx.restore();
           });
         },
@@ -719,7 +898,15 @@
           responsive: true,
           plugins: { legend: { position: "bottom" } },
           cutout: "60%",
-          rotation: 145, // 시작점을 12시 방향(위쪽)으로 회전
+          rotation: 145,
+          layout: {
+            padding: {
+              top: 40,
+              bottom: 40,
+              left: 40,
+              right: 40,
+            },
+          },
         },
         plugins: [totalCenterPlugin, doughnutValuePlugin],
       });
