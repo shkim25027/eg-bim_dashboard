@@ -1,0 +1,90 @@
+:root {
+
+  /* background */
+  --bg-body: #26221A;
+  --bg-section :#F3EFEA;
+
+  /*primary*/
+  --color-primary900: #020A07;
+  --color-primary800: #071E18;
+  --color-primary700: #0A221D;
+  --color-primary:#123328;  /* 기본값 === 600 */
+  --color-primary500: #205241;
+  --color-primary400: #266651;
+  --color-primary300: #249473;
+  --color-primary200: #34DAAA;
+  --color-primary100: #EFFDF9;
+
+  --gra-primary: #0F3227 5%, #2A6C56 30%, #173E31 60%, #071E18 80%, #09211B 90%, #0E2C25 100%;
+  --gra-primary-b: #135643 0%, #0B2D23 10%, #34D9A9 50%, #061712 85%, #194436 100%;
+  --gra-primary700: #0F3025 0%, #194335 40%, #0C271F 70%, #0B221B 80%, #0D231C 100%;
+  --gra-primary700-b: #08251C 0%, #208669 40%, #104032 70%, #051612 100%;
+
+  /*secondary*/
+  --color-secondary900: #0C0906;
+  --color-secondary800: #1D1810;
+  --color-secondary700: #352D1D;
+  --color-secondary:#3E3523;  /* 기본값 === 600 */
+  --color-secondary500: #604F32;
+  --color-secondary400: #897445;
+  --color-secondary300: #C1A770;
+  --color-secondary200: #ECD4A2;
+  --color-secondary100: #FDF7EC;
+
+  --gra-secondary: #262218 8%, #4A3C2B 34%, #594C31 55%, #312A1B 90%;
+  --gra-secondary-b: #886D35 0%, #423625 10%, #F3DBA8 26%, #0E0B06 85%, #574B30 100%;
+  --gra-secondary200-b: #A48F6200 0%, #A48F62 40%, #A48F6200 100%;
+
+
+  /* accent-org */
+  --color-org900: #4F2000;
+  --color-org800: #883700;
+  --color-org700: #BC4C00;
+  --color-org: #CC5200;  /* 기본값 === 600 */
+  --color-org500: #EB5F00;
+  --color-org400: #F87725;
+  --color-org300: #EC8F53;
+  --color-org200: #FEBA88;
+  --color-org100: #FFEADA;
+  --gra-org: #F56900 10%, #FF872F 30%, #DF5F00 70%, #AE3607 90%;
+  --gra-org-b: #DA6813 10%, #FFBB89 38%, #E5690D 72%, #AE3607 93%;
+
+  /*gray*/
+  --color-gray900:#212121;
+  --color-gray800:#424242;
+  --color-gray700:#616161;
+  --color-gray600:#757575;
+  --color-gray500:#9e9e9e;
+  --color-gray400:#bdbdbd;
+  --color-gray300:#e0e0e0;
+  --color-gray200:#eee;
+  --color-gray100:#f5f5f5;
+  --color-gray50:#fafafa;
+  --gra-gray: #444444 0%, #666666 38%, #555555 72%, #444444 100%;
+  --gra-gray-b: #333333 0%, #aaaaaa 47%, #404040 100%;
+
+  /* other */
+  --color-yellow: #FFC600;
+  --gra-yellow-b: #A67D03 0%, #F2CC0F 16%, #FADD4F 37%, #F2CC0F 62%, #926E03 88%;
+  --color-red: #E60403;
+  --color-red400:#FF100F;
+  --color-red200: #FF6B6B;
+
+  --gra-red: #700000 0%, #BE0000 47%, #620808 84%, #590000 100%;
+  --gra-red-b: #870E0E 0%, #BA3C3C 27%, #F07272 50%, #A63F3F 67%, #630E0E 100%;
+  --gra-green: #124234 0%, #296B55 48%, #0F392D 85%, #0C2A21 100%;
+  --gra-green-b: #124637 0%, #249978 28%, #34D9AA 50%, #238C6D 68%, #0F3328 100%;
+  --gra-green700: #0F372B 0%, #205643 48%, #0F2C23 85%, #0A1B15 100%;
+  --gra-green700-b: #154435 0%, #196750 28%, #1F8265 50%, #185A46 68%, #153B2F 100%;
+  --gra-brown: #423320 0%, #685237 48%, #453521 85%, #362A1A 100%;
+  --gra-brown-b: #4A3B28 0%, #9F8363 28%, #C6A47A 50%, #7F694C 68%, #524530 100%;
+  --gra-brown700: #322B1C 0%, #594D32 48%, #3B3123 85%, #272319 100%;
+  --gra-brown700-b: #3C3021 0%, #7F6545 28%, #A28662 50%, #766042 68%, #352914 100%;
+
+
+  /* etc */
+  --text-stroke: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 1px 0px 0 #000, 0px 1px 0 #000, -1px 0px 0 #000, 0px -1px 0 #000;
+  --text-stroke500: -1px -1px 0 #00000077, 1px -1px 0 #00000077, -1px 1px 0 #00000077, 1px 1px 0 #00000077;
+  --text-stroke100: -1px -1px 0 #0000001a, 1px -1px 0 #0000001a, -1px 1px 0 #0000001a, 1px 1px 0 #0000001a;
+  --btn-shadow: drop-shadow(0 2px 2px #000000aa) drop-shadow(0 -1px 1px #000000aa);
+}

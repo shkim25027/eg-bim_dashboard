@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    @@include("_include/_head.html")
+  </head>
+  <body>
+    <div class="wrap">
+      @@include("_include/_header.html")
+      <!-- container -->
+      <div class="container">
+        <section>
+          <div></div>
+          <div class="columnLine-chart">
+            <div id="chart-columnLine"></div>
+            <script></script>
+          </div>
+        </section>
+        <section class="sales"></section>
+        <section>
+          <div id="chart-bar"></div>
+
+          <script>
+            new D3SuperChart({
+              el: "#chart-bar",
+              type: "bar",
+              labels: ["1주차", "2주차", "3주차", "4주차"],
+              data: [30, 50, 80, 40],
+              roundedTop: true,
+              topRadius: 4,
+              xAxis: {
+                show: true, // ← y축 숨김
+                grid: true, // grid는 따로 on/off 가능
+              },
+            });
+          </script>
+        </section>
+        <section></section>
+        <section></section>
+      </div>
+      <!-- // container -->
+    </div>
+  </body>
+</html>

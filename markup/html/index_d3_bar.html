@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>D3 Rounded Top Bar Chart</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+      body {
+        font-family: Arial;
+        padding: 40px;
+        background: #f6f7fb;
+      }
+      svg {
+        background: #ffffff;
+        border-radius: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>상단 라운드 + 그라데이션 + 애니메이션 바 차트</h2>
+    <svg id="chart" width="600" height="320"></svg>
+
+    <script>
+      const data = [30, 80, 45, 60, 20, 90, 50];
+
+      const svg = d3.select("#chart");
+      const width = +svg.attr("width");
+      const height = +svg.attr("height");
+      const margin = { top: 20, right: 20, bottom: 30, left: 40 };
+
+      const x = d3
+        .scaleBand()
+        .domain(data.map((d, i) => i))
+        .range([margin.left, width - margin.right])
+        .padding(0.25);
+
+      const y = d3
+        .scaleLinear()
+        .domain([0, d3.max(data)])
+        .nice()
+        .range([height - margin.bottom, margin.top]);
+
+      // 🌈 그라데이션
+      const defs = svg.append("defs");
+      const gradient = defs
+        .append("linearGradient")
+        .attr("id", "barGradient")
+        .attr("x1", "0%")
+        .attr("y1", "0%")
+        .attr("x2", "0%")
+        .attr("y2", "100%");
+
+      gradient
+        .append("stop")
+        .attr("offset", "0%")
+        .attr("stop-color", "#5fb3ff");
+
+      gradient
+        .append("stop")
+        .attr("offset", "100%")
+        .attr("stop-color", "#1a73e8");
+
+      // ⭐ 상단만 라운드된 path 그리는 함수
+      function roundedTopRect(x, y, width, height, radius) {
+        return `
+      M ${x},${y + radius}
+      a ${radius},${radius} 0 0 1 ${radius},${-radius}
+      h ${width - radius * 2}
+      a ${radius},${radius} 0 0 1 ${radius},${radius}
+      v ${height - radius}
+      h ${-width}
+      Z
+    `;
+      }
+
+      // ⭐ 애니메이션 적용
+      svg
+        .selectAll("path.bar")
+        .data(data)
+        .enter()
+        .append("path")
+        .attr("class", "bar")
+        .attr("fill", "url(#barGradient)")
+        .attr("d", (d, i) =>
+          roundedTopRect(
+            x(i),
+            y(0), // 처음엔 바닥
+            x.bandwidth(),
+            0, // 높이 0 → 애니메이션으로 증가
+            8 // 라운드 반지름
+          )
+        )
+        .transition()
+        .delay((d, i) => i * 120)
+        .duration(900)
+        .ease(d3.easeCubicOut)
+        .attr("d", (d, i) =>
+          roundedTopRect(x(i), y(d), x.bandwidth(), y(0) - y(d), 8)
+        );
+
+      // axis
+      svg
+        .append("g")
+        .attr("transform", `translate(0, ${height - margin.bottom})`)
+        .call(d3.axisBottom(x).tickFormat((i) => i + 1));
+
+      svg
+        .append("g")
+        .attr("transform", `translate(${margin.left},0)`)
+        .call(d3.axisLeft(y));
+    </script>
+  </body>
+</html>

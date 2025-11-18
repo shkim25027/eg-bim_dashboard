@@ -1,0 +1,5 @@
+# 빌드 결과물 제외
+dist/
+
+# node_modules 제외 
+node_modules/

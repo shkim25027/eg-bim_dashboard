@@ -1,0 +1,27 @@
+@charset "UTF-8";
+
+// =======================================
+// Font Settings
+// =======================================
+
+// rem 단위 계산을 위한 html 사이즈 리셋
+$html-fz: 10px;
+
+// 본문(paragraph) 사이즈
+$body-fz: 16px;
+
+// 본문(paragraph) 기본 컬러
+$base-color: #000;
+
+// 기본 행간 비율
+$line-height: 1.4;
+
+// 본문 행간 비율
+$base-line: $body-fz * 1.4;
+
+// 적용 웹 폰트
+$font-family-ko: 'Noto Sans KR', sans-serif;
+$font-family-en: 'Noto Sans KR', Arial, sans-serif, serif;
+
+// vw 계산용 기준 viewport 사이즈
+$vw-viewport: 720px !default;

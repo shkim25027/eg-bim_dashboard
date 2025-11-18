@@ -1,0 +1,309 @@
+// @mixin
+
+// @include clearfix;
+@mixin clearfix {
+  &:after {
+    content: "";
+    display: block;
+    clear: both;
+  }
+}
+
+// @include blind;
+@mixin blind {
+  position: absolute;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  border: 0;
+  padding: 0;
+  white-space: nowrap;
+}
+
+// @include textBlind;
+@mixin textBlind {
+  text-indent: -9999px;
+  color: transparent;
+  font-size: 1px;
+  overflow: hidden;
+}
+
+// positioning 한줄 축약 mixin
+@mixin position($position, $args) {
+  @each $o in top right bottom left {
+    $i: index($args, $o);
+
+    @if $i and $i + 1<= length($args) and type-of(nth($args, $i + 1)) == number
+    {
+      #{$o}: nth($args, $i + 1);
+    }
+  }
+  position: $position;
+}
+
+/// @mixin trapezoid($top-left: 10%, $top-right: 90%, $height: 160px)
+/// 사다리꼴 모양 
+///   0 0,        /* 왼쪽 위 */
+///  100% 0,     /* 오른쪽 위 */
+///  85% 100%,   /* 오른쪽 아래 (더 안쪽) */
+///  15% 100%    /* 왼쪽 아래 (더 안쪽) */
+@mixin trapezoid($top-left: 10%, $top-right: 90%, $height: 160px) {
+  height: $height;
+  position: relative;
+  overflow: hidden;
+  clip-path: polygon(#{$top-left} 0, #{$top-right} 0, 100% 100%, 0 100%);
+}
+
+// @include absolute(top 0 right 0 bottom left 0);
+@mixin absolute($args) {
+  @include position(absolute, $args);
+}
+
+// @include fixed(top 0 right 0 bottom left 0);
+@mixin fixed($args) {
+  @include position(fixed, $args);
+}
+
+// @include relative(top 0 right 0 bottom left 0);
+@mixin relative($args) {
+  @include position(relative, $args);
+}
+
+// text-ellipsis
+@mixin ellipsis($line: 1) {
+  @if ($line == 1) {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  } @else {
+    display: -webkit-box;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: $line;
+  }
+}
+
+// inline-block 에 vertical-align : top을 일일히 붙히지 않아도 되는 mixin
+@mixin inline-block-box($vertical-align: top) {
+  display: inline-block;
+  vertical-align: $vertical-align;
+}
+
+// placeholders
+@mixin input-placeholder {
+  &.placeholder {
+    @content;
+  }
+  &:-moz-placeholder {
+    @content;
+  }
+  &::-moz-placeholder {
+    @content;
+  }
+  &:-ms-input-placeholder {
+    @content;
+  }
+  &::-webkit-input-placeholder {
+    @content;
+  }
+}
+
+// pseudo (::before, ::after)
+@mixin pseudo($display: block, $pos: absolute, $content: "") {
+  content: $content;
+  display: $display;
+  position: $pos;
+}
+
+// display flex
+@mixin flex($align: center, $justify: center) {
+  display: flex;
+  align-items: $align;
+  justify-content: $justify;
+}
+
+/**
+ * 반응형 폰트 크기 (responsive font)
+ * @param {number} $min-px - 최소 폰트 크기 (px)
+ * @param {number} $max-px - 최대 폰트 크기 (px)
+ * @param {number} $min-vw - 최소 뷰포트 너비 (기본값: 375px)
+ * @param {number} $max-vw - 최대 뷰포트 너비 (기본값: 1920px)
+ */
+@mixin fluid-font($min-px, $max-px, $min-vw: 375, $max-vw: 1440) {
+  $min-rem: $min-px / 16;
+  $max-rem: $max-px / 16;
+  $fluid-vw: calc(#{$min-rem} + (#{$max-px - $min-px}) * ((100vw - #{$min-vw}px) / (#{$max-vw - $min-vw})));
+
+  font-size: clamp(#{$min-rem}rem, #{$fluid-vw}, #{$max-rem}rem);
+}
+
+// responsive box
+@mixin responsive-box($width, $height) {
+  $padding: unquote(calc($height / $width) * 100 + "%");
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 0;
+  padding-top: $padding;
+}
+
+// responsive btn
+@mixin responsive-btn($width, $height, $cont_w: 1670, $cont_h: 888) {
+  width: unquote(calc($width / $cont_w) * 100 + "%");
+  height: unquote(calc($height / $cont_h) * 100 + "%");
+}
+
+@mixin responsive-height($height, $cont_h: 888) {
+  height: unquote(calc($height / $cont_h) * 100 + "%");
+}
+
+@mixin responsive-width($width, $cont_w: 1670) {
+  width: unquote(calc($width / $cont_w) * 100 + "%");
+}
+
+@mixin responsive-top($top, $cont_h: 888) {
+  top: unquote(calc($top / $cont_h) * 100 + "%");
+}
+
+@mixin responsive-left($left, $cont_w: 1670) {
+  left: unquote(calc($left / $cont_w) * 100 + "%");
+}
+
+@mixin responsive-right($right, $cont_w: 1670) {
+  right: unquote(calc($right / $cont_w) * 100 + "%");
+}
+ 
+/**
+ * 박스 그림자 (box-shadow)
+ * @param {number} $x - X 오프셋 (기본값: 0px)
+ * @param {number} $y - Y 오프셋 (기본값: 3px)
+ * @param {number} $blur - 블러 반경 (기본값: 6px)
+ * @param {number} $spread - 확산 반경 (기본값: 0px)
+ * @param {color} $color - 색상 (기본값: rgba(0, 0, 0, 0.25))
+ * @param {boolean} $important - !important 사용 여부 (기본값: false)
+ */
+ @mixin box-shadow(
+  $x: 0px,
+  $y: 3px,
+  $blur: 6px,
+  $spread: 0px,
+  $color: rgba(0, 0, 0, 0.25),
+  $important: false
+) {
+  @if $important {
+    box-shadow: $x $y $blur $spread $color !important;
+  } @else {
+    box-shadow: $x $y $blur $spread $color;
+  }
+}
+
+/**
+ * 텍스트 그림자(text-shadow)
+ * @param {number} $x - X 오프셋 (기본값: 0px)
+ * @param {number} $y - Y 오프셋 (기본값: 1px)
+ * @param {number} $blur - 블러 반경 (기본값: 0px)
+ * @param {color} $color - 색상 (기본값: rgba(0, 0, 0, 0.25))
+ * @param {boolean} $important - !important 사용 여부 (기본값: false)
+ */
+ @mixin text-shadow($x: 0px, $y: 1px, $blur: 0px, $color: rgba(0, 0, 0, 0.25), $important: false) {
+  @if $important {
+    text-shadow: $x $y $blur $color !important;
+  } @else {
+    text-shadow: $x $y $blur $color;
+  }
+}
+
+// vh-100
+@mixin vh-100 {
+  height: var(--window-inner-height);
+}
+
+// media query
+$breakpoints: (
+  "phone": 360px,
+  "phone-wide": 576px,
+  "tablet-small": 768px,
+  "tablet": 992px,
+  "tablet-wide": 1024px,
+  "desktop": 1200px,
+  "desktop-wide": 1400px,
+  "desktop-hd": 1920px,
+  "desktop-2k": 2560px,
+  "desktop-4k": 3840px,
+);
+
+/**
+ * 미디어 쿼리 mixin
+ * @param {string|number} $width - 브레이크포인트 이름 또는 픽셀 값
+ * @param {string} $type - 'min' 또는 'max'
+ * @example
+ *   @include mq('desktop') { ... }
+ *   @include mq(1920px) { ... }
+ *   @include mq('tablet', 'max') { ... }
+ */
+ @mixin mq($width, $type: min) {
+  // 숫자 값인 경우 직접 사용
+  @if type-of($width) == number {
+    @if $type == max {
+      $width: $width - 1px;
+    }
+    @media only screen and (#{$type}-width: $width) {
+      @content;
+    }
+  }
+  // 문자열인 경우 breakpoints 맵에서 찾기
+  @else if map_has_key($breakpoints, $width) {
+    $width: map_get($breakpoints, $width);
+    @if $type == max {
+      $width: $width - 1px;
+    }
+    @media only screen and (#{$type}-width: $width) {
+      @content;
+    }
+  }
+  @else {
+    @warn "Unknown breakpoint: #{$width}";
+  }
+}
+
+
+
+@mixin svgIconMask($path, $color, $width: auto) {
+  background-color: $color;
+  -webkit-mask-image: url($path);
+  mask-image: url($path);
+  background-size: cover;
+  -webkit-background-size: cover;
+  mask-size: contain;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  @if ($width != auto) {
+    aspect-ratio: 1 / 1;
+    width: $width;
+  }
+}
+
+@mixin svgIcon($path, $width: auto) {
+  background-image: url($path);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  aspect-ratio: 1 / 1;
+  width: $width;
+}
+
+@mixin maskContents() {
+  inset: 0;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  border-radius: inherit;
+  padding: 1px;
+}

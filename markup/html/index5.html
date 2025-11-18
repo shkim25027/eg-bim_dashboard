@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    @@include("_include/_head.html")
+  </head>
+  <body>
+    <div class="wrap">
+      @@include("_include/_header.html")
+      <!-- container -->
+      <div class="container">
+        <section>
+          <div>
+
+          </div>
+          <div class="bar-chart">
+            <div id="chart-area" style="width: 250px; height: 250px;"></div>
+
+       <script src="https://uicdn.toast.com/chart/latest/toastui-chart.min.js"></script>
+
+<div id="chart-area"></div>
+
+<script>
+  const el = document.getElementById('chart-area');
+
+  // 1차 렌더링 (context 확보용)
+  const chart = toastui.Chart.areaChart({
+    el,
+    data: {
+      categories: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+      series: [
+        {
+          name: 'Visitors',
+          data: [800, 900, 700, 1100, 1200]
+        }
+      ]
+    },
+    options: {
+      chart: {
+        width: 600,
+        height: 300
+      }
+    }
+  });
+
+  // canvas context 가져오기
+  const ctx = el.querySelector('canvas').getContext('2d');
+
+  // gradient 생성
+  const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+  gradient.addColorStop(0, 'rgba(0, 137, 255, 0.8)');
+  gradient.addColorStop(1, 'rgba(0, 137, 255, 0)');
+
+  // 옵션 업데이트로 gradient 적용
+  chart.updateOptions({
+    theme: {
+      series: {
+        area: {
+          colors: [gradient]
+        }
+      }
+    }
+  });
+</script>
+
+            
+          </div>
+        </section>
+        <section class="sales">
+<script src="https://uicdn.toast.com/chart/latest/toastui-chart.min.js"></script>
+
+<div id="chart-bar"></div>
+
+<script>
+  const el = document.getElementById('chart-bar');
+
+  const chart = toastui.Chart.barChart({
+    el,
+    data: {
+      categories: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+      series: [
+        { name: 'Sales', data: [10, 20, 15, 30, 25] }
+      ]
+    },
+    options: {
+      chart: { width: 600, height: 300 }
+    }
+  });
+
+  const ctx = el.querySelector('canvas').getContext('2d');
+
+  const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+  gradient.addColorStop(0, '#ff7e5f');
+  gradient.addColorStop(1, '#feb47b');
+
+  chart.updateOptions({
+    theme: {
+      series: {
+        bar: {
+          colors: [gradient]
+        }
+      }
+    }
+  });
+</script>
+
+        </section>
+        <section>
+
+        </section>
+        <section>
+
+        </section>
+        <section>
+
+        </section>
+      </div>
+      <!-- // container -->
+    </div>
+  </body>
+</html>
