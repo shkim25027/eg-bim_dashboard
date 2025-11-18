@@ -15,29 +15,91 @@
             <script></script>
           </div>
         </section>
-        <section class="sales"></section>
+        <section class="sales">
+          <div id="chart-area"></div>
+        </section>
         <section>
           <div id="chart-bar"></div>
-
-          <script>
-            new D3SuperChart({
-              el: "#chart-bar",
-              type: "bar",
-              labels: ["1주차", "2주차", "3주차", "4주차"],
-              data: [30, 50, 80, 40],
-              roundedTop: true,
-              topRadius: 4,
-              xAxis: {
-                show: true, // ← y축 숨김
-                grid: true, // grid는 따로 on/off 가능
-              },
-            });
-          </script>
         </section>
-        <section></section>
+        <section>
+          <div id="chart-pie"></div>
+        </section>
         <section></section>
       </div>
       <!-- // container -->
+
+      <script>
+        new D3SuperChart({
+          el: "#chart-columnLine",
+          type: "combo",
+          roundedTop: true,
+          topRadius: 4,
+          // Bar
+          labels: ["Q1", "Q2", "Q3", "Q4"],
+          data: [20, 40, 30, 50], // bar 데이터
+          yAxis: {
+            max: 100, // 최대값
+            min: 0, // 최소값
+            ticks: 8, // 그리드 라인 개수
+          },
+          xAxis: {
+            show: true, // ← x축 숨김
+            grid: true, // grid는 따로 on/off 가능
+          },
+          // Line 시리즈
+          series: [{ label: "Growth", values: [10, 20, 15, 25] }],
+          curve: "linear",
+        });
+
+        new D3SuperChart({
+          el: "#chart-bar",
+          type: "bar-h",
+          labels: ["1주차", "2주차", "3주차", "4주차", "5주차"],
+          data: [10, 20, 30, 30],
+          roundedTop: true, // 상단만 라운드
+          topRadius: 4, // 라운드 크기(px)
+          tooltip: true, // hover 시 값 표시
+          legend: false, // 범례 숨김
+          yAxis: {
+            max: 100, // 최대값
+            min: 0, // 최소값
+            ticks: 8, // 그리드 라인 개수
+          },
+          xAxis: {
+            show: false, // ← y축 숨김
+            grid: true, // grid는 따로 on/off 가능
+          },
+        });
+
+        new D3SuperChart({
+          el: "#chart-pie",
+          type: "pie",
+          labels: ["X", "Y", "Z"],
+          data: [40, 30, 30],
+          donut: { enabled: true, innerRadius: 0.6 }, // 도넛 innerRadius 비율
+          legend: true,
+        });
+
+        new D3SuperChart({
+          el: "#chart-area",
+          type: "area", // 반드시 area로 지정
+          labels: ["Jan", "Feb", "Mar", "Apr", "May"],
+          series: [
+            { label: "Revenue", values: [100, 200, 150, 250, 180] },
+            { label: "Profit", values: [50, 150, 100, 180, 120] },
+          ],
+          colors: ["#5fb3ff", "#ff9f43"],
+          animation: true,
+          tooltip: true,
+          legend: true,
+          yAxis: {
+            max: 1000, // 최대값 지정
+            min: 0, // 최소값 지정
+            ticks: 3, // 그리드 라인 개수
+          },
+          curve: "linear",
+        });
+      </script>
     </div>
   </body>
 </html>

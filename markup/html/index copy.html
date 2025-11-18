@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    @@include("_include/_head.html")
+  </head>
+  <body>
+    <div class="wrap">
+      @@include("_include/_header.html")
+      <!-- container -->
+      <div class="container">
+        <section>
+          <div></div>
+          <div class="columnLine-chart">
+            <div id="chart-columnLine"></div>
+            <script>
+              const el = document.getElementById("chart-columnLine");
+
+              const chart = toastui.Chart.columnLineChart({
+                el,
+                data: {
+                  categories: [
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "5",
+                    "6",
+                    "7",
+                    "8",
+                    "9",
+                    "10",
+                    "11",
+                    "12",
+                  ],
+                  series: {
+                    column: [
+                      {
+                        name: "매출액",
+                        data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 200, 100, 0],
+                      },
+                    ],
+                    line: [
+                      {
+                        name: "목표",
+                        data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 200, 300, 0],
+                        showDot: true,
+                        spline: true,
+                      },
+                    ],
+                  },
+                },
+                options: {
+                  chart: { width: 600, height: 300 },
+                },
+              });
+
+              const ctx = el.querySelector("canvas").getContext("2d");
+
+              const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+              gradient.addColorStop(0, "#ff7e5f");
+              gradient.addColorStop(1, "#feb47b");
+
+              chart.updateOptions({
+                theme: {
+                  series: {
+                    bar: {
+                      colors: [gradient],
+                    },
+                  },
+                },
+              });
+            </script>
+          </div>
+        </section>
+        <section class="sales"></section>
+        <section>
+          <div id="chart-bar"></div>
+
+          <script>
+            const el2 = document.getElementById("chart-bar");
+
+            const chart2 = toastui.Chart.barChart({
+              el: el2,
+              data: {
+                categories: ["1주차", "2주차", "3주차", "4주차", "5주차"],
+                series: [{ name: "Sales", data: [10, 20, 30, 30] }],
+              },
+              options: {
+                chart: { width: 600, height: 300 },
+              },
+            });
+
+            const ctx2 = el2.querySelector("canvas").getContext("2d");
+
+            const gradient2 = ctx2.createLinearGradient(0, 0, 0, 300);
+            gradient2.addColorStop(0, "#ff7e5f");
+            gradient2.addColorStop(1, "#feb47b");
+
+            chart.updateOptions({
+              theme: {
+                series: {
+                  bar: {
+                    colors: [gradient],
+                  },
+                },
+              },
+            });
+          </script>
+        </section>
+        <section></section>
+        <section></section>
+      </div>
+      <!-- // container -->
+    </div>
+  </body>
+</html>
