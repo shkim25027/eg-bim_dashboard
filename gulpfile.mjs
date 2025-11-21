@@ -97,7 +97,6 @@ function csscopy() {
 // JS
 function scripts() {
   return src([paths.js.src, paths.js.ignore])
-    .pipe(concat("common.js"))
     .pipe(babel({ presets: ["@babel/preset-env"] }))
     .pipe(terser())
     .pipe(rename({ suffix: ".min" }))

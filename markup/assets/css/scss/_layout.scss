@@ -24,37 +24,22 @@ html {
 }
 
 .header {
-  position: absolute;
-  left: 50%;
-  top: 0;
-  translate: -50% 0;
-  padding: 20px 120px;
-  text-align: center;
-  background: #26221a;
-  overflow: hidden;
-  z-index: 99;
+  padding: 12px 24px 16px 24px;
+  height: 80px;
+  @include flex(center, space-between);
+  .logo {
+    font-size: 28px;
+    font-weight: bold;
+  }
   h1 {
-    color: #fff;
+    font-size: 36px;
+    font-weight: 700;
+    background: linear-gradient(180deg, #777 0%, #000 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
 }
 
 .container {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: repeat(3, 1fr);
-  gap: 20px;
-  padding: 20px;
-  height: var(--window-inner-height);
-
-  section {
-    background-color: var(--bg-section);
-    border-radius: 12px;
-    @include flex();
-    &.sales {
-      grid-row-start: 1;
-      grid-row-end: 3;
-      grid-column-start: 2;
-      grid-column-end: 3;
-    }
-  }
 }

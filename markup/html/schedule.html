@@ -1,0 +1,551 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>주간 업무 일정 트래커</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .header {
+        background: white;
+        border-radius: 15px;
+        padding: 30px;
+        margin-bottom: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      }
+
+      .header h1 {
+        font-size: 32px;
+        color: #333;
+        margin-bottom: 15px;
+      }
+
+      .current-info {
+        display: flex;
+        gap: 30px;
+        font-size: 18px;
+        color: #666;
+      }
+
+      .current-info span {
+        font-weight: bold;
+        color: #667eea;
+      }
+
+      .current-schedule {
+        background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        border-radius: 15px;
+        padding: 30px;
+        margin-bottom: 20px;
+        color: white;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        display: none;
+      }
+
+      .current-schedule.active {
+        display: block;
+      }
+
+      .current-schedule h2 {
+        font-size: 24px;
+        margin-bottom: 15px;
+      }
+
+      .current-schedule-content {
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 10px;
+        padding: 20px;
+      }
+
+      .current-schedule-task {
+        font-size: 28px;
+        font-weight: bold;
+        margin-bottom: 10px;
+      }
+
+      .current-schedule-time {
+        font-size: 20px;
+        opacity: 0.9;
+      }
+
+      .main-content {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+      }
+
+      .card {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      }
+
+      .card h2 {
+        font-size: 22px;
+        color: #333;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .form-group {
+        margin-bottom: 15px;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        color: #666;
+        font-weight: 500;
+      }
+
+      .form-group input,
+      .form-group select {
+        width: 100%;
+        padding: 10px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 14px;
+        transition: border-color 0.3s;
+      }
+
+      .form-group input:focus,
+      .form-group select:focus {
+        outline: none;
+        border-color: #667eea;
+      }
+
+      .time-inputs {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+
+      .btn {
+        width: 100%;
+        padding: 12px;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+
+      .btn-primary {
+        background: #667eea;
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background: #5568d3;
+        transform: translateY(-2px);
+      }
+
+      .schedule-list {
+        max-height: 450px;
+        overflow-y: auto;
+      }
+
+      .schedule-item {
+        background: #f8f9fa;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        padding: 15px;
+        margin-bottom: 10px;
+        transition: all 0.3s;
+      }
+
+      .schedule-item.current {
+        border-color: #38ef7d;
+        background: #e8fff3;
+      }
+
+      .schedule-item.upcoming {
+        border-color: #667eea;
+        background: #f0f2ff;
+      }
+
+      .schedule-item.completed {
+        opacity: 0.6;
+        background: #f0f0f0;
+      }
+
+      .schedule-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+        margin-bottom: 10px;
+      }
+
+      .schedule-info {
+        flex: 1;
+      }
+
+      .schedule-day {
+        font-weight: bold;
+        color: #667eea;
+        margin-right: 10px;
+      }
+
+      .schedule-time {
+        color: #888;
+        font-size: 14px;
+      }
+
+      .schedule-task {
+        font-weight: 600;
+        color: #333;
+        margin-top: 8px;
+        font-size: 16px;
+      }
+
+      .schedule-task.completed {
+        text-decoration: line-through;
+        color: #999;
+      }
+
+      .schedule-actions {
+        display: flex;
+        gap: 5px;
+      }
+
+      .btn-icon {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 5px;
+        border-radius: 5px;
+        transition: background 0.2s;
+      }
+
+      .btn-icon:hover {
+        background: rgba(0, 0, 0, 0.1);
+      }
+
+      .status-badge {
+        display: inline-block;
+        font-size: 12px;
+        font-weight: bold;
+        margin-top: 8px;
+      }
+
+      .status-badge.current {
+        color: #38ef7d;
+      }
+
+      .status-badge.upcoming {
+        color: #667eea;
+      }
+
+      @media (max-width: 768px) {
+        .main-content {
+          grid-template-columns: 1fr;
+        }
+
+        .current-info {
+          flex-direction: column;
+          gap: 10px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>📋 주간 업무 일정</h1>
+        <div class="current-info">
+          <div>📅 <span id="currentDay"></span></div>
+          <div>🕐 <span id="currentTime"></span></div>
+        </div>
+      </div>
+
+      <div class="current-schedule" id="currentScheduleBox">
+        <h2>⏰ 현재 진행 중</h2>
+        <div class="current-schedule-content">
+          <div class="current-schedule-task" id="currentTask"></div>
+          <div class="current-schedule-time" id="currentTaskTime"></div>
+        </div>
+      </div>
+
+      <div class="main-content">
+        <div class="card">
+          <h2>➕ 새 일정 추가</h2>
+          <form id="scheduleForm">
+            <div class="form-group">
+              <label>요일</label>
+              <select id="daySelect">
+                <option value="월요일">월요일</option>
+                <option value="화요일">화요일</option>
+                <option value="수요일">수요일</option>
+                <option value="목요일">목요일</option>
+                <option value="금요일">금요일</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>시간</label>
+              <div class="time-inputs">
+                <input type="time" id="startTime" required />
+                <input type="time" id="endTime" required />
+              </div>
+            </div>
+            <div class="form-group">
+              <label>업무 내용</label>
+              <input
+                type="text"
+                id="taskInput"
+                placeholder="업무 내용을 입력하세요"
+                required
+              />
+            </div>
+            <button type="submit" class="btn btn-primary">추가</button>
+          </form>
+        </div>
+
+        <div class="card">
+          <h2>📅 주간 일정</h2>
+          <div class="schedule-list" id="scheduleList"></div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      var schedules = [
+        {
+          id: 1,
+          day: "월요일",
+          startTime: "09:00",
+          endTime: "12:00",
+          task: "프로젝트 A 개발",
+          completed: false,
+        },
+        {
+          id: 2,
+          day: "월요일",
+          startTime: "14:00",
+          endTime: "17:00",
+          task: "팀 미팅 및 리뷰",
+          completed: false,
+        },
+        {
+          id: 3,
+          day: "화요일",
+          startTime: "10:00",
+          endTime: "12:00",
+          task: "요구사항 분석",
+          completed: false,
+        },
+        {
+          id: 4,
+          day: "수요일",
+          startTime: "09:00",
+          endTime: "11:00",
+          task: "코드 리뷰",
+          completed: false,
+        },
+      ];
+
+      var days = [
+        "일요일",
+        "월요일",
+        "화요일",
+        "수요일",
+        "목요일",
+        "금요일",
+        "토요일",
+      ];
+
+      function updateCurrentTime() {
+        var now = new Date();
+        var currentDay = days[now.getDay()];
+        var currentTime = now.toTimeString().slice(0, 5);
+
+        document.getElementById("currentDay").textContent = currentDay;
+        document.getElementById("currentTime").textContent = currentTime;
+
+        checkCurrentSchedule(currentDay, currentTime);
+      }
+
+      function checkCurrentSchedule(currentDay, currentTime) {
+        var current = null;
+        for (var i = 0; i < schedules.length; i++) {
+          var s = schedules[i];
+          if (
+            s.day === currentDay &&
+            currentTime >= s.startTime &&
+            currentTime <= s.endTime
+          ) {
+            current = s;
+            break;
+          }
+        }
+
+        var currentBox = document.getElementById("currentScheduleBox");
+        if (current) {
+          currentBox.classList.add("active");
+          document.getElementById("currentTask").textContent = current.task;
+          document.getElementById("currentTaskTime").textContent =
+            current.startTime + " - " + current.endTime;
+        } else {
+          currentBox.classList.remove("active");
+        }
+      }
+
+      function getScheduleStatus(schedule) {
+        var now = new Date();
+        var currentDay = days[now.getDay()];
+        var currentTime = now.toTimeString().slice(0, 5);
+        var currentDayIndex = days.indexOf(currentDay);
+        var scheduleDayIndex = days.indexOf(schedule.day);
+
+        if (
+          schedule.day === currentDay &&
+          currentTime >= schedule.startTime &&
+          currentTime <= schedule.endTime
+        ) {
+          return "current";
+        }
+
+        if (
+          scheduleDayIndex > currentDayIndex ||
+          (scheduleDayIndex === currentDayIndex &&
+            schedule.startTime > currentTime)
+        ) {
+          return "upcoming";
+        }
+
+        return "past";
+      }
+
+      function renderSchedules() {
+        var sortedSchedules = schedules.slice().sort(function (a, b) {
+          var dayDiff = days.indexOf(a.day) - days.indexOf(b.day);
+          if (dayDiff !== 0) return dayDiff;
+          return a.startTime.localeCompare(b.startTime);
+        });
+
+        var html = "";
+        for (var i = 0; i < sortedSchedules.length; i++) {
+          var schedule = sortedSchedules[i];
+          var status = getScheduleStatus(schedule);
+          var statusClass = schedule.completed ? "completed" : status;
+          var taskClass = schedule.completed ? "completed" : "";
+          var checkedAttr = schedule.completed ? "checked" : "";
+
+          var badge = "";
+          if (status === "current" && !schedule.completed) {
+            badge = '<div class="status-badge current">● 진행 중</div>';
+          } else if (status === "upcoming" && !schedule.completed) {
+            badge = '<div class="status-badge upcoming">○ 예정됨</div>';
+          }
+
+          html += '<div class="schedule-item ' + statusClass + '">';
+          html += '<div class="schedule-header">';
+          html += '<div class="schedule-info">';
+          html += "<div>";
+          html += '<span class="schedule-day">' + schedule.day + "</span>";
+          html +=
+            '<span class="schedule-time">' +
+            schedule.startTime +
+            " - " +
+            schedule.endTime +
+            "</span>";
+          html += "</div>";
+          html +=
+            '<div class="schedule-task ' +
+            taskClass +
+            '">' +
+            schedule.task +
+            "</div>";
+          html += badge;
+          html += "</div>";
+          html += '<div class="schedule-actions">';
+          html +=
+            '<button class="btn-icon" onclick="toggleComplete(' +
+            schedule.id +
+            ')" title="완료">';
+          html += '<input type="checkbox" ' + checkedAttr + ">";
+          html += "</button>";
+          html +=
+            '<button class="btn-icon" onclick="deleteSchedule(' +
+            schedule.id +
+            ')" title="삭제">';
+          html += "🗑️";
+          html += "</button>";
+          html += "</div>";
+          html += "</div>";
+          html += "</div>";
+        }
+
+        document.getElementById("scheduleList").innerHTML =
+          html || "<p>등록된 일정이 없습니다.</p>";
+      }
+
+      document
+        .getElementById("scheduleForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          var newSchedule = {
+            id: Date.now(),
+            day: document.getElementById("daySelect").value,
+            startTime: document.getElementById("startTime").value,
+            endTime: document.getElementById("endTime").value,
+            task: document.getElementById("taskInput").value,
+            completed: false,
+          };
+
+          schedules.push(newSchedule);
+          renderSchedules();
+
+          document.getElementById("taskInput").value = "";
+          document.getElementById("startTime").value = "";
+          document.getElementById("endTime").value = "";
+        });
+
+      function deleteSchedule(id) {
+        var newSchedules = [];
+        for (var i = 0; i < schedules.length; i++) {
+          if (schedules[i].id !== id) {
+            newSchedules.push(schedules[i]);
+          }
+        }
+        schedules = newSchedules;
+        renderSchedules();
+      }
+
+      function toggleComplete(id) {
+        for (var i = 0; i < schedules.length; i++) {
+          if (schedules[i].id === id) {
+            schedules[i].completed = !schedules[i].completed;
+            break;
+          }
+        }
+        renderSchedules();
+      }
+
+      updateCurrentTime();
+      renderSchedules();
+      setInterval(updateCurrentTime, 60000);
+    </script>
+  </body>
+</html>

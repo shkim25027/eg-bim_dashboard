@@ -4,4 +4,159 @@
 @forward "_root";
 @forward "_layout";
 
+.main {
+  &-contents {
+    display: grid;
+    height: calc(var(--window-inner-height) - 80px);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 24px;
+  }
+  &-grid {
+    padding: 0 24px;
+    display: grid;
+    grid-template-columns: 418fr 335fr 247fr;
+    grid-template-rows: repeat(2, 2fr);
+    grid-row-start: 1;
+    grid-row-end: 3;
+    gap: 16px;
+  }
+  &-weekly {
+    border-radius: 32px 32px 0 0;
+    border-top: 4px solid #fff;
 
+    background:
+      linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.5) 0%,
+        rgba(255, 255, 255, 0) 15%
+      ),
+      #f3efea;
+
+    box-shadow: 0 -4px 40px 0 rgba(0, 0, 0, 0.3);
+  }
+}
+
+.card {
+  position: relative;
+  border-radius: 8px;
+  border: 2px solid var(--border-card);
+  background: var(--bg-card);
+  overflow: hidden;
+  &-header {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 48px;
+    padding: 0 56px 0 12px;
+    color: var(--card-title);
+    background: var(--bg-card-header);
+    border-top: 2px solid rgba(0, 0, 0, 0.05);
+    border-left: 2px solid rgba(0, 0, 0, 0.05);
+    @include flex();
+  }
+  &:has(.inner) {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .inner {
+    width: 100%;
+    padding: 0 24px;
+    border-right: 1px solid var(--border-card-inner);
+    flex-direction: column;
+    @include flex(flex-start, flex-end);
+  }
+  &-body {
+    width: 100%;
+    padding-bottom: 12px;
+  }
+}
+
+.stat-row {
+  padding: 16px 0;
+  @include flex(center, space-between);
+  &:not(:last-child) {
+    border-bottom: 1px solid var(--border-stat);
+  }
+  &.accrue {
+    .label {
+      color: var(--stat-accrue);
+    }
+    .big-num,
+    .unit {
+      font-weight: 700;
+      background: var(--stat-unit-accrue);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+  }
+  &.month {
+    .label {
+      color: var(--stat-month);
+    }
+    .big-num,
+    .unit {
+      font-weight: 700;
+      background: var(--stat-unit-month);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+  }
+  .label-box {
+    flex-direction: column;
+    gap: 8px;
+    @include flex(space-between, flex-start);
+  }
+  .label {
+    font-size: 16px;
+    font-weight: 700;
+  }
+  [class^="change"] {
+    padding: 4px 8px;
+    border-radius: 50px;
+    background: var(--bg-change-up);
+    font-size: 12px;
+    color: var(--change-base);
+    gap: 4px;
+    @include flex();
+    &[class*="down"] {
+      background: var(--bg-change-down);
+      em {
+        color: var(--change-down);
+      }
+    }
+    &[class*="up"] {
+      em {
+        color: var(--change-up);
+      }
+    }
+    em {
+      font-size: 20px;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+  }
+
+  .big-num {
+    font-size: 68px;
+    line-height: 1;
+  }
+  .unit {
+    font-size: 18px;
+  }
+  .big-num,
+  .unit {
+    font-weight: 700;
+    background: var(--stat-unit-base);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+}
+
+.chart {
+  &-wrap {
+    background: var(--bg-chart);
+  }
+}
