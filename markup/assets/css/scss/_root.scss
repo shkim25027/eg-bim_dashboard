@@ -16,24 +16,85 @@
     #895d24;
   --bg-change-up: rgba(230, 4, 3, 0.08);
   --bg-change-down: rgba(0, 47, 255, 0.08);
+  --bg-chart-highlight: rgba(255, 92, 0, 0.25);
+  --bg-chart-mixbullet01: #ffbb89;
+  --bg-chart-mixbullet02: #e5690d;
+  --bg-chart-mixbullet03: #ae3607;
+  --bg-badge-mixline:
+    linear-gradient(0deg, rgba(255, 92, 0, 0.1) 0%, rgba(255, 92, 0, 0.1) 100%),
+    #fff;
+
+  --bg-badge-linearea01:
+    linear-gradient(
+      0deg,
+      rgba(43, 143, 16, 0.1) 0%,
+      rgba(43, 143, 16, 0.1) 100%
+    ),
+    #fff;
+
+  --bg-badge-linearea02:
+    linear-gradient(
+      0deg,
+      rgba(124, 16, 143, 0.1) 0%,
+      rgba(124, 16, 143, 0.1) 100%
+    ),
+    #fff;
+  --bg-chart-mixbar01: #4cae9b;
+  --bg-chart-mixbar02: #60b7a6;
+  --bg-chart-mixbar03: #389783;
+  --bg-chart-mixbar: linear-gradient(
+    90deg,
+    #4cae9b 0%,
+    #60b7a6 37.09%,
+    #389783 100%
+  );
+  --bg-chart-linearea01: #2b8f10;
+  --bg-chart-line01-bullet01: #b1f4a0;
+  --bg-chart-line01-bullet02: #2b8f10;
+  --bg-chart-line01-bullet03: #257011;
+  --bg-chart-linearea02: #7c108f;
+
+  --bg-chart-line02-bullet01: #eda1fa;
+  --bg-chart-line02-bullet02: #831996;
+  --bg-chart-line02-bullet03: #490754;
+
+  --bg-individual01: rgba(43, 143, 16, 0.1);
+  --bg-individual02: rgba(124, 16, 143, 0.1);
 
   /* border */
   --border-stat: #e7decd;
+  --border-person: #e3dac8;
   --border-card: rgba(0, 0, 0, 0.2);
   --border-card-inner: rgba(0, 0, 0, 0.1);
 
   /* text color*/
+
+  --text-base: #555;
+  --text-legend: #777;
+  --chart-base: #777;
+  --chart-point: #000;
   --card-title: #fff;
   --change-base: #555;
+  --change-label: #333;
   --change-up: #e60403;
   --change-down: #002fff;
   --stat-accrue: #ff5c00;
   --stat-month: #2a6f65;
+  --stat-individual01: #2b8f10;
+  --stat-individual02: #7c108f;
+  --stat-sales: #885d1a;
   --stat-unit-base: linear-gradient(180deg, #777 0%, #000 100%);
   --stat-unit-accrue: linear-gradient(180deg, #ff5c00 0%, #b94300 100%);
   --stat-unit-month: linear-gradient(180deg, #409d8a 0%, #1a4c45 100%);
 
+  --stat-unit-individual01: linear-gradient(180deg, #2b8f10 0%, #1b580b 100%);
+  --stat-unit-individual02: linear-gradient(180deg, #7c108f 0%, #41074c 100%);
+  --stat-unit-sales: linear-gradient(180deg, #c4964b 0%, #5f2f0e 100%);
+
   /* chart color */
+  --grid-border-dashed: rgba(0, 0, 0, 0.2);
+  --chart-mixline: #ff5c00;
+  --chart-mixbar: #047051;
 
   /*primary*/
   --color-primary900: #020a07;
@@ -121,15 +182,23 @@
     #3c3021 0%, #7f6545 28%, #a28662 50%, #766042 68%, #352914 100%;
 
   /* etc */
+  --title-stroke: drop-shadow(0 0 1px rgba(0, 0, 0, 0.5));
+  --title-shadow:
+    -1px -1px 0 rgba(0, 0, 0, 0.5), 1px -1px 0 rgba(0, 0, 0, 0.5),
+    -1px 1px 0 rgba(0, 0, 0, 0.5), 1px 1px 0 rgba(0, 0, 0, 0.5);
+
   --text-stroke:
     -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000,
     1px 0px 0 #000, 0px 1px 0 #000, -1px 0px 0 #000, 0px -1px 0 #000;
+
   --text-stroke500:
     -1px -1px 0 #00000077, 1px -1px 0 #00000077, -1px 1px 0 #00000077,
     1px 1px 0 #00000077;
+
   --text-stroke100:
     -1px -1px 0 #0000001a, 1px -1px 0 #0000001a, -1px 1px 0 #0000001a,
     1px 1px 0 #0000001a;
+
   --btn-shadow: drop-shadow(0 2px 2px #000000aa)
     drop-shadow(0 -1px 1px #000000aa);
 }

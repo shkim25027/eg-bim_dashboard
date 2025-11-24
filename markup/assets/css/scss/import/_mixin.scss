@@ -45,7 +45,7 @@
 }
 
 /// @mixin trapezoid($top-left: 10%, $top-right: 90%, $height: 160px)
-/// 사다리꼴 모양 
+/// 사다리꼴 모양
 ///   0 0,        /* 왼쪽 위 */
 ///  100% 0,     /* 오른쪽 위 */
 ///  85% 100%,   /* 오른쪽 아래 (더 안쪽) */
@@ -136,7 +136,10 @@
 @mixin fluid-font($min-px, $max-px, $min-vw: 375, $max-vw: 1440) {
   $min-rem: $min-px / 16;
   $max-rem: $max-px / 16;
-  $fluid-vw: calc(#{$min-rem} + (#{$max-px - $min-px}) * ((100vw - #{$min-vw}px) / (#{$max-vw - $min-vw})));
+  $fluid-vw: calc(
+    #{$min-rem} + (#{$max-px - $min-px}) *
+      ((100vw - #{$min-vw}px) / (#{$max-vw - $min-vw}))
+  );
 
   font-size: clamp(#{$min-rem}rem, #{$fluid-vw}, #{$max-rem}rem);
 }
@@ -176,7 +179,7 @@
 @mixin responsive-right($right, $cont_w: 1670) {
   right: unquote(calc($right / $cont_w) * 100 + "%");
 }
- 
+
 /**
  * 박스 그림자 (box-shadow)
  * @param {number} $x - X 오프셋 (기본값: 0px)
@@ -186,7 +189,7 @@
  * @param {color} $color - 색상 (기본값: rgba(0, 0, 0, 0.25))
  * @param {boolean} $important - !important 사용 여부 (기본값: false)
  */
- @mixin box-shadow(
+@mixin box-shadow(
   $x: 0px,
   $y: 3px,
   $blur: 6px,
@@ -209,7 +212,13 @@
  * @param {color} $color - 색상 (기본값: rgba(0, 0, 0, 0.25))
  * @param {boolean} $important - !important 사용 여부 (기본값: false)
  */
- @mixin text-shadow($x: 0px, $y: 1px, $blur: 0px, $color: rgba(0, 0, 0, 0.25), $important: false) {
+@mixin text-shadow(
+  $x: 0px,
+  $y: 1px,
+  $blur: 0px,
+  $color: rgba(0, 0, 0, 0.25),
+  $important: false
+) {
   @if $important {
     text-shadow: $x $y $blur $color !important;
   } @else {
@@ -245,7 +254,7 @@ $breakpoints: (
  *   @include mq(1920px) { ... }
  *   @include mq('tablet', 'max') { ... }
  */
- @mixin mq($width, $type: min) {
+@mixin mq($width, $type: min) {
   // 숫자 값인 경우 직접 사용
   @if type-of($width) == number {
     @if $type == max {
@@ -264,13 +273,10 @@ $breakpoints: (
     @media only screen and (#{$type}-width: $width) {
       @content;
     }
-  }
-  @else {
+  } @else {
     @warn "Unknown breakpoint: #{$width}";
   }
 }
-
-
 
 @mixin svgIconMask($path, $color, $width: auto) {
   background-color: $color;
@@ -298,12 +304,21 @@ $breakpoints: (
   width: $width;
 }
 
-@mixin maskContents() {
-  inset: 0;
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  pointer-events: none;
-  border-radius: inherit;
-  padding: 1px;
+@mixin maskContents($mask) {
+  @if $mask == null {
+    inset: 0;
+    mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    border-radius: inherit;
+    padding: 1px;
+  } @else {
+    mask: $mask;
+    mask-repeat: no-repeat;
+    mask-size: contain;
+    mask-position: center left;
+  }
 }

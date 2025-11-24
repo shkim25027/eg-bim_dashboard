@@ -12,7 +12,9 @@
           <div class="main-grid">
             <section class="card col">
               <div class="inner">
-                <div class="card-header">연간 총 판매 실적</div>
+                <div class="card-header">
+                  <h3>연간 총 판매 실적</h3>
+                </div>
                 <div class="card-body">
                   <div class="stat-row accrue">
                     <div class="label-box">
@@ -50,22 +52,136 @@
                 <!-- // card-body -->
               </div>
               <!-- // inner -->
-              <div class="chart-wrap">
-                <canvas id="yearly_chart"></canvas>
+              <div class="inner chart-wrap">
+                <div class="chart-header">
+                  <span class="badge-year">목표 500</span>
+                  <div class="legend">
+                    <span>
+                      <span class="legend-dot mix-bar"></span>
+                      월별 판매수
+                    </span>
+                    <span>
+                      <span class="legend-dot mix-line"></span>
+                      누적 판매수
+                    </span>
+                    <span class="unit">(단위:copy) </span>
+                  </div>
+                </div>
+                <div class="chart-body">
+                  <canvas id="yearly_chart"></canvas>
+                </div>
               </div>
+
               <!-- // chart-warp -->
             </section>
-            <section class="card">
-              <div class="card-header">연간 개인별 판매 실적</div>
-              <div class="card-body"></div>
+            <section class="card individual">
+              <div class="chart-wrap">
+                <div class="card-header">
+                  <h3>연간 개인별 판매 실적</h3>
+                  <div class="legend">
+                    <span>
+                      <span class="legend-dot line-area01"></span>
+                      권혁진 수석
+                    </span>
+                    <span>
+                      <span class="legend-dot line-area02"></span>
+                      염승호 수석
+                    </span>
+                    <span class="unit">(단위:copy) </span>
+                  </div>
+                </div>
+                <div class="chart-body">
+                  <div class="badge-box">
+                    <span class="badge-individual01">목표 200</span>
+                    <span class="badge-individual02">목표 300</span>
+                  </div>
+                  <canvas id="individual_chart"></canvas>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="person-box">
+                  <div class="person-name">
+                    <span>권혁진</span> <small>수석</small>
+                  </div>
+                  <div class="stat-row individual01">
+                    <div class="label-box">
+                      <span class="label">누적 판매수</span>
+                      <div class="change-up">전월대비 <em>▲26</em></div>
+                    </div>
+                    <div>
+                      <span class="big-num">188</span
+                      ><span class="unit">copy</span>
+                    </div>
+                  </div>
+                  <div class="stat-row">
+                    <div class="label-box">
+                      <span class="label">목표 달성률</span>
+                      <div class="change-up">전월대비 <em>▲1</em></div>
+                    </div>
+                    <div>
+                      <span class="big-num">94.0</span
+                      ><span class="unit">%</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="person-box">
+                  <div class="person-name">
+                    <span>염승호</span>
+                    <small>수석</small>
+                  </div>
+                  <div class="stat-row individual02">
+                    <div class="label-box">
+                      <span class="label">누적 판매수</span>
+                      <div class="change-up">전월대비 <em>▲73</em></div>
+                    </div>
+                    <div>
+                      <span class="big-num">287</span
+                      ><span class="unit">copy</span>
+                    </div>
+                  </div>
+                  <div class="stat-row">
+                    <div class="label-box">
+                      <span class="label">목표 달성률</span>
+                      <div class="change-up">전월대비 <em>▲1</em></div>
+                    </div>
+                    <div>
+                      <span class="big-num">95.7</span
+                      ><span class="unit">%</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </section>
-            <section class="card">
-              <div class="card-header">연간 영업 판매 현황</div>
-              <div class="card-body"></div>
+            <section class="card sales">
+              <div class="card-header">
+                <h3>연간 영업 판매 현황</h3>
+              </div>
+              <div class="card-body">
+                <div class="stat-row sales">
+                  <div class="label-box">
+                    <span class="label">영업 업체수</span>
+                    <span class="change-up">전월대비 <em>84</em></span>
+                  </div>
+                  <div>
+                    <span class="big-num">168</span
+                    ><span class="unit">copy</span>
+                  </div>
+                </div>
+              </div>
+              <div class="chart-wrap">
+                <div class="chart-body">
+                  <canvas id="industry_chart"></canvas>
+                </div>
+                <div class="chart-body">
+                  <canvas id="institution_chart"></canvas>
+                </div>
+              </div>
             </section>
             <section class="card">
               <div class="inner">
-                <div class="card-header">8월 판매 실적</div>
+                <div class="card-header">
+                  <h3>8월 판매 실적</h3>
+                </div>
                 <div class="card-body">
                   <div class="stat-row month">
                     <div class="label-box">
@@ -100,6 +216,17 @@
                   </div>
                 </div>
               </div>
+              <div class="inner chart-wrap">
+                <div class="chart-header">
+                  <span class="badge-year">목표 125</span>
+                  <div class="legend">
+                    <span class="unit">(단위:copy) </span>
+                  </div>
+                </div>
+                <div class="chart-body">
+                  <canvas id="weekly_chart"></canvas>
+                </div>
+              </div>
             </section>
           </div>
           <div class="main-weekly"></div>
@@ -114,24 +241,11 @@
         // ---------------------------
         const charts = {}; // 차트 인스턴스 저장소
 
-        function safeGrad(ctx, area, colors, horizontal = false) {
-          // 안전하게 area가 준비되지 않았으면 단일 컬러 리턴
-          if (!area || area.left === undefined) return colors[0].color;
-          const { left, right, top, bottom } = area;
-          // horizontal true => 세로 그라데이션(위->아래), 아니면 가로(왼->오)
-          const g = horizontal
-            ? ctx.createLinearGradient(0, top, 0, bottom)
-            : ctx.createLinearGradient(left, 0, right, 0);
-          colors.forEach((c) => g.addColorStop(c.stop, c.color));
-          return g;
-        }
-
         const theme = {
-          gold: [
-            { stop: 0, color: "#918050" },
-            { stop: 0.34, color: "#968860" },
-            { stop: 0.5, color: "#8C7D50" },
-            { stop: 1, color: "#6D5A21" },
+          mixbar: [
+            { stop: 0, color: cssVar("--bg-chart-mixbar01") },
+            { stop: 0.3709, color: cssVar("--bg-chart-mixbar02") },
+            { stop: 1, color: cssVar("--bg-chart-mixbar03") },
           ],
         };
 
@@ -167,59 +281,6 @@
               });
             });
             ctx.restore();
-          },
-        };
-
-        const highlightXFactory = (label, color = "rgba(255,230,200,0.4)") => ({
-          id: `highlightX_${label}`,
-          beforeDatasetsDraw(chart) {
-            if (!chart.chartArea) return;
-            const {
-              ctx,
-              chartArea,
-              scales: { x },
-              data,
-            } = chart;
-            const i = data.labels.indexOf(label);
-            if (i === -1) return;
-            let w = x.getPixelForValue(i + 1) - x.getPixelForValue(i);
-            if (isNaN(w) && i > 0)
-              w = x.getPixelForValue(i) - x.getPixelForValue(i - 1);
-            ctx.save();
-            ctx.fillStyle = color;
-            ctx.fillRect(
-              x.getPixelForValue(i) - w / 2,
-              chartArea.top,
-              w,
-              chartArea.bottom - chartArea.top
-            );
-            ctx.restore();
-          },
-        });
-
-        const hideNullPointsPlugin = {
-          id: "hideNullPoints",
-          beforeDatasetsDraw(chart) {
-            chart.data.datasets.forEach((dataset) => {
-              if (dataset.type !== "line") return;
-              const data = dataset.data;
-              if (!Array.isArray(data)) return;
-              // ensure array radii so we can mutate per point
-              if (!Array.isArray(dataset.pointRadius)) {
-                dataset.pointRadius = data.map(() => dataset.pointRadius || 6);
-              }
-              if (!Array.isArray(dataset.pointHoverRadius)) {
-                dataset.pointHoverRadius = data.map(
-                  () => dataset.pointHoverRadius || 8
-                );
-              }
-              dataset.pointRadius = data.map((val, idx) =>
-                val === null ? 0 : dataset.pointRadius[idx]
-              );
-              dataset.pointHoverRadius = data.map((val, idx) =>
-                val === null ? 0 : dataset.pointHoverRadius[idx]
-              );
-            });
           },
         };
 
@@ -284,106 +345,6 @@
           },
         };
 
-        function createMixedValuePlugin(padding = 10) {
-          return {
-            id: "mixedValuePlugin",
-            afterDatasetsDraw(chart) {
-              const ctx = chart.ctx;
-              chart.data.datasets.forEach((dataset, i) => {
-                const meta = chart.getDatasetMeta(i);
-                if (!meta || !meta.data) return;
-                meta.data.forEach((element, index) => {
-                  const value = dataset.data[index];
-                  if (value === null || value === undefined || value === 0)
-                    return;
-                  ctx.save();
-                  ctx.font = "bold 12px Arial";
-                  ctx.textAlign = "center";
-                  let xPos, yPos;
-                  const textValue = String(value);
-                  if (dataset.type === "bar") {
-                    ctx.textBaseline = "bottom";
-                    xPos = element.x;
-                    yPos = element.y - padding;
-                    ctx.strokeStyle = "white";
-                    ctx.lineWidth = 3;
-                    ctx.fillStyle = "#000";
-                    ctx.shadowOffsetX = 1;
-                    ctx.shadowOffsetY = 1;
-                    ctx.shadowBlur = 2;
-                    ctx.shadowColor = "rgba(0,0,0,0.4)";
-                    ctx.strokeText(textValue, xPos, yPos);
-                    ctx.shadowBlur = 0;
-                    ctx.fillText(textValue, xPos, yPos);
-                  } else if (dataset.type === "line") {
-                    ctx.textBaseline = "top";
-                    xPos = element.x;
-                    yPos = element.y - padding - 10;
-                    ctx.strokeStyle = "white";
-                    ctx.lineWidth = 3;
-                    ctx.fillStyle = "#FF5C00";
-                    ctx.shadowOffsetX = 1;
-                    ctx.shadowOffsetY = 1;
-                    ctx.shadowBlur = 2;
-                    ctx.shadowColor = "rgba(0,0,0,0.5)";
-                    ctx.strokeText(textValue, xPos, yPos);
-                    ctx.shadowBlur = 0;
-                    ctx.fillText(textValue, xPos, yPos);
-                  }
-                  ctx.restore();
-                });
-              });
-            },
-          };
-        }
-
-        function createMixedPointGradientPlugin(gradientColors) {
-          return {
-            id: "mixedPointGradient",
-            afterDatasetsDraw(chart) {
-              const ctx = chart.ctx;
-              chart.data.datasets.forEach((dataset, datasetIndex) => {
-                const meta = chart.getDatasetMeta(datasetIndex);
-                if (dataset.type !== "line" || !meta || !meta.data) return;
-                meta.data.forEach((point, index) => {
-                  const { x, y } = point;
-                  const radius = Array.isArray(dataset.pointRadius)
-                    ? (dataset.pointRadius[index] ?? 7)
-                    : (dataset.pointRadius ?? 7);
-                  if (radius === 0) return;
-                  const gradCenterX = x - radius + 2 * radius * 0.3333;
-                  const gradCenterY = y - radius + 2 * radius * 0.3333;
-                  const outerRadius = radius * 0.7862;
-                  const gradient = ctx.createRadialGradient(
-                    gradCenterX,
-                    gradCenterY,
-                    0,
-                    gradCenterX,
-                    gradCenterY,
-                    outerRadius
-                  );
-                  (
-                    gradientColors || [
-                      { stop: 0.1475, color: "#FFBB89" },
-                      { stop: 0.5805, color: "#E5690D" },
-                      { stop: 0.9277, color: "#AE3607" },
-                    ]
-                  ).forEach((c) => gradient.addColorStop(c.stop, c.color));
-                  ctx.save();
-                  ctx.beginPath();
-                  ctx.arc(x, y, radius, 0, Math.PI * 2);
-                  ctx.fillStyle = gradient;
-                  ctx.fill();
-                  ctx.strokeStyle = "rgba(255,255,255,0.9)";
-                  ctx.lineWidth = 2.5;
-                  ctx.stroke();
-                  ctx.restore();
-                });
-              });
-            },
-          };
-        }
-
         // ---------------------------
         // 차트 생성 헬퍼
         // ---------------------------
@@ -416,7 +377,7 @@
         // 전체 초기화 (모든 차트)
         // ---------------------------
         function initCharts() {
-          // c2 - 복합 막대 + 라인
+          // 복합 막대 + 라인
           createSafeChart("yearly_chart", {
             type: "bar",
             data: {
@@ -425,39 +386,74 @@
                 {
                   type: "line",
                   order: 1,
-                  data: [
-                    73,
-                    75,
-                    104,
-                    128,
-                    207,
-                    280,
-                    376,
-                    475,
-                    null,
-                    null,
-                    null,
-                    null,
-                  ],
-                  borderColor: "#FF5C00",
-                  borderWidth: 4,
-                  pointRadius: 7,
+                  data: [0, 0, 0, 0, 0, 0, 0, 0, 235, 376, 475, null],
+                  borderColor: cssVar("--chart-mixline"),
+                  borderWidth: 1,
+                  pointRadius: 6,
                   tension: 0,
                   fill: false,
                 },
                 {
                   type: "bar",
                   order: 2,
-                  data: [73, 2, 29, 24, 79, 73, 96, 99, null, null, null, null],
-                  backgroundColor: (ctx) =>
-                    safeGrad(ctx.chart.ctx, ctx.chart.chartArea, theme.gold),
+                  data: [0, 0, 0, 0, 0, 0, 0, 0, 235, 141, 99, null],
+                  backgroundColor: function (context) {
+                    const chart = context.chart;
+                    const { ctx, chartArea } = chart;
+
+                    if (!chartArea) {
+                      // 차트가 아직 초기화되지 않은 경우
+                      return "#4CAE9B"; // 기본 색상
+                    }
+
+                    return safeGrad(ctx, chartArea, theme.mixbar);
+                  },
                   borderRadius: { topLeft: 2, topRight: 2 },
                 },
               ],
             },
             options: {
               responsive: true,
-              plugins: { legend: { position: "top" } },
+              maintainAspectRatio: false,
+              plugins: { legend: { display: false } },
+              scales: {
+                y: {
+                  display: false,
+                  suggestedMax: 600, //목표 값
+                },
+                x: {
+                  grid: {
+                    drawTicks: false,
+                  },
+                  ticks: {
+                    color: function (context) {
+                      if (context.tick.label === "11") {
+                        return cssVar("--chart-point");
+                      }
+                      return cssVar("--chart-base");
+                    },
+                    font: function (context) {
+                      if (context.tick.label === "11") {
+                        return {
+                          weight: "bold",
+                          size: 18,
+                        };
+                      }
+                      return {
+                        weight: "normal",
+                        size: 18,
+                      };
+                    },
+                    padding: 8,
+                  },
+                  border: {
+                    display: true,
+                    dash: [3, 3],
+                    color: cssVar("--grid-border-dashed"),
+                    width: 1,
+                  },
+                },
+              },
             },
             plugins: [
               createMixedValuePlugin(12),
@@ -465,6 +461,259 @@
               highlightXFactory("11"),
               hideNullPointsPlugin,
             ],
+          });
+
+          // 라인 + 영역
+          createSafeChart("individual_chart", {
+            type: "line",
+            data: {
+              labels: labels12,
+              datasets: [
+                {
+                  label: "권혁진 수석",
+                  data: [0, 0, 0, 0, 0, 0, 0, 0, 126, 36, 26, null],
+                  fill: true,
+                  backgroundColor: (ctx) => {
+                    const a = ctx.chart.chartArea;
+                    return !a
+                      ? "rgba(145,128,80,0.3)"
+                      : safeGrad(
+                          ctx.chart.ctx,
+                          a,
+                          [
+                            { stop: 0, color: "rgba(145,128,80,0.6)" },
+                            { stop: 1, color: "rgba(145,128,80,0)" },
+                          ],
+                          true
+                        );
+                  },
+                  borderColor: cssVar("--bg-chart-linearea01"),
+                  borderWidth: 1,
+                  pointRadius: 6,
+                  tension: 0,
+                },
+                {
+                  label: "염승호 수석 ",
+                  data: [0, 0, 0, 0, 0, 0, 0, 0, 109, 105, 73, null],
+                  fill: true,
+                  backgroundColor: (ctx) => {
+                    const a = ctx.chart.chartArea;
+                    return !a
+                      ? "rgba(36,148,115,0.3)"
+                      : safeGrad(
+                          ctx.chart.ctx,
+                          a,
+                          [
+                            { stop: 0, color: "rgba(36,148,115,0.6)" },
+                            { stop: 1, color: "rgba(36,148,115,0)" },
+                          ],
+                          true
+                        );
+                  },
+                  borderColor: cssVar("--bg-chart-linearea02"),
+                  borderWidth: 1,
+                  pointRadius: 6,
+                  tension: 0,
+                },
+              ],
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: { legend: { display: false } },
+              scales: {
+                y: {
+                  display: false,
+                  suggestedMax: 350, //목표 값
+                },
+                x: {
+                  offset: true,
+                  grid: {
+                    drawTicks: false,
+                    display: true, // 그리드 라인 표시
+                    color: cssVar("--grid-border") || "#e0e0e0",
+                  },
+                  ticks: {
+                    color: function (context) {
+                      if (context.tick.label === "11") {
+                        return cssVar("--chart-point");
+                      }
+                      return cssVar("--chart-base");
+                    },
+                    font: function (context) {
+                      if (context.tick.label === "11") {
+                        return {
+                          weight: "bold",
+                          size: 18,
+                        };
+                      }
+                      return {
+                        weight: "normal",
+                        size: 18,
+                      };
+                    },
+                    padding: 8,
+                  },
+                  border: {
+                    display: true,
+                    dash: [3, 3],
+                    color: cssVar("--grid-border-dashed"),
+                    width: 1,
+                  },
+                },
+              },
+            },
+            plugins: [
+              highlightXFactory("11"),
+              createPointGradientPluginWithBorder(),
+              hideNullPointsPlugin,
+            ],
+          });
+
+          createSafeChart("industry_chart", {
+            type: "doughnut",
+            data: {
+              labels: ["설계", "제작", "감리", "시공", "기타"],
+              datasets: [
+                {
+                  data: [68, 19, 11, 11, 45],
+                  backgroundColor: [
+                    "#D08A5D",
+                    "#8F4818",
+                    "#5F2F0E",
+                    "#45220A",
+                    "#B66532",
+                  ],
+                  borderWidth: 2,
+                  borderColor: "#fff",
+                  rotation: 125,
+                },
+              ],
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              cutout: "55%",
+              layout: {
+                padding: { top: 60, bottom: 60, left: 100, right: 100 },
+              },
+              plugins: {
+                legend: { display: false },
+                tooltip: { enabled: false },
+              },
+            },
+            plugins: [
+              totalCenterPluginFactory("산업/업종별"),
+              externalLabelPlugin,
+            ],
+          });
+          createSafeChart("institution_chart", {
+            type: "doughnut",
+            data: {
+              labels: ["일반", "교육기관", "공공기관", "기타"],
+              datasets: [
+                {
+                  data: [138, 14, 12, 4],
+                  backgroundColor: ["#C4964B", "#885D1A", "#5C3E0F", "#3C2500"],
+                  borderWidth: 2,
+                  borderColor: "#fff",
+                  rotation: 125,
+                },
+              ],
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              cutout: "55%",
+              layout: {
+                padding: { top: 60, bottom: 60, left: 100, right: 100 },
+              },
+              plugins: {
+                legend: { display: false },
+                tooltip: { enabled: false },
+              },
+            },
+            plugins: [totalCenterPluginFactory("기관별"), externalLabelPlugin],
+          });
+
+          const cumulative = [27, 71, 1, 0, 0];
+          const goal = 125;
+          const total = cumulative.reduce((sum, val) => sum + val, 0);
+          const remaining = Math.max(0, goal - total);
+
+          createSafeChart("weekly_chart", {
+            type: "doughnut",
+            data: {
+              labels: [
+                "1주차",
+                "2주차",
+                "3주차",
+                "4주차",
+                "5주차",
+                "남은 목표",
+              ],
+              datasets: [
+                {
+                  data: [...cumulative, remaining],
+                  backgroundColor: [
+                    "#4A9B7F",
+                    "#5FAA8D",
+                    "#74B99B",
+                    "#89C8A9",
+                    "#9ED7B7",
+                    "#E8E8E8",
+                  ],
+                  borderWidth: 2,
+                  borderColor: "#fff",
+                  circumference: 180,
+                  rotation: 270,
+                },
+              ],
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: {
+                  position: "bottom",
+                  labels: {
+                    font: { size: 12 },
+                    padding: 15,
+                    generateLabels: function (chart) {
+                      const data = chart.data;
+                      return data.labels
+                        .map((label, i) => {
+                          if (i === 5) return null; // "남은 목표" 제외
+                          return {
+                            text: `${label}: ${data.datasets[0].data[i]}`,
+                            fillStyle: data.datasets[0].backgroundColor[i],
+                            hidden: false,
+                            index: i,
+                          };
+                        })
+                        .filter((item) => item !== null);
+                    },
+                  },
+                },
+                tooltip: {
+                  callbacks: {
+                    label: function (context) {
+                      const label = context.label || "";
+                      const value = context.parsed;
+                      if (context.dataIndex === 5) {
+                        return `남은 목표: ${value}`;
+                      }
+                      return `${label}: ${value}`;
+                    },
+                  },
+                },
+              },
+              cutout: "70%",
+              layout: {
+                padding: { top: 20, bottom: 20, left: 40, right: 40 },
+              },
+            },
+            plugins: [gaugeValuePlugin],
           });
         } // initCharts 끝
 

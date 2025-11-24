@@ -67,10 +67,14 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
   syncHeight();
-  
 });
 
 window.addEventListener("resize", () => {
   syncHeight();
 });
 
+const rootStyle = getComputedStyle(document.documentElement);
+
+function cssVar(name) {
+  return rootStyle.getPropertyValue(name).trim();
+}

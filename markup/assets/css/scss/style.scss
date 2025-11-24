@@ -42,28 +42,82 @@
   border: 2px solid var(--border-card);
   background: var(--bg-card);
   overflow: hidden;
-  &-header {
-    position: absolute;
-    left: 0;
-    top: 0;
-    height: 48px;
-    padding: 0 56px 0 12px;
-    color: var(--card-title);
-    background: var(--bg-card-header);
-    border-top: 2px solid rgba(0, 0, 0, 0.05);
-    border-left: 2px solid rgba(0, 0, 0, 0.05);
+  &.individual {
+    grid-row-end: 3;
+    grid-row-start: 1;
+    grid-column-start: 2;
+    flex-direction: column;
     @include flex();
+  }
+  &.sales {
+    height: 100%;
+    grid-column-start: 3;
+    grid-row-end: 3;
+    grid-row-start: 1;
+    flex-direction: column;
+    @include flex();
+    .chart-wrap {
+      display: grid;
+      grid-template-columns: 100%;
+      grid-template-rows: repeat(2, 1fr);
+      width: 100%;
+      padding: 0 12px;
+      .chart-body {
+        padding: 0;
+        &:not(:last-child) {
+          border-bottom: 1px dashed rgba(0, 0, 0, 0.2);
+        }
+      }
+    }
+  }
+
+  &-header {
+    position: relative;
+    width: 100%;
+    @include flex(center, space-between);
+    h3 {
+      position: relative;
+      font-size: 2.2rem;
+      font-weight: 700;
+      line-height: 1;
+      filter: var(--title-stroke);
+      text-shadow: var(--title-shadow);
+      height: 48px;
+      padding: 12px 14px;
+      color: var(--card-title);
+      background: var(--bg-card-header);
+      display: inline-flex;
+      &::after {
+        content: "";
+        position: absolute;
+        top: 0px;
+        right: -48px;
+        width: 48px;
+        height: 48px;
+        background: var(--bg-card-header);
+        @include maskContents(url("/assets/images/mask_tail.svg"));
+      }
+    }
+    .legend {
+      padding-right: 12px;
+    }
   }
   &:has(.inner) {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
   }
+
   .inner {
     width: 100%;
-    padding: 0 24px;
     border-right: 1px solid var(--border-card-inner);
     flex-direction: column;
-    @include flex(flex-start, flex-end);
+    @include flex(flex-start, flex-start);
+    &.chart-wrap {
+      padding: 12px;
+    }
+    .card-body {
+      padding: 0 24px;
+    }
   }
   &-body {
     width: 100%;
@@ -103,6 +157,46 @@
       -webkit-text-fill-color: transparent;
     }
   }
+  &.individual01 {
+    .label {
+      color: var(--stat-individual01);
+    }
+    .big-num,
+    .unit {
+      font-weight: 700;
+      background: var(--stat-unit-individual01);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+  }
+  &.individual02 {
+    .label {
+      color: var(--stat-individual02);
+    }
+    .big-num,
+    .unit {
+      font-weight: 700;
+      background: var(--stat-unit-individual02);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+  }
+  &.sales {
+    padding: 16px 24px;
+    .label {
+      color: var(--stat-sales);
+    }
+    .big-num,
+    .unit {
+      font-weight: 700;
+      background: var(--stat-unit-sales);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+  }
   .label-box {
     flex-direction: column;
     gap: 8px;
@@ -111,12 +205,14 @@
   .label {
     font-size: 16px;
     font-weight: 700;
+    color: var(--change-label);
   }
   [class^="change"] {
-    padding: 4px 8px;
+    padding: 0 8px;
+    height: 2.8rem;
     border-radius: 50px;
     background: var(--bg-change-up);
-    font-size: 12px;
+    font-size: 1.2rem;
     color: var(--change-base);
     gap: 4px;
     @include flex();
@@ -132,18 +228,18 @@
       }
     }
     em {
-      font-size: 20px;
+      font-size: 2rem;
       font-weight: 700;
       line-height: 1.2;
     }
   }
 
   .big-num {
-    font-size: 68px;
+    font-size: 6.8rem;
     line-height: 1;
   }
   .unit {
-    font-size: 18px;
+    font-size: 1.8rem;
   }
   .big-num,
   .unit {
@@ -158,5 +254,150 @@
 .chart {
   &-wrap {
     background: var(--bg-chart);
+    width: 100%;
+    height: 100%;
+    gap: 12px;
+    &:not(.inner) {
+      flex-grow: 1;
+      flex-direction: column;
+      @include flex(flex-start, flex-start);
+    }
+  }
+  &-header {
+    width: 100%;
+    font-size: 1.4rem;
+    @include flex(center, space-between);
+  }
+  &-body {
+    position: relative;
+    flex-grow: 1;
+    width: 100%;
+    padding: 12px;
+    .badge-box {
+      position: absolute;
+      top: 0;
+      left: 12px;
+    }
+  }
+}
+
+[class^="badge"] {
+  &:not([class*="box"]) {
+    display: inline-block;
+    padding: 4px;
+    border-radius: 2px;
+    border-width: 1px;
+    border-style: solid;
+    font-weight: 700;
+    line-height: 1;
+  }
+  &[class*="box"] {
+    gap: 8px;
+    @include flex();
+  }
+  &[class*="year"] {
+    border-color: var(--stat-accrue);
+    background: var(--bg-badge-mixline);
+    color: var(--stat-accrue);
+  }
+  &[class*="individual01"] {
+    border-color: var(--stat-individual01);
+    background: var(--bg-badge-linearea01);
+    color: var(--stat-individual01);
+  }
+  &[class*="individual02"] {
+    border-color: var(---stat-individual02);
+    background: var(--bg-badge-linearea02);
+    color: var(--stat-individual02);
+  }
+}
+
+.legend {
+  gap: 8px;
+  font-size: 1.4rem;
+  color: var(--text-legend);
+  @include flex();
+  &-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    margin-right: 2px;
+    &.mix-bar {
+      background: var(--bg-chart-mixbar);
+    }
+
+    &.mix-line {
+      background: var(--chart-mixline);
+    }
+    &.line-area01 {
+      background-color: var(--bg-chart-linearea01);
+    }
+    &.line-area02 {
+      background-color: var(--bg-chart-linearea02);
+    }
+  }
+}
+.individual {
+  .card-body {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    padding: 24px 0 12px;
+    .person-box {
+      padding: 0 24px;
+    }
+  }
+  .person {
+    &-box {
+      position: relative;
+      &:nth-child(1) {
+        &:not(:last-child) {
+          &::after {
+            content: "";
+            position: absolute;
+            right: 0;
+            top: 0;
+            height: calc(100% - 16px);
+            border-right: 2px solid var(--border-person);
+          }
+        }
+        .person-name {
+          background-color: var(--bg-individual01);
+          span,
+          small {
+            background: var(--stat-unit-individual01);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+          }
+        }
+      }
+      &:nth-child(2) {
+        .person-name {
+          background-color: var(--bg-individual02);
+          span,
+          small {
+            background: var(--stat-unit-individual02);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+          }
+        }
+      }
+    }
+    &-name {
+      text-align: center;
+      height: 42px;
+      width: 100%;
+      border-radius: 8px;
+      font-size: 2.2rem;
+      font-weight: 700;
+      gap: 4px;
+      @include flex();
+      small {
+        padding-top: 0.4rem;
+        font-size: 1.6rem;
+      }
+    }
   }
 }
