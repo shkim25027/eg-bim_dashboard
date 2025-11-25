@@ -300,6 +300,11 @@
     background: var(--bg-badge-mixline);
     color: var(--stat-accrue);
   }
+  &[class*="month"] {
+    border-color: var(--stat-month);
+    background: var(--bg-badge-month);
+    color: var(--stat-month);
+  }
   &[class*="individual01"] {
     border-color: var(--stat-individual01);
     background: var(--bg-badge-linearea01);
@@ -398,6 +403,31 @@
         padding-top: 0.4rem;
         font-size: 1.6rem;
       }
+    }
+  }
+}
+
+.main-weekly {
+  padding: 0 24px;
+}
+.weekly {
+  &-grid {
+    display: grid;
+    grid-template-columns: 1fr repeat(5, 1fr);
+    gap: 16px;
+    height: 100%;
+  }
+
+  &-header {
+    flex-direction: column;
+    @include flex(flex-start, space-around);
+  }
+  &-title {
+    color: var(--text-weekly-title);
+    font-size: 3.6rem;
+    font-weight: 700;
+    h3 {
+      font: inherit;
     }
   }
 }

@@ -23,7 +23,13 @@
   --bg-badge-mixline:
     linear-gradient(0deg, rgba(255, 92, 0, 0.1) 0%, rgba(255, 92, 0, 0.1) 100%),
     #fff;
-
+  --bg-badge-month:
+    linear-gradient(
+      0deg,
+      rgba(42, 111, 101, 0.1) 0%,
+      rgba(42, 111, 101, 0.1) 100%
+    ),
+    #fff;
   --bg-badge-linearea01:
     linear-gradient(
       0deg,
@@ -71,6 +77,7 @@
 
   --text-base: #555;
   --text-legend: #777;
+  --text-weekly-title: #895d24;
   --chart-base: #777;
   --chart-point: #000;
   --card-title: #fff;
