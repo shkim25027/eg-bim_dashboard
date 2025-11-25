@@ -1,0 +1,158 @@
+<section class="card col">
+  <div class="inner">
+    <div class="card-header">
+      <h3>연간 총 판매 실적</h3>
+    </div>
+    <div class="card-body">
+      <div class="stat-row accrue">
+        <div class="label-box">
+          <span class="label">누적 판매수</span>
+          <span class="change-up">전월대비 <em>84</em></span>
+        </div>
+        <div>
+          <span class="big-num">685</span><span class="unit">copy</span>
+        </div>
+      </div>
+      <!-- // stat-row -->
+      <div class="stat-row">
+        <div class="label-box">
+          <span class="label">누적 판매액</span>
+          <span class="change">전월대비 <em>00</em></span>
+        </div>
+        <div><span class="big-num">0.0</span><span class="unit">억</span></div>
+      </div>
+      <!-- // stat-row -->
+      <div class="stat-row">
+        <div class="label-box">
+          <span class="label">목표 달성률</span>
+          <span class="change-up">전월대비 <em>1p</em></span>
+        </div>
+        <div><span class="big-num">95</span><span class="unit">%</span></div>
+      </div>
+      <!-- // stat-row -->
+    </div>
+    <!-- // card-body -->
+  </div>
+  <!-- // inner -->
+  <div class="inner chart-wrap">
+    <div class="chart-header">
+      <span class="badge-year">목표 500</span>
+      <div class="legend">
+        <span>
+          <span class="legend-dot mix-bar"></span>
+          월별 판매수
+        </span>
+        <span>
+          <span class="legend-dot mix-line"></span>
+          누적 판매수
+        </span>
+        <span class="unit">(단위:copy) </span>
+      </div>
+    </div>
+    <div class="chart-body">
+      <canvas id="yearly_chart"></canvas>
+    </div>
+  </div>
+  <!-- // chart-warp -->
+</section>
+
+<script>
+  (() => {
+    const labels12 = Array.from({ length: 12 }, (_, i) => String(i + 1));
+    const theme = {
+      mixbar: [
+        { stop: 0, color: cssVar("--bg-chart-mixbar01") },
+        { stop: 0.3709, color: cssVar("--bg-chart-mixbar02") },
+        { stop: 1, color: cssVar("--bg-chart-mixbar03") },
+      ],
+    };
+
+    // 복합 막대 + 라인
+    new Chart(document.getElementById("yearly_chart"), {
+      type: "bar",
+      data: {
+        labels: labels12,
+        datasets: [
+          {
+            type: "line",
+            order: 1,
+            data: [0, 0, 0, 0, 0, 0, 0, 83, 315, 460, 684, null],
+            borderColor: cssVar("--chart-mixline"),
+            borderWidth: 1,
+            pointRadius: 6,
+            tension: 0,
+            fill: false,
+          },
+          {
+            type: "bar",
+            order: 2,
+            data: [0, 0, 0, 0, 0, 0, 0, 83, 232, 145, 224, null],
+            backgroundColor: function (context) {
+              const chart = context.chart;
+              const { ctx, chartArea } = chart;
+
+              if (!chartArea) {
+                // 차트가 아직 초기화되지 않은 경우
+                return "#4CAE9B"; // 기본 색상
+              }
+
+              return safeGrad(ctx, chartArea, theme.mixbar);
+            },
+            borderRadius: { topLeft: 2, topRight: 2 },
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          y: {
+            display: false,
+            suggestedMax: 800, //목표 값
+          },
+          x: {
+            grid: {
+              drawTicks: false,
+            },
+            ticks: {
+              color: function (context) {
+                //현재 월 체크
+                if (context.tick.label === "11") {
+                  return cssVar("--chart-point");
+                }
+                return cssVar("--chart-base");
+              },
+              font: function (context) {
+                //현재 월 체크
+                if (context.tick.label === "11") {
+                  return {
+                    weight: "bold",
+                    size: 18,
+                  };
+                }
+                return {
+                  weight: "normal",
+                  size: 18,
+                };
+              },
+              padding: 8,
+            },
+            border: {
+              display: true,
+              dash: [3, 3],
+              color: cssVar("--grid-border-dashed"),
+              width: 1,
+            },
+          },
+        },
+      },
+      plugins: [
+        createMixedValuePlugin(12),
+        createMixedPointGradientPlugin(),
+        highlightXFactory("11"), //현재 월 값 전달
+        hideNullPointsPlugin,
+      ],
+    });
+  })();
+</script>

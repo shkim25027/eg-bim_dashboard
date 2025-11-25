@@ -1,0 +1,89 @@
+<section class="card sales">
+  <div class="card-header">
+    <h3>연간 영업 판매 현황</h3>
+  </div>
+  <div class="card-body">
+    <div class="stat-row sales">
+      <div class="label-box">
+        <span class="label">영업 업체수</span>
+        <span class="change-up">전월대비 <em>84</em></span>
+      </div>
+      <div><span class="big-num">168</span><span class="unit">copy</span></div>
+    </div>
+  </div>
+  <div class="chart-wrap">
+    <div class="chart-body">
+      <canvas id="industry_chart"></canvas>
+    </div>
+    <div class="chart-body">
+      <canvas id="institution_chart"></canvas>
+    </div>
+  </div>
+</section>
+<script>
+  (() => {
+    new Chart(document.getElementById("industry_chart"), {
+      type: "doughnut",
+      data: {
+        labels: ["설계", "제작", "감리", "시공", "기타"],
+        datasets: [
+          {
+            data: [68, 19, 11, 11, 45],
+            backgroundColor: [
+              "#D08A5D",
+              "#8F4818",
+              "#5F2F0E",
+              "#45220A",
+              "#B66532",
+            ],
+            borderWidth: 2,
+            borderColor: "#fff",
+            rotation: 125,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: "55%",
+        layout: {
+          padding: { top: 60, bottom: 60, left: 100, right: 100 },
+        },
+        plugins: {
+          legend: { display: false },
+          tooltip: { enabled: false },
+        },
+      },
+      plugins: [totalCenterPluginFactory("산업/업종별"), externalLabelPlugin],
+    });
+
+    new Chart(document.getElementById("institution_chart"), {
+      type: "doughnut",
+      data: {
+        labels: ["일반", "교육기관", "공공기관", "기타"],
+        datasets: [
+          {
+            data: [138, 14, 12, 4],
+            backgroundColor: ["#C4964B", "#885D1A", "#5C3E0F", "#3C2500"],
+            borderWidth: 2,
+            borderColor: "#fff",
+            rotation: 125,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: "55%",
+        layout: {
+          padding: { top: 60, bottom: 60, left: 100, right: 100 },
+        },
+        plugins: {
+          legend: { display: false },
+          tooltip: { enabled: false },
+        },
+      },
+      plugins: [totalCenterPluginFactory("기관별"), externalLabelPlugin],
+    });
+  })();
+</script>

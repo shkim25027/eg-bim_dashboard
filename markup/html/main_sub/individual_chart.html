@@ -1,0 +1,182 @@
+<section class="card individual">
+  <div class="chart-wrap">
+    <div class="card-header">
+      <h3>연간 개인별 판매 실적</h3>
+      <div class="legend">
+        <span>
+          <span class="legend-dot line-area01"></span>
+          권혁진 수석
+        </span>
+        <span>
+          <span class="legend-dot line-area02"></span>
+          염승호 수석
+        </span>
+        <span class="unit">(단위:copy) </span>
+      </div>
+    </div>
+    <div class="chart-body">
+      <div class="badge-box">
+        <span class="badge-individual01">목표 200</span>
+        <span class="badge-individual02">목표 300</span>
+      </div>
+      <canvas id="individual_chart"></canvas>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="person-box">
+      <div class="person-name"><span>권혁진</span> <small>수석</small></div>
+      <div class="stat-row individual01">
+        <div class="label-box">
+          <span class="label">누적 판매수</span>
+          <div class="change-up">전월대비 <em>▲26</em></div>
+        </div>
+        <div>
+          <span class="big-num">162</span><span class="unit">copy</span>
+        </div>
+      </div>
+      <div class="stat-row">
+        <div class="label-box">
+          <span class="label">목표 달성률</span>
+          <div class="change-up">전월대비 <em>▲1</em></div>
+        </div>
+        <div><span class="big-num">81.0</span><span class="unit">%</span></div>
+      </div>
+    </div>
+    <div class="person-box">
+      <div class="person-name">
+        <span>염승호</span>
+        <small>수석</small>
+      </div>
+      <div class="stat-row individual02">
+        <div class="label-box">
+          <span class="label">누적 판매수</span>
+          <div class="change-up">전월대비 <em>▲73</em></div>
+        </div>
+        <div>
+          <span class="big-num">508</span><span class="unit">copy</span>
+        </div>
+      </div>
+      <div class="stat-row">
+        <div class="label-box">
+          <span class="label">목표 달성률</span>
+          <div class="change-up">전월대비 <em>▲1</em></div>
+        </div>
+        <div><span class="big-num">169.3</span><span class="unit">%</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  (() => {
+    const labels12 = Array.from({ length: 12 }, (_, i) => String(i + 1));
+    // 라인 + 영역
+    new Chart(document.getElementById("individual_chart"), {
+      type: "line",
+      data: {
+        labels: labels12,
+        datasets: [
+          {
+            label: "권혁진 수석",
+            data: [0, 0, 0, 0, 0, 0, 0, 1, 74, 57, 30, null],
+            fill: true,
+            backgroundColor: (ctx) => {
+              const a = ctx.chart.chartArea;
+              return !a
+                ? "rgba(145,128,80,0.3)"
+                : safeGrad(
+                    ctx.chart.ctx,
+                    a,
+                    [
+                      { stop: 0, color: "rgba(145,128,80,0.6)" },
+                      { stop: 1, color: "rgba(145,128,80,0)" },
+                    ],
+                    true
+                  );
+            },
+            borderColor: cssVar("--bg-chart-linearea01"),
+            borderWidth: 1,
+            pointRadius: 6,
+            tension: 0,
+          },
+          {
+            label: "염승호 수석 ",
+            data: [0, 0, 0, 0, 0, 0, 0, 82, 153, 84, 189, null],
+            fill: true,
+            backgroundColor: (ctx) => {
+              const a = ctx.chart.chartArea;
+              return !a
+                ? "rgba(36,148,115,0.3)"
+                : safeGrad(
+                    ctx.chart.ctx,
+                    a,
+                    [
+                      { stop: 0, color: "rgba(36,148,115,0.6)" },
+                      { stop: 1, color: "rgba(36,148,115,0)" },
+                    ],
+                    true
+                  );
+            },
+            borderColor: cssVar("--bg-chart-linearea02"),
+            borderWidth: 1,
+            pointRadius: 6,
+            tension: 0,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          y: {
+            display: false,
+            suggestedMax: 350, //목표 값
+          },
+          x: {
+            offset: true,
+            grid: {
+              drawTicks: false,
+              display: true, // 그리드 라인 표시
+              color: cssVar("--grid-border") || "#e0e0e0",
+            },
+            ticks: {
+              color: function (context) {
+                //현재 월 체크
+                if (context.tick.label === "11") {
+                  return cssVar("--chart-point");
+                }
+                return cssVar("--chart-base");
+              },
+              font: function (context) {
+                //현재 월 체크
+                if (context.tick.label === "11") {
+                  return {
+                    weight: "bold",
+                    size: 18,
+                  };
+                }
+                return {
+                  weight: "normal",
+                  size: 18,
+                };
+              },
+              padding: 8,
+            },
+            border: {
+              display: true,
+              dash: [3, 3],
+              color: cssVar("--grid-border-dashed"),
+              width: 1,
+            },
+          },
+        },
+      },
+      plugins: [
+        highlightXFactory("11"), //현재 월 값 전달
+        createPointGradientPluginWithBorder(),
+        hideNullPointsPlugin,
+      ],
+    });
+  })();
+</script>

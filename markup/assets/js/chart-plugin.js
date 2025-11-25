@@ -616,19 +616,37 @@ const externalLabelPlugin = {
   },
 };
 
-// 값 표시 플러그인
+// 값 표시 플러그인 (게이지 차트용 - 좁은 공간은 라인으로 외부 표시)
 const gaugeValuePlugin = {
   id: "gaugeValuePlugin",
   afterDatasetsDraw(chart) {
     const ctx = chart.ctx;
     const dataset = chart.data.datasets[0];
     const meta = chart.getDatasetMeta(0);
+    const total = dataset.data.slice(0, 5).reduce((a, b) => a + b, 0);
+    const smallThreshold = 0.08; // 8% 이하면 라인으로 외부 표시
 
     ctx.save();
-    ctx.fillStyle = "#fff";
-    ctx.font = "bold 12px Arial";
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
+
+    // 1. 먼저 반원 아래 긴 라인 그리기
+    if (meta && meta.data && meta.data.length > 0) {
+      const firstArc = meta.data[0];
+      const centerX = firstArc.x;
+      const centerY = firstArc.y;
+      const outerRadius = firstArc.outerRadius;
+
+      // 반원보다 양쪽 12px씩 긴 라인
+      const lineY = centerY;
+      const lineStartX = centerX - outerRadius - 12;
+      const lineEndX = centerX + outerRadius + 12;
+
+      ctx.strokeStyle = "rgba(0, 0, 0, 0.40)";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(lineStartX, lineY);
+      ctx.lineTo(lineEndX, lineY);
+      ctx.stroke();
+    }
 
     meta.data.forEach((arc, index) => {
       if (index >= 5) return; // 처음 5개만 (주차 데이터)
@@ -638,18 +656,66 @@ const gaugeValuePlugin = {
 
       const { startAngle, endAngle, innerRadius, outerRadius } = arc;
       const midAngle = (startAngle + endAngle) / 2;
+      const percentage = value / total;
+      const isSmall = percentage < smallThreshold;
 
-      // 그림자 효과
-      ctx.shadowOffsetX = 1;
-      ctx.shadowOffsetY = 1;
-      ctx.shadowBlur = 3;
-      ctx.shadowColor = "rgba(0, 0, 0, 0.7)";
+      if (isSmall) {
+        // 좁은 공간: 블렛 + 라인 + 외부 텍스트
+        const bulletR = (innerRadius + outerRadius) / 2;
+        const bulletX = arc.x + Math.cos(midAngle) * bulletR;
+        const bulletY = arc.y + Math.sin(midAngle) * bulletR;
 
-      const radius = (innerRadius + outerRadius) / 2;
-      const x = arc.x + Math.cos(midAngle) * radius;
-      const y = arc.y + Math.sin(midAngle) * radius;
+        // 블렛 그리기
+        ctx.beginPath();
+        ctx.arc(bulletX, bulletY, 3, 0, Math.PI * 2);
+        ctx.fillStyle = "#333";
+        ctx.fill();
 
-      ctx.fillText(value, x, y);
+        // 점선 끝점 (외부)
+        const lineEndR = outerRadius + 20;
+        const lineEndX = arc.x + Math.cos(midAngle) * lineEndR;
+        const lineEndY = arc.y + Math.sin(midAngle) * lineEndR;
+
+        // 텍스트 위치 (라인보다 더 밖)
+        const textR = outerRadius + 30;
+        const textX = arc.x + Math.cos(midAngle) * textR;
+        const textY = arc.y + Math.sin(midAngle) * textR;
+
+        // 라인 그리기
+        ctx.strokeStyle = "#333";
+        ctx.lineWidth = 1.5;
+        ctx.setLineDash([4, 4]); // 점선 패턴
+        ctx.beginPath();
+        ctx.moveTo(bulletX, bulletY);
+        ctx.lineTo(lineEndX, lineEndY);
+        ctx.stroke();
+        ctx.setLineDash([]); // 점선 해제
+
+        // 텍스트
+        ctx.font = "bold 2rem -apple-system, sans-serif";
+        ctx.fillStyle = "#333";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(value, textX, textY);
+      } else {
+        // 넓은 공간: 내부에 텍스트
+        ctx.fillStyle = "#fff";
+        ctx.font = "bold 2rem Arial";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+
+        // 그림자 효과
+        ctx.shadowOffsetX = 1;
+        ctx.shadowOffsetY = 1;
+        ctx.shadowBlur = 3;
+        ctx.shadowColor = "rgba(0, 0, 0, 0.7)";
+
+        const radius = (innerRadius + outerRadius) / 2;
+        const x = arc.x + Math.cos(midAngle) * radius;
+        const y = arc.y + Math.sin(midAngle) * radius;
+
+        ctx.fillText(value, x, y);
+      }
     });
 
     ctx.restore();

@@ -1,0 +1,131 @@
+<section class="card">
+  <div class="inner">
+    <div class="card-header">
+      <h3>11월 판매 실적</h3>
+    </div>
+    <div class="card-body">
+      <div class="stat-row month">
+        <div class="label-box">
+          <span class="label">당월 판매수</span>
+          <span class="change-down">전주대비 <em>70</em></span>
+        </div>
+        <div>
+          <span class="big-num">224</span><span class="unit">copy</span>
+        </div>
+      </div>
+
+      <div class="stat-row">
+        <div class="label-box">
+          <span class="label">당월 매출액</span>
+          <span class="change">전주대비 <em>00</em></span>
+        </div>
+        <div><span class="big-num">0.0</span><span class="unit">억</span></div>
+      </div>
+
+      <div class="stat-row">
+        <div class="label-box">
+          <span class="label">목표 달성률</span>
+          <span class="change-up">전주대비 <em>1p</em></span>
+        </div>
+        <div><span class="big-num">179</span><span class="unit">%</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="inner chart-wrap">
+    <div class="chart-header">
+      <span class="badge-month">목표 125</span>
+      <div class="legend">
+        <span class="unit">(단위:copy) </span>
+      </div>
+    </div>
+    <div class="chart-body">
+      <canvas id="weekly_chart"></canvas>
+    </div>
+  </div>
+</section>
+
+<script>
+  (() => {
+    const cumulative = [0, 28, 71, 121, 4];
+    const goal = 125;
+    const total = cumulative.reduce((sum, val) => sum + val, 0);
+    const remaining = Math.max(0, goal - total);
+
+    new Chart(document.getElementById("weekly_chart"), {
+      type: "doughnut",
+      data: {
+        labels: ["1주차", "2주차", "3주차", "4주차", "5주차", "남은 목표"],
+        datasets: [
+          {
+            data: [...cumulative, remaining],
+            backgroundColor: [
+              "#78F2D9",
+              "#45C5AB",
+              "#1B7D6A",
+              "#369885",
+              "#1B7D6A",
+              "#0D4137",
+            ],
+            borderWidth: 2,
+            borderColor: "#fff",
+            circumference: 180,
+            rotation: 270,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: "bottom",
+            align: "center",
+            onClick: null,
+            labels: {
+              font: { size: 16 },
+              padding: 15,
+              boxWidth: 12,
+              boxHeight: 12,
+              usePointStyle: true,
+              generateLabels: function (chart) {
+                const data = chart.data;
+                return data.labels
+                  .map((label, i) => {
+                    if (i === 5) return null;
+                    return {
+                      text: `${label}`,
+                      fillStyle: data.datasets[0].backgroundColor[i],
+                      hidden: false,
+                      strokeStyle: "transparent",
+                      lineWidth: 0,
+                      index: i,
+                      pointStyle: "rectRounded",
+                    };
+                  })
+                  .filter((item) => item !== null);
+              },
+            },
+          },
+          tooltip: {
+            callbacks: {
+              label: function (context) {
+                const label = context.label || "";
+                const value = context.parsed;
+                if (context.dataIndex === 5) {
+                  return `남은 목표: ${value}`;
+                }
+                return `${label}: ${value}`;
+              },
+            },
+          },
+        },
+        cutout: "55%",
+        layout: {
+          padding: { top: 20, bottom: 20, left: 40, right: 40 },
+        },
+      },
+      // plugins 배열은 그대로 유지
+      plugins: [gaugeValuePlugin],
+    });
+  })();
+</script>

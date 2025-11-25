@@ -1,21 +1,215 @@
-<div class="main-weekly">
+<div class="main-weekly weekly">
   <div class="weekly-grid">
     <div class="weekly-header">
       <div class="weekly-title">
         <h3>11월 4주차</h3>
         <p>주간 영업 계획</p>
       </div>
-      <ul>
+      <ul class="person-list">
         <li>
-          <span>권</span><span>권혁진<small>수석</small></span>
+          <span class="badge-green">권</span
+          ><span class="name">권혁진 <small>수석</small></span>
         </li>
         <li>
-          <span>염</span><span>염승호<small>수석</small></span>
+          <span class="badge-purple">염</span
+          ><span class="name">염승호 <small>수석</small></span>
         </li>
         <li>
-          <span>김</span><span>김지영<small>수석</small></span>
+          <span class="badge-teal">김</span
+          ><span class="name">김지영 <small>수석</small></span>
         </li>
       </ul>
     </div>
+    <div class="schedule">
+      <div class="day-card" data-date="2025-11-24">
+        <div class="day-title">24일 <span>(월)</span></div>
+        <ul class="day-list">
+          <li data-start="09:00" data-end="10:00">
+            한라대학교 (강의커리큐럼 초안 작성 )
+            <span class="badge-green">권</span>
+            <span class="badge-purple">염</span>
+          </li>
+          <li data-start="10:00" data-end="11:00">
+            브로슈어 우편물 발송 계획 ( 수도권, 선별 외 )
+            <span class="badge-green">권</span>
+            <span class="badge-teal">김</span>
+          </li>
+          <li data-start="13:00" data-end="14:00">
+            교육기관 마케팅 보고서 작성
+            <span class="badge-purple">염</span>
+          </li>
+          <li data-start="14:00" data-end="15:00">
+            교육기관 EG-BIM 라이선스 배포 현황 보고서 작성
+            <span class="badge-teal">김</span>
+          </li>
+          <li data-start="15:00" data-end="18:00">
+            대림대학교 현물 기부금 처리 서류 작성
+            <span class="badge-teal">김</span>
+          </li>
+        </ul>
+      </div>
+      <div class="day-card" data-date="2025-11-25">
+        <div class="day-title">25일 <span>(화)</span></div>
+        <ul class="day-list">
+          <li data-start="10:20" data-end="12:00">
+            10:30 ~ 12:00 삼안 CM현장 : 해안.방산 ( 오미) 공공하수처리시설
+            신동훈 부사장님 (강원특별자치도 양구군 방산면 평화로5107번길 14)
+            <span class="badge-green">권</span>
+            <span class="badge-purple">염</span>
+          </li>
+          <li data-start="13:00" data-end="15:00">
+            13:00 ~ 15:00 상지대, 지반공학회장 미팅
+            <span class="badge-green">권</span>
+            <span class="badge-purple">염</span>
+          </li>
+        </ul>
+      </div>
+      <div class="day-card" data-date="2025-11-26">
+        <div class="day-title">26일 <span>(수)</span></div>
+        <ul class="day-list">
+          <li data-start="10:30" data-end="14:00">
+            10:30 ~ 14:00 한국종합기술 ( 총괄본부장 - 김원식전무님, 복진훈수석님
+            동행 )
+            <span class="badge-green">권</span>
+            <span class="badge-purple">염</span>
+          </li>
+          <li data-start="15:00" data-end="15:30">
+            15:00 ~ 15:30 삼안 대표이사님 면담 / 삼안 CM현장 6개소 방문결과 보고
+            외
+            <span class="badge-green">권</span>
+          </li>
+          <li data-start="16:00" data-end="18:00">
+            16:00 ~ 18:00 의왕도시공사 MOU체결
+            <span class="badge-green">권</span>
+            <span class="badge-purple">염</span>
+          </li>
+          <li>
+            삼안 ( 서울대 교육 지원 )
+            <span class="badge-purple">염</span>
+          </li>
+        </ul>
+      </div>
+      <div class="day-card" data-date="2025-11-27">
+        <div class="day-title">27일 <span>(목)</span></div>
+        <ul class="day-list">
+          <li data-start="15:00" data-end="17:00">
+            15:00 ~ 17:00 사장님 영업보고 ( PM 활용 ) 교육기관, 가격정책,
+            기능개선, 단가프로그램 등
+            <span class="badge-green">권</span>
+            <span class="badge-purple">염</span>
+            <span class="badge-teal">김</span>
+          </li>
+          <li>
+            석식 (팀 + 이웃집 )
+            <span class="badge-green">권</span>
+            <span class="badge-purple">염</span>
+            <span class="badge-teal">김</span>
+          </li>
+        </ul>
+      </div>
+      <div class="day-card" data-date="2025-11-28">
+        <div class="day-title">28일 <span>(금)</span></div>
+        <ul class="day-list"></ul>
+      </div>
+    </div>
   </div>
 </div>
+
+<script>
+  let lastActiveItem = null;
+
+  function checkSchedule(scroll = false) {
+    const now = new Date();
+    const today = now.toISOString().split("T")[0];
+    const nowMinutes = now.getHours() * 60 + now.getMinutes();
+
+    let firstActive = null;
+    let todayCard = null;
+
+    // 모든 day-card 확인
+    document.querySelectorAll(".day-card").forEach((card) => {
+      const cardDate = card.dataset.date;
+
+      // 오늘 날짜인 카드 하이라이트
+      if (cardDate === today) {
+        card.classList.add("today");
+        todayCard = card;
+
+        // 해당 카드의 모든 일정 항목 확인
+        card.querySelectorAll(".day-list li").forEach((item) => {
+          const startTime = item.dataset.start;
+          const endTime = item.dataset.end;
+
+          if (!startTime || !endTime) return;
+
+          const [startHour, startMin] = startTime.split(":").map(Number);
+          const [endHour, endMin] = endTime.split(":").map(Number);
+
+          const startMinutes = startHour * 60 + startMin;
+          const endMinutes = endHour * 60 + endMin;
+
+          // 현재 시간이 일정 범위 내에 있는지 확인
+          if (nowMinutes >= startMinutes && nowMinutes <= endMinutes) {
+            item.classList.add("active");
+            item.classList.remove("completed");
+            if (!firstActive) firstActive = item;
+
+            // 현재 시간 표시
+            if (!item.querySelector(".current-time-badge")) {
+              const badge = document.createElement("span");
+              badge.className = "current-time-badge";
+              badge.textContent = "진행중";
+              item.appendChild(badge);
+            }
+          } else if (nowMinutes > endMinutes) {
+            // 완료된 일정
+            item.classList.add("completed");
+            item.classList.remove("active");
+            const badge = item.querySelector(".current-time-badge");
+            if (badge) badge.remove();
+          } else {
+            // 예정된 일정
+            item.classList.remove("active", "completed");
+            const badge = item.querySelector(".current-time-badge");
+            if (badge) badge.remove();
+          }
+        });
+      } else {
+        card.classList.remove("today");
+      }
+    });
+
+    // 스크롤 처리
+    if (scroll && firstActive && firstActive !== lastActiveItem) {
+      const weekBox = document.querySelector(".week-box");
+      const boxHeight = weekBox.clientHeight;
+      const itemOffsetTop = firstActive.offsetTop;
+
+      // 활성 항목이 포함된 카드의 상단으로 스크롤
+      const parentCard = firstActive.closest(".day-card");
+      const cardOffsetTop = parentCard.offsetTop;
+
+      weekBox.scrollTo({
+        top: cardOffsetTop - 20,
+        behavior: "smooth",
+      });
+
+      lastActiveItem = firstActive;
+    } else if (scroll && !firstActive && todayCard) {
+      // 활성 항목이 없지만 오늘 날짜 카드가 있으면 해당 카드로 스크롤
+      const weekBox = document.querySelector(".week-box");
+      const cardOffsetTop = todayCard.offsetTop;
+
+      weekBox.scrollTo({
+        top: cardOffsetTop - 20,
+        behavior: "smooth",
+      });
+    }
+  }
+
+  // 페이지 로딩 시 실행
+  checkSchedule(true);
+
+  // 1분마다 업데이트
+  setInterval(() => checkSchedule(true), 60 * 1000);
+</script>
