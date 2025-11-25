@@ -1,37 +1,33 @@
-<section class="card">
-  <div class="inner">
-    <div class="card-header">
-      <h3>11월 판매 실적</h3>
+<section class="card month">
+  <div class="card-header">
+    <h3>11월 판매 실적</h3>
+  </div>
+  <div class="card-body">
+    <div class="stat-row month">
+      <div class="label-box">
+        <span class="label">당월 판매수</span>
+        <span class="change-down">전주대비 <em>114</em></span>
+      </div>
+      <div><span class="big-num">224</span><span class="unit">copy</span></div>
     </div>
-    <div class="card-body">
-      <div class="stat-row month">
-        <div class="label-box">
-          <span class="label">당월 판매수</span>
-          <span class="change-down">전주대비 <em>70</em></span>
-        </div>
-        <div>
-          <span class="big-num">224</span><span class="unit">copy</span>
-        </div>
-      </div>
 
-      <div class="stat-row">
-        <div class="label-box">
-          <span class="label">당월 매출액</span>
-          <span class="change">전주대비 <em>00</em></span>
-        </div>
-        <div><span class="big-num">0.0</span><span class="unit">억</span></div>
+    <div class="stat-row">
+      <div class="label-box">
+        <span class="label">당월 매출액</span>
+        <span class="change">전주대비 <em>0</em></span>
       </div>
+      <div><span class="big-num">0</span><span class="unit">억</span></div>
+    </div>
 
-      <div class="stat-row">
-        <div class="label-box">
-          <span class="label">목표 달성률</span>
-          <span class="change-up">전주대비 <em>1p</em></span>
-        </div>
-        <div><span class="big-num">179</span><span class="unit">%</span></div>
+    <div class="stat-row">
+      <div class="label-box">
+        <span class="label">목표 달성률</span>
+        <span class="change-up">전주대비 <em>3p</em></span>
       </div>
+      <div><span class="big-num">179</span><span class="unit">%</span></div>
     </div>
   </div>
-  <div class="inner chart-wrap">
+  <div class="chart-wrap">
     <div class="chart-header">
       <span class="badge-month">목표 125</span>
       <div class="legend">
@@ -51,7 +47,8 @@
     const total = cumulative.reduce((sum, val) => sum + val, 0);
     const remaining = Math.max(0, goal - total);
 
-    new Chart(document.getElementById("weekly_chart"), {
+    const weekly_chart = document.getElementById("weekly_chart");
+    new Chart(weekly_chart, {
       type: "doughnut",
       data: {
         labels: ["1주차", "2주차", "3주차", "4주차", "5주차", "남은 목표"],
@@ -76,6 +73,7 @@
       options: {
         responsive: true,
         maintainAspectRatio: false,
+        animation: false,
         plugins: {
           legend: {
             position: "bottom",

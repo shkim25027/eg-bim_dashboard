@@ -144,33 +144,34 @@
 // 3840px 초과: 4K 이상
 @media all and (min-width: 3841px) {
   html {
-    font-size: 14px;
+    //font-size: 14px;
   }
 }
 // 3200px 초과 ~ 3840px: 4K 디스플레이
 @media all and (min-width: 3201px) and (max-width: 3840px) {
   html {
-    font-size: 13px;
+    //font-size: 13px;
   }
 }
 // 2560px 초과 ~ 3200px: 매우 큰 데스크톱
 @media all and (min-width: 2561px) and (max-width: 3200px) {
   html {
-    font-size: 12px;
+    //font-size: 12px;
   }
 }
 
 // 1920px 초과 ~ 2560px: 큰 데스크톱
 @media all and (min-width: 1921px) and (max-width: 2560px) {
   html {
-    font-size: 11px;
+    //font-size: 11px;
+    font-size: 10px;
   }
 }
 
 // 1024px ~ 1920px: 기본 데스크톱
 @media all and (min-width: 1024px) and (max-width: 1920px) {
   html {
-    font-size: 10px;
+    font-size: 9px;
   }
 }
 

@@ -1,40 +1,35 @@
-<section class="card col">
-  <div class="inner">
-    <div class="card-header">
-      <h3>연간 총 판매 실적</h3>
-    </div>
-    <div class="card-body">
-      <div class="stat-row accrue">
-        <div class="label-box">
-          <span class="label">누적 판매수</span>
-          <span class="change-up">전월대비 <em>84</em></span>
-        </div>
-        <div>
-          <span class="big-num">685</span><span class="unit">copy</span>
-        </div>
-      </div>
-      <!-- // stat-row -->
-      <div class="stat-row">
-        <div class="label-box">
-          <span class="label">누적 판매액</span>
-          <span class="change">전월대비 <em>00</em></span>
-        </div>
-        <div><span class="big-num">0.0</span><span class="unit">억</span></div>
-      </div>
-      <!-- // stat-row -->
-      <div class="stat-row">
-        <div class="label-box">
-          <span class="label">목표 달성률</span>
-          <span class="change-up">전월대비 <em>1p</em></span>
-        </div>
-        <div><span class="big-num">95</span><span class="unit">%</span></div>
-      </div>
-      <!-- // stat-row -->
-    </div>
-    <!-- // card-body -->
+<section class="card yearly">
+  <div class="card-header">
+    <h3>연간 총 판매 실적</h3>
   </div>
-  <!-- // inner -->
-  <div class="inner chart-wrap">
+  <div class="card-body">
+    <div class="stat-row accrue">
+      <div class="label-box">
+        <span class="label">누적 판매수</span>
+        <span class="change-up">전월대비 <em>224</em></span>
+      </div>
+      <div><span class="big-num">685</span><span class="unit">copy</span></div>
+    </div>
+    <!-- // stat-row -->
+    <div class="stat-row">
+      <div class="label-box">
+        <span class="label">누적 판매액</span>
+        <span class="change">전월대비 <em>0</em></span>
+      </div>
+      <div><span class="big-num">0.0</span><span class="unit">억</span></div>
+    </div>
+    <!-- // stat-row -->
+    <div class="stat-row">
+      <div class="label-box">
+        <span class="label">목표 달성률</span>
+        <span class="change-up">전월대비 <em>45p</em></span>
+      </div>
+      <div><span class="big-num">136.8</span><span class="unit">%</span></div>
+    </div>
+    <!-- // stat-row -->
+  </div>
+
+  <div class="chart-wrap">
     <div class="chart-header">
       <span class="badge-year">목표 500</span>
       <div class="legend">
@@ -68,7 +63,8 @@
     };
 
     // 복합 막대 + 라인
-    new Chart(document.getElementById("yearly_chart"), {
+    const yearly_chart = document.getElementById("yearly_chart");
+    new Chart(yearly_chart, {
       type: "bar",
       data: {
         labels: labels12,
@@ -106,6 +102,7 @@
         responsive: true,
         maintainAspectRatio: false,
         plugins: { legend: { display: false } },
+
         scales: {
           y: {
             display: false,

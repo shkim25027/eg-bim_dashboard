@@ -15,7 +15,7 @@ html {
   body {
     margin: 0;
     padding: 0;
-    background: var(--bg-body);
+    background: var(--bg-base);
   }
 }
 
@@ -24,7 +24,7 @@ html {
 }
 
 .header {
-  padding: 12px 24px 16px 24px;
+  padding: 0 24px;
   height: 80px;
   @include flex(center, space-between);
   .logo {
@@ -42,14 +42,24 @@ html {
     }
   }
   h1 {
+    position: relative;
     font-size: 36px;
     font-weight: 700;
     background: linear-gradient(180deg, #777 0%, #000 100%);
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    @include textClip();
+    &::before {
+      content: attr(data-text);
+      position: absolute;
+      inset: 0;
+      opacity: 0.7;
+      pointer-events: none;
+      color: transparent;
+      z-index: -1;
+      @include textStroke(rgba(255, 255, 255, 0.5));
+    }
   }
   .date {
+    color: var(--text-secondary);
   }
 }
 

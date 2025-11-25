@@ -1,28 +1,35 @@
 :root {
+  --grid-height: calc((var(--window-inner-height) - 80px - 24px) / 3);
+
   /* background */
-  --bg-body:
+  --bg-base:
     linear-gradient(180deg, #ece3d2 0%, #b7ac96 84.27%),
     linear-gradient(0deg, #f3efea 0%, #f3efea 100%);
   --bg-section: #f3efea;
 
   --bg-card: #fff;
   --bg-chart: #fafafa;
-  --bg-card-header:
+  --bg-title:
     linear-gradient(
       180deg,
       rgba(255, 255, 255, 0) 0%,
       rgba(255, 255, 255, 0.2) 100%
     ),
     #895d24;
+
   --bg-change-up: rgba(230, 4, 3, 0.08);
   --bg-change-down: rgba(0, 47, 255, 0.08);
+
   --bg-chart-highlight: rgba(255, 92, 0, 0.25);
+
   --bg-chart-mixbullet01: #ffbb89;
   --bg-chart-mixbullet02: #e5690d;
   --bg-chart-mixbullet03: #ae3607;
+
   --bg-badge-mixline:
     linear-gradient(0deg, rgba(255, 92, 0, 0.1) 0%, rgba(255, 92, 0, 0.1) 100%),
     #fff;
+
   --bg-badge-month:
     linear-gradient(
       0deg,
@@ -30,6 +37,7 @@
       rgba(42, 111, 101, 0.1) 100%
     ),
     #fff;
+
   --bg-badge-linearea01:
     linear-gradient(
       0deg,
@@ -68,23 +76,27 @@
   --bg-individual02: rgba(124, 16, 143, 0.1);
 
   /* border */
+  --border-base: rgba(0, 0, 0, 0.2);
   --border-stat: #e7decd;
   --border-person: #e3dac8;
-  --border-card: rgba(0, 0, 0, 0.2);
   --border-card-inner: rgba(0, 0, 0, 0.1);
 
   /* text color*/
+  --text-base: #000;
+  --text-primary: #555;
+  --text-secondary: #777;
 
-  --text-base: #555;
-  --text-legend: #777;
   --text-weekly-title: #895d24;
+
   --chart-base: #777;
-  --chart-point: #000;
   --card-title: #fff;
+
   --change-base: #555;
   --change-label: #333;
+
   --change-up: #e60403;
   --change-down: #002fff;
+
   --stat-accrue: #ff5c00;
   --stat-month: #2a6f65;
   --stat-individual01: #2b8f10;

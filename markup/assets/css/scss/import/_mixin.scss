@@ -322,3 +322,18 @@ $breakpoints: (
     mask-position: center left;
   }
 }
+
+@mixin textClip() {
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+@mixin textStroke($color: rgba(0, 0, 0, 0.5)) {
+  filter: drop-shadow(0 0 1px $color);
+  text-shadow:
+    -1px -1px 0 $color,
+    1px -1px 0 $color,
+    -1px 1px 0 $color,
+    1px 1px 0 $color;
+}
