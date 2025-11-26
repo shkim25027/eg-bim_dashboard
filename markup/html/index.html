@@ -33,5 +33,78 @@
         </div>
       </div>
     </div>
+    <script>
+      // data-manager.js
+      export class DashboardData {
+        constructor() {
+          this.data = {
+            yearly: {
+              cumulative: [0, 0, 0, 0, 0, 0, 0, 83, 315, 460, 684, null],
+              monthly: [0, 0, 0, 0, 0, 0, 0, 83, 232, 145, 224, null],
+              target: 500,
+            },
+            monthly: {
+              weekly: [0, 28, 71, 121, 4],
+              target: 125,
+              currentWeek: 4,
+            },
+            individual: {
+              kwon: {
+                name: "권혁진",
+                title: "수석",
+                monthly: [0, 0, 0, 0, 0, 0, 0, 1, 74, 57, 30, null],
+                cumulative: 162,
+                target: 200,
+              },
+              yeom: {
+                name: "염승호",
+                title: "수석",
+                monthly: [0, 0, 0, 0, 0, 0, 0, 82, 153, 84, 189, null],
+                cumulative: 508,
+                target: 300,
+              },
+            },
+            sales: {
+              industry: {
+                labels: ["교육", "제작", "감리", "시공", "설계"],
+                data: [305, 11, 11, 19, 162],
+              },
+              institution: {
+                labels: ["일반", "교육기관", "공공기관", "기타"],
+                data: [138, 14, 12, 4],
+              },
+            },
+          };
+        }
+
+        getYearlyData() {
+          return this.data.yearly;
+        }
+
+        getMonthlyData() {
+          return this.data.monthly;
+        }
+
+        getIndividualData(person) {
+          return this.data.individual[person];
+        }
+
+        getSalesData(type) {
+          return this.data.sales[type];
+        }
+
+        // API에서 데이터를 가져오는 경우
+        async fetchData() {
+          try {
+            const response = await fetch("/api/dashboard-data");
+            this.data = await response.json();
+            return this.data;
+          } catch (error) {
+            console.error("데이터 로드 실패:", error);
+            return null;
+          }
+        }
+      }
+    </script>
   </body>
 </html>

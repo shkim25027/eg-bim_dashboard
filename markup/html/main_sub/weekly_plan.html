@@ -87,6 +87,26 @@
             삼안 ( 서울대 교육 지원 )
             <span class="badge-purple">염</span>
           </li>
+          <li data-start="10:30" data-end="14:00">
+            10:30 ~ 14:00 한국종합기술 ( 총괄본부장 - 김원식전무님, 복진훈수석님
+            동행 )
+            <span class="badge-green">권</span>
+            <span class="badge-purple">염</span>
+          </li>
+          <li data-start="15:00" data-end="15:30">
+            15:00 ~ 15:30 삼안 대표이사님 면담 / 삼안 CM현장 6개소 방문결과 보고
+            외
+            <span class="badge-green">권</span>
+          </li>
+          <li data-start="16:00" data-end="18:00">
+            16:00 ~ 18:00 의왕도시공사 MOU체결
+            <span class="badge-green">권</span>
+            <span class="badge-purple">염</span>
+          </li>
+          <li>
+            삼안 ( 서울대 교육 지원 )
+            <span class="badge-purple">염</span>
+          </li>
         </ul>
       </div>
       <div class="day-card" data-date="2025-11-27">
@@ -115,101 +135,9 @@
   </div>
 </div>
 
+<script src="./assets/js/schedule-manager.min.js"></script>
 <script>
-  let lastActiveItem = null;
-
-  function checkSchedule(scroll = false) {
-    const now = new Date();
-    const today = now.toISOString().split("T")[0];
-    const nowMinutes = now.getHours() * 60 + now.getMinutes();
-
-    let firstActive = null;
-    let todayCard = null;
-
-    // 모든 day-card 확인
-    document.querySelectorAll(".day-card").forEach((card) => {
-      const cardDate = card.dataset.date;
-
-      // 오늘 날짜인 카드 하이라이트
-      if (cardDate === today) {
-        card.classList.add("today");
-        todayCard = card;
-
-        // 해당 카드의 모든 일정 항목 확인
-        card.querySelectorAll(".day-list li").forEach((item) => {
-          const startTime = item.dataset.start;
-          const endTime = item.dataset.end;
-
-          if (!startTime || !endTime) return;
-
-          const [startHour, startMin] = startTime.split(":").map(Number);
-          const [endHour, endMin] = endTime.split(":").map(Number);
-
-          const startMinutes = startHour * 60 + startMin;
-          const endMinutes = endHour * 60 + endMin;
-
-          // 현재 시간이 일정 범위 내에 있는지 확인
-          if (nowMinutes >= startMinutes && nowMinutes <= endMinutes) {
-            item.classList.add("active");
-            item.classList.remove("completed");
-            if (!firstActive) firstActive = item;
-
-            // 현재 시간 표시
-            if (!item.querySelector(".current-time-badge")) {
-              const badge = document.createElement("span");
-              badge.className = "current-time-badge";
-              badge.textContent = "진행중";
-              item.appendChild(badge);
-            }
-          } else if (nowMinutes > endMinutes) {
-            // 완료된 일정
-            item.classList.add("completed");
-            item.classList.remove("active");
-            const badge = item.querySelector(".current-time-badge");
-            if (badge) badge.remove();
-          } else {
-            // 예정된 일정
-            item.classList.remove("active", "completed");
-            const badge = item.querySelector(".current-time-badge");
-            if (badge) badge.remove();
-          }
-        });
-      } else {
-        card.classList.remove("today");
-      }
-    });
-
-    // 스크롤 처리
-    if (scroll && firstActive && firstActive !== lastActiveItem) {
-      const weekBox = document.querySelector(".week-box");
-      const boxHeight = weekBox.clientHeight;
-      const itemOffsetTop = firstActive.offsetTop;
-
-      // 활성 항목이 포함된 카드의 상단으로 스크롤
-      const parentCard = firstActive.closest(".day-card");
-      const cardOffsetTop = parentCard.offsetTop;
-
-      weekBox.scrollTo({
-        top: cardOffsetTop - 20,
-        behavior: "smooth",
-      });
-
-      lastActiveItem = firstActive;
-    } else if (scroll && !firstActive && todayCard) {
-      // 활성 항목이 없지만 오늘 날짜 카드가 있으면 해당 카드로 스크롤
-      const weekBox = document.querySelector(".week-box");
-      const cardOffsetTop = todayCard.offsetTop;
-
-      weekBox.scrollTo({
-        top: cardOffsetTop - 20,
-        behavior: "smooth",
-      });
-    }
-  }
-
-  // 페이지 로딩 시 실행
-  checkSchedule(true);
-
-  // 1분마다 업데이트
-  setInterval(() => checkSchedule(true), 60 * 1000);
+  // 사용
+  const scheduleManager = new ScheduleManager();
+  scheduleManager.initialize();
 </script>

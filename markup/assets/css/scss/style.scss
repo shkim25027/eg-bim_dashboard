@@ -31,7 +31,8 @@
         rgba(255, 255, 255, 0) 15%
       ),
       #f3efea;
-
+    height: var(--grid-height);
+    min-height: 320px;
     box-shadow: 0 -4px 40px 0 rgba(0, 0, 0, 0.3);
     overflow: hidden;
   }
@@ -44,11 +45,11 @@
   background: var(--bg-card);
   overflow: hidden;
   &:not(.individual, .sales) {
-    height: calc(var(--grid-height) - 8px);
+    height: calc(var(--grid-height) + 4px);
   }
   &.individual,
   &.sales {
-    height: calc((var(--grid-height) * 2) + 16px);
+    height: calc((var(--grid-height) * 2) + 24px);
     min-height: 656px;
   }
   &.individual {
@@ -571,10 +572,11 @@
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     height: var(--grid-height);
+    min-height: 320px;
   }
   .day {
     &-card {
-      padding: 16px 8px 0;
+      padding-top: 16px;
       color: #555;
       &:not(:last-child) {
         border-right: 1px solid var(--border-base);
@@ -585,17 +587,30 @@
       }
     }
     &-title {
-      height: rem(48px);
+      position: relative;
+      padding: 0 8px;
+      height: 48px;
       font-weight: 700;
-      border-bottom: 1px solid var(--border-base);
+
       @include flex();
       span {
         font-weight: 400;
       }
+      &::after {
+        content: " ";
+        position: absolute;
+        bottom: 0;
+        left: 8px;
+        width: calc(100% - 16px);
+        height: 1px;
+        background: var(--border-base);
+      }
     }
     &-list {
-      padding-top: 16px;
-      height: calc(100% - 48px - 16px);
+      padding: 16px 8px;
+      height: calc(var(--grid-height) - 68px);
+      min-height: calc(320px - 68px);
+      overflow: auto;
       li {
         position: relative;
         padding-left: rem(24px);
