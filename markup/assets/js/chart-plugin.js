@@ -453,17 +453,33 @@ const totalCenterPluginFactory = (labelText = "총") => ({
         ctx.fillStyle = "#F5F5F0";
         ctx.fill();
       }
+
+      // 텍스트 설정
+      ctx.font = "bold 20px -apple-system, sans-serif";
+      ctx.fillStyle = "#121212";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+
+      // 텍스트 너비 측정
+      const textWidth = ctx.measureText(labelText).width;
+      const availableWidth = (innerRadius - 5) * 1.4; // 원 지름의 70% 정도 사용
+
+      // 텍스트가 너무 길면 2줄로 분리
+      if (textWidth > availableWidth && labelText.length > 1) {
+        const midPoint = Math.ceil(labelText.length / 2);
+        const line1 = labelText.substring(0, midPoint);
+        const line2 = labelText.substring(midPoint);
+        const lineHeight = 26;
+
+        ctx.fillText(line1, centerX, centerY - lineHeight / 2);
+        ctx.fillText(line2, centerX, centerY + lineHeight / 2);
+      } else {
+        ctx.fillText(labelText, centerX, centerY);
+      }
     }
-    // 텍스트만 표시
-    ctx.font = "bold 20px -apple-system, sans-serif";
-    ctx.fillStyle = "#121212";
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.fillText(labelText, centerX, centerY);
     ctx.restore();
   },
 });
-
 const externalLabelPlugin = {
   id: "externalLabel",
   afterDatasetsDraw(chart) {

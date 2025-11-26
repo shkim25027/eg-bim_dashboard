@@ -626,10 +626,12 @@ $grid-heights: (
 // ============================================
 .weekly {
   &-grid {
+    position: relative;
     display: grid;
     grid-template-columns: 267px auto;
     height: 100%;
     overflow: hidden;
+    z-index: 1;
   }
 
   &-header {

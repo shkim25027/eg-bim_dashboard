@@ -2,7 +2,7 @@
   <div class="weekly-grid">
     <div class="weekly-header">
       <div class="weekly-title">
-        <h3>11월 4주차</h3>
+        <h3>11월 5주차</h3>
         <p>주간 영업 계획</p>
       </div>
       <ul class="person-list">
@@ -25,9 +25,11 @@
         <div class="day-title">24일 <span>(월)</span></div>
         <ul class="day-list">
           <li data-start="09:00" data-end="10:00">
-            한라대학교 (강의커리큐럼 초안 작성 )
-            <span class="badge-green">권</span>
-            <span class="badge-purple">염</span>
+            <a href="#" class="schedule-item" data-id="1">
+              한라대학교 (강의커리큐럼 초안 작성 )
+              <span class="badge-green">권</span>
+              <span class="badge-purple">염</span>
+            </a>
           </li>
           <li data-start="10:00" data-end="11:00">
             브로슈어 우편물 발송 계획 ( 수도권, 선별 외 )
@@ -115,9 +117,109 @@
   </div>
 </div>
 
+<!-- Modal -->
+<div id="scheduleModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>일정 상세</h2>
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+    </div>
+    <div class="modal-body" id="modalBody">
+      <div class="modal-loading">
+        <div class="spinner"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal()">닫기</button>
+      <button class="btn btn-primary">수정</button>
+    </div>
+  </div>
+</div>
 <script src="./assets/js/schedule-manager.min.js"></script>
 <script>
   // 사용
   const scheduleManager = new ScheduleManager();
   scheduleManager.initialize();
+
+  // 모달 열기
+  function openModal(scheduleId) {
+    const modal = document.getElementById("scheduleModal");
+    const modalBody = document.getElementById("modalBody");
+
+    modal.classList.add("active");
+
+    // 로딩 표시
+    modalBody.innerHTML =
+      '<div class="modal-loading"><div class="spinner"></div></div>';
+
+    // AJAX로 상세 정보 가져오기
+    fetchScheduleDetail(scheduleId);
+  }
+
+  // 모달 닫기
+  function closeModal() {
+    const modal = document.getElementById("scheduleModal");
+    modal.classList.remove("active");
+  }
+
+  // AJAX로 calendar.html 페이지 가져오기
+  function fetchScheduleDetail(scheduleId) {
+    const modalBody = document.getElementById("modalBody");
+
+    // calendar.html 페이지를 AJAX로 로드
+    fetch(`calendar.html?id=${scheduleId}`)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("페이지를 불러올 수 없습니다.");
+        }
+        return response.text();
+      })
+      .then((html) => {
+        // 받아온 HTML을 모달에 삽입
+        modalBody.innerHTML = html;
+
+        // calendar.html에 포함된 script 태그 실행
+        const scripts = modalBody.querySelectorAll("script");
+        scripts.forEach((script) => {
+          const newScript = document.createElement("script");
+          if (script.src) {
+            newScript.src = script.src;
+          } else {
+            newScript.textContent = script.textContent;
+          }
+          document.body.appendChild(newScript);
+        });
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        modalBody.innerHTML = `
+            <div style="text-align: center; padding: 40px; color: #ef4444;">
+              <p style="font-size: 16px; margin-bottom: 10px;">페이지를 불러오는데 실패했습니다.</p>
+              <p style="font-size: 14px; color: #9ca3af;">${error.message}</p>
+            </div>
+          `;
+      });
+  }
+
+  // 일정 항목 클릭 이벤트
+  document.addEventListener("DOMContentLoaded", function () {
+    const scheduleItems = document.querySelectorAll(".schedule-item");
+
+    scheduleItems.forEach((item) => {
+      item.addEventListener("click", function (e) {
+        e.preventDefault();
+        console.log("ii");
+        const scheduleId = this.getAttribute("data-id");
+        openModal(scheduleId);
+      });
+    });
+
+    // 모달 배경 클릭시 닫기
+    const modal = document.getElementById("scheduleModal");
+    modal.addEventListener("click", function (e) {
+      if (e.target === modal) {
+        closeModal();
+      }
+    });
+  });
 </script>
