@@ -1,10 +1,9 @@
 :root {
-  --grid-height: calc((var(--window-inner-height) - 80px - 40px) / 3);
-
   /* background */
   --bg-base:
     linear-gradient(180deg, #ece3d2 0%, #b7ac96 84.27%),
     linear-gradient(0deg, #f3efea 0%, #f3efea 100%);
+  --bg-transparent: transparent;
   --bg-section: #f3efea;
 
   --bg-card: #fff;
@@ -62,6 +61,9 @@
     #60b7a6 37.09%,
     #389783 100%
   );
+
+  --bg-chart-area01: rgba(43, 143, 16, 0.3);
+  --bg-chart-area02: rgba(124, 16, 143, 0.3);
   --bg-chart-linearea01: #2b8f10;
   --bg-chart-line01-bullet01: #b1f4a0;
   --bg-chart-line01-bullet02: #2b8f10;

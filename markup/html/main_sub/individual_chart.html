@@ -28,7 +28,7 @@
       <div class="stat-row individual01">
         <div class="label-box">
           <span class="label">누적 판매수</span>
-          <div class="change-up">전월대비 <em>26</em></div>
+          <div class="change-down">전월대비 <em>27</em></div>
         </div>
         <div>
           <span class="big-num">162</span><span class="unit">copy</span>
@@ -37,9 +37,9 @@
       <div class="stat-row">
         <div class="label-box">
           <span class="label">목표 달성률</span>
-          <div class="change-up">전월대비 <em>1</em></div>
+          <div class="change-up">전월대비 <em>15p</em></div>
         </div>
-        <div><span class="big-num">81.0</span><span class="unit">%</span></div>
+        <div><span class="big-num">81</span><span class="unit">%</span></div>
       </div>
     </div>
     <div class="person-box">
@@ -50,7 +50,7 @@
       <div class="stat-row individual02">
         <div class="label-box">
           <span class="label">누적 판매수</span>
-          <div class="change-up">전월대비 <em>73</em></div>
+          <div class="change-up">전월대비 <em>105</em></div>
         </div>
         <div>
           <span class="big-num">508</span><span class="unit">copy</span>
@@ -59,7 +59,7 @@
       <div class="stat-row">
         <div class="label-box">
           <span class="label">목표 달성률</span>
-          <div class="change-up">전월대비 <em>1</em></div>
+          <div class="change-up">전월대비 <em>63p</em></div>
         </div>
         <div><span class="big-num">169.3</span><span class="unit">%</span></div>
       </div>
@@ -83,13 +83,13 @@
             backgroundColor: (ctx) => {
               const a = ctx.chart.chartArea;
               return !a
-                ? "rgba(145,128,80,0.3)"
+                ? cssVar("--bg-chart-area01")
                 : safeGrad(
                     ctx.chart.ctx,
                     a,
                     [
-                      { stop: 0, color: "rgba(145,128,80,0.6)" },
-                      { stop: 1, color: "rgba(145,128,80,0)" },
+                      { stop: 0, color: cssVar("--bg-chart-area01") },
+                      { stop: 1, color: "rgba(255, 255, 255, 0.3)" },
                     ],
                     true
                   );
@@ -106,13 +106,13 @@
             backgroundColor: (ctx) => {
               const a = ctx.chart.chartArea;
               return !a
-                ? "rgba(36,148,115,0.3)"
+                ? cssVar("--bg-chart-area02")
                 : safeGrad(
                     ctx.chart.ctx,
                     a,
                     [
-                      { stop: 0, color: "rgba(36,148,115,0.6)" },
-                      { stop: 1, color: "rgba(36,148,115,0)" },
+                      { stop: 0, color: cssVar("--bg-chart-area02") },
+                      { stop: 1, color: "rgba(255, 255, 255, 0.3)" },
                     ],
                     true
                   );

@@ -78,3 +78,17 @@ const rootStyle = getComputedStyle(document.documentElement);
 function cssVar(name) {
   return rootStyle.getPropertyValue(name).trim();
 }
+
+function fullScreen() {
+  if (!document.fullscreenElement) {
+    // 전체화면이 아닐 경우 -> 전체화면으로
+    document.documentElement.requestFullscreen().catch((err) => {
+      console.log("전체화면 전환 실패:", err);
+    });
+  } else {
+    // 전체화면일 경우 -> 일반 페이지로
+    document.exitFullscreen().catch((err) => {
+      console.log("전체화면 종료 실패:", err);
+    });
+  }
+}

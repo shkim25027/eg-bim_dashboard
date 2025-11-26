@@ -661,13 +661,20 @@ const gaugeValuePlugin = {
 
       if (isSmall) {
         // 좁은 공간: 블렛 + 라인 + 외부 텍스트
-        const bulletR = (innerRadius + outerRadius) / 2;
+        const bulletR = (innerRadius + outerRadius) / 1.75;
         const bulletX = arc.x + Math.cos(midAngle) * bulletR;
         const bulletY = arc.y + Math.sin(midAngle) * bulletR;
 
-        // 블렛 그리기
+        // 블렛 그리기 (흰색 테두리 + 검정 채우기)
         ctx.beginPath();
         ctx.arc(bulletX, bulletY, 3, 0, Math.PI * 2);
+
+        // 흰색 테두리
+        ctx.strokeStyle = "#fff";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        // 검정 채우기
         ctx.fillStyle = "#333";
         ctx.fill();
 
@@ -691,29 +698,46 @@ const gaugeValuePlugin = {
         ctx.stroke();
         ctx.setLineDash([]); // 점선 해제
 
-        // 텍스트
+        // 텍스트 (검정 테두리 + 흰색 채우기)
         ctx.font = "bold 2rem -apple-system, sans-serif";
-        ctx.fillStyle = "#333";
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.fillText(value, textX, textY);
-      } else {
-        // 넓은 공간: 내부에 텍스트
-        ctx.fillStyle = "#fff";
-        ctx.font = "bold 2rem Arial";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
 
-        // 그림자 효과
-        ctx.shadowOffsetX = 1;
-        ctx.shadowOffsetY = 1;
-        ctx.shadowBlur = 3;
-        ctx.shadowColor = "rgba(0, 0, 0, 0.7)";
+        // 그림자 제거
+        ctx.shadowOffsetX = 0;
+        ctx.shadowOffsetY = 0;
+        ctx.shadowBlur = 0;
+
+        // 검정 테두리
+        ctx.strokeStyle = "#000";
+        ctx.lineWidth = 3;
+        ctx.strokeText(value, textX, textY);
+
+        // 흰색 채우기
+        ctx.fillStyle = "#fff";
+        ctx.fillText(value, textX, textY);
+      } else {
+        // 넓은 공간: 내부에 텍스트
+        ctx.font = "bold 2rem Arial";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
 
         const radius = (innerRadius + outerRadius) / 2;
         const x = arc.x + Math.cos(midAngle) * radius;
         const y = arc.y + Math.sin(midAngle) * radius;
 
+        // 그림자 제거
+        ctx.shadowOffsetX = 0;
+        ctx.shadowOffsetY = 0;
+        ctx.shadowBlur = 0;
+
+        // 검정 테두리
+        ctx.strokeStyle = "#000";
+        ctx.lineWidth = 3;
+        ctx.strokeText(value, x, y);
+
+        // 흰색 채우기
+        ctx.fillStyle = "#fff";
         ctx.fillText(value, x, y);
       }
     });
