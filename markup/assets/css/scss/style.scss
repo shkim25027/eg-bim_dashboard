@@ -160,7 +160,8 @@ $grid-heights: (
     grid-template-rows: $sales-header 96fr 516fr;
 
     .card-body {
-      @include flex();
+      flex-direction: row-reverse;
+      @include flex(center, space-between);
     }
 
     .chart-wrap {
@@ -176,7 +177,7 @@ $grid-heights: (
 
       .legend {
         position: absolute;
-        right: 24px;
+        right: 16px;
         top: 6px;
         z-index: 1;
       }
@@ -784,7 +785,9 @@ $grid-heights: (
 .sales {
   .person {
     &-list {
-      align-self: flex-end;
+      padding-top: 12px;
+      padding-right: 24px;
+      align-self: center;
       flex-direction: column;
       gap: 4px;
       @include flex();
@@ -850,15 +853,25 @@ $grid-heights: (
     display: flex;
     align-items: flex-end;
     padding: 0;
+    &.closing {
+      animation: fadeIn 0.3s;
+      animation-iteration-count: 1;
+      .modal-content {
+        animation: slideDown 0.4s ease-out forwards;
+      }
+    }
   }
   .modal {
     &-content {
       max-width: 100%;
+      max-height: calc(var(--window-inner-height) - 80px);
       border-radius: 32px 32px 0 0;
       border-top: 3px solid #fff;
       background: var(--bg-calendar);
       box-shadow: 0 -3px 30px 0 rgba(0, 0, 0, 0.8);
+      transform: translateY(100%);
       overflow: hidden;
+      animation: slideUp 0.4s ease-out forwards;
     }
     &-header {
       padding: 0 24px;
@@ -920,7 +933,8 @@ $grid-heights: (
   .date-navigation {
     gap: 24px;
     @include flex();
-    .nav-btn {
+    .prev-btn,
+    .next-btn {
       width: 32px;
       height: 32px;
       padding: 8px 12px;
@@ -928,8 +942,18 @@ $grid-heights: (
       border-radius: 50px;
       border: 1px solid rgba(0, 0, 0, 0.4);
       background: linear-gradient(180deg, #f0f0f0 0%, #e1e0de 100%);
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: 8px auto;
       box-shadow: 0 1px 2px 1px rgba(0, 0, 0, 0.2);
+      @include textBlind();
       @include flex();
+    }
+    .prev-btn {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='15' viewBox='0 0 9 15' fill='none'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M2.6859 7.5L9 1.45612L7.83532 -1.0182e-07L2.98003e-07 7.5L7.83532 15L9 13.5439L2.6859 7.5Z' fill='%23424242'/%3E%3C/svg%3E");
+    }
+    .next-btn {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='15' viewBox='0 0 9 15' fill='none'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M6.3141 7.5L1.27298e-07 1.45612L1.16468 -1.0182e-07L9 7.5L1.16468 15L1.18404e-06 13.5439L6.3141 7.5Z' fill='%23424242'/%3E%3C/svg%3E");
     }
   }
   .current-date {
@@ -980,28 +1004,36 @@ $grid-heights: (
     }
   }
   .calendar-days {
-    height: calc(var(--window-inner-height) - 160px);
+    height: calc(var(--window-inner-height) - 194px);
     overflow-y: auto;
   }
   .days {
+    &.collapsed {
+      display: grid;
+      height: calc(var(--window-inner-height) - 194px);
+      max-height: none;
+      overflow: hidden;
+      .week {
+        &:not(.current-week-row) {
+          min-height: 0;
+          overflow: hidden;
+          .day {
+            overflow: hidden;
+          }
+        }
+      }
+    }
+  }
+  .week {
     display: grid;
     grid-template-columns: minmax(100px, 5.2083%) repeat(5, 1fr) minmax(
         100px,
         5.2083%
       );
-    height: 100%;
-    &.collapsed {
-      grid-auto-rows: 1fr;
-      max-height: none;
-      overflow-y: visible;
-      .day {
-        min-height: 0;
-        height: 100%;
-        overflow: hidden;
-        &:not(.current-week) {
-          overflow: hidden;
-        }
-      }
+    min-height: 100px;
+    &.current-week-row {
+      box-shadow: 0 0 32px 0 rgba(0, 0, 0, 0.15);
+      height: max-content;
     }
     .day {
       padding: 8px 8px 16px 8px;
@@ -1012,19 +1044,21 @@ $grid-heights: (
         opacity: 0.5;
       }
       &.current-week {
-        position: relative;
         height: auto;
         background: #fff;
-        &:nth-last-of-type(1) {
-          &::before {
-            content: " ";
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 100vw;
-            height: 100%;
-            box-shadow: 0 0 32px 0 rgba(0, 0, 0, 0.15);
-          }
+      }
+      &.first-current-week {
+        position: relative;
+
+        &::before {
+          content: " ";
+          display: block;
+          position: absolute;
+          left: 0;
+          top: 0;
+          width: 100vw;
+          height: 100%;
+          box-shadow: 0 0 32px 0 rgba(0, 0, 0, 0.15);
         }
       }
       &:not(:nth-child(7n + 1)) {
@@ -1081,5 +1115,31 @@ $grid-heights: (
       align-items: center;
       justify-content: center;
     }
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(100%);
   }
 }

@@ -17,9 +17,9 @@
       </div>
 
       <div class="date-navigation">
-        <button class="nav-btn" id="prevMonth">‹</button>
+        <button class="prev-btn" id="prevMonth">‹</button>
         <div class="current-date" id="currentDate">2025.11</div>
-        <button class="nav-btn" id="nextMonth">›</button>
+        <button class="next-btn" id="nextMonth">›</button>
       </div>
 
       <div class="flex">
@@ -370,6 +370,24 @@
           calendarDaysEl.classList.add("collapsed");
         } else {
           calendarDaysEl.classList.remove("collapsed");
+
+          // 스크롤을 맨 아래로 이동
+          setTimeout(() => {
+            const scheduleList = document.querySelector(".calendar-days");
+            const scheduleItem = document.querySelector(".current-week-row");
+            if (scheduleList && scheduleItem) {
+              // 현재 주가 보이도록 + 살짝 아래로 여유 있게
+              scheduleList.scrollTo({
+                top:
+                  scheduleItem.offsetTop -
+                  scheduleList.offsetHeight / 2 +
+                  scheduleItem.offsetHeight / 2,
+                // 또는 그냥 맨 아래로 내리고 싶으면:
+                // top: scheduleList.scrollHeight,
+                behavior: "smooth",
+              });
+            }
+          }, 100);
         }
       });
     });
@@ -407,7 +425,30 @@
       const lastDate = lastDay.getDate();
       const prevLastDate = prevLastDay.getDate();
 
-      let days = "";
+      // 오늘 날짜의 주차 계산
+      const today = new Date();
+      let todayWeekStart = -1;
+      let todayWeekEnd = -1;
+
+      for (let i = 1; i <= lastDate; i++) {
+        const isToday =
+          i === today.getDate() &&
+          currentMonth === today.getMonth() &&
+          currentYear === today.getFullYear();
+
+        if (isToday) {
+          const currentDate = new Date(currentYear, currentMonth, i);
+          const dayOfWeek = currentDate.getDay();
+          todayWeekStart = i - dayOfWeek;
+          todayWeekEnd = i + (6 - dayOfWeek);
+          break;
+        }
+      }
+
+      let weeks = "";
+      let currentWeekDays = "";
+      let dayCount = 0;
+      let weekNumber = 0;
 
       // Previous month days
       const prevMonth = currentMonth === 0 ? 11 : currentMonth - 1;
@@ -433,39 +474,21 @@
             .join("");
 
           eventsHtml += `
-                        <div class="event-item">
-                            ${event.time ? `<span class="event-time">${event.time}</span>` : ""}
-                            <span class="event-title">${event.title}${tagsHtml}</span>
-                        </div>
-                    `;
+        <div class="event-item">
+            ${event.time ? `<span class="event-time">${event.time}</span>` : ""}
+            <span class="event-title">${event.title}${tagsHtml}</span>
+        </div>
+      `;
         });
 
-        days += `<div class="day other-month">
-                    <div class="day-number">${dayNum}</div>
-                    <div class="day-content">${eventsHtml}</div>
-                </div>`;
+        currentWeekDays += `<div class="day other-month">
+        <div class="day-number">${dayNum}</div>
+        <div class="day-content">${eventsHtml}</div>
+    </div>`;
+        dayCount++;
       }
 
       // Current month days
-      const today = new Date();
-      let todayWeekStart = -1;
-      let todayWeekEnd = -1;
-
-      for (let i = 1; i <= lastDate; i++) {
-        const isToday =
-          i === today.getDate() &&
-          currentMonth === today.getMonth() &&
-          currentYear === today.getFullYear();
-
-        if (isToday) {
-          const currentDate = new Date(currentYear, currentMonth, i);
-          const dayOfWeek = currentDate.getDay();
-          todayWeekStart = i - dayOfWeek;
-          todayWeekEnd = i + (6 - dayOfWeek);
-          break;
-        }
-      }
-
       for (let i = 1; i <= lastDate; i++) {
         const isToday =
           i === today.getDate() &&
@@ -493,17 +516,29 @@
             .join("");
 
           eventsHtml += `
-                        <div class="event-item">
-                            ${event.time ? `<span class="event-time">${event.time}</span>` : ""}
-                            <span class="event-title">${event.title}${tagsHtml}</span>
-                        </div>
-                    `;
+        <div class="event-item">
+            ${event.time ? `<span class="event-time">${event.time}</span>` : ""}
+            <span class="event-title">${event.title}${tagsHtml}</span>
+        </div>
+      `;
         });
 
-        days += `<div class="day ${isToday ? "today" : ""} ${isCurrentWeek ? "current-week" : ""}">
-                    <div class="day-number">${i}</div>
-                    <div class="day-content">${eventsHtml}</div>
-                </div>`;
+        currentWeekDays += `<div class="day ${isToday ? "today" : ""} ${isCurrentWeek ? "current-week" : ""}">
+        <div class="day-number">${i}</div>
+        <div class="day-content">${eventsHtml}</div>
+    </div>`;
+        dayCount++;
+
+        // 7일마다 한 주 완성
+        if (dayCount === 7) {
+          const hasCurrentWeek =
+            currentWeekDays.includes('class="day today"') ||
+            currentWeekDays.includes("current-week");
+          weeks += `<div class="week ${hasCurrentWeek ? "current-week-row" : ""}">${currentWeekDays}</div>`;
+          currentWeekDays = "";
+          dayCount = 0;
+          weekNumber++;
+        }
       }
 
       // Next month days
@@ -530,20 +565,28 @@
             .join("");
 
           eventsHtml += `
-                        <div class="event-item">
-                            ${event.time ? `<span class="event-time">${event.time}</span>` : ""}
-                            <span class="event-title">${event.title}${tagsHtml}</span>
-                        </div>
-                    `;
+        <div class="event-item">
+            ${event.time ? `<span class="event-time">${event.time}</span>` : ""}
+            <span class="event-title">${event.title}${tagsHtml}</span>
+        </div>
+      `;
         });
 
-        days += `<div class="day other-month">
-                    <div class="day-number">${i}</div>
-                    <div class="day-content">${eventsHtml}</div>
-                </div>`;
+        currentWeekDays += `<div class="day other-month">
+        <div class="day-number">${i}</div>
+        <div class="day-content">${eventsHtml}</div>
+    </div>`;
+        dayCount++;
+
+        // 7일마다 한 주 완성
+        if (dayCount === 7) {
+          weeks += `<div class="week">${currentWeekDays}</div>`;
+          currentWeekDays = "";
+          dayCount = 0;
+        }
       }
 
-      calendarDays.innerHTML = days;
+      calendarDays.innerHTML = weeks;
 
       document.querySelectorAll(".day:not(.other-month)").forEach((day) => {
         day.addEventListener("click", function () {
