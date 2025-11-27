@@ -1,0 +1,570 @@
+<div id="scheduleModal" class="modal calendar">
+  <div class="modal-content">
+    <div class="modal-header">
+      <div class="filter-options">
+        <div class="checkbox-group green">
+          <input type="checkbox" id="check1" checked />
+          <label for="check1">권혁진 수석</label>
+        </div>
+        <div class="checkbox-group purple">
+          <input type="checkbox" id="check2" checked />
+          <label for="check2">염승은 수석</label>
+        </div>
+        <div class="checkbox-group teal">
+          <input type="checkbox" id="check3" checked />
+          <label for="check3">김지영 선임</label>
+        </div>
+      </div>
+
+      <div class="date-navigation">
+        <button class="nav-btn" id="prevMonth">‹</button>
+        <div class="current-date" id="currentDate">2025.11</div>
+        <button class="nav-btn" id="nextMonth">›</button>
+      </div>
+
+      <div class="flex">
+        <div class="toggle-area">
+          <input type="radio" id="option1" name="toggle" value="접기" checked />
+          <label for="option1">접기</label>
+
+          <input type="radio" id="option2" name="toggle" value="펼치기" />
+          <label for="option2">펼치기</label>
+          <div class="toggle-slider"></div>
+        </div>
+        <button class="modal-close" onclick="closeModal()">&times;</button>
+      </div>
+    </div>
+    <div class="modal-body" id="modalBody">
+      <div class="weekdays">
+        <div class="weekday">일</div>
+        <div class="weekday">월</div>
+        <div class="weekday">화</div>
+        <div class="weekday">수</div>
+        <div class="weekday">목</div>
+        <div class="weekday">금</div>
+        <div class="weekday">토</div>
+      </div>
+      <div class="calendar-days">
+        <div class="days collapsed" id="calendarDays"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  const eventsData = {
+    "2025-10-31": [{ time: "", title: "영업 방문", tags: ["권"] }],
+    "2025-11-03": [
+      { time: "", title: "EG-BIM V1.2.0 업데이트 준비 대응", tags: ["권"] },
+      {
+        time: "",
+        title: "리더스 15:00 화성인터뷰 연락 (게임설정 작성)",
+        tags: ["염"],
+      },
+      { time: "", title: "예일전공 후 유진꺼내기", tags: ["김"] },
+    ],
+    "2025-11-04": [
+      { time: "", title: "더블엔지니어링", tags: ["권"] },
+      { time: "", title: "선인(예상)", tags: ["염"] },
+      { time: "", title: "게이밍초점 ID&PW 생성(A)", tags: ["김"] },
+    ],
+    "2025-11-05": [
+      {
+        time: "12:00~14:00",
+        title: "현내대 (환복 구조부 부사장님 방문)",
+        tags: ["권"],
+      },
+      { time: "15:00~16:00", title: "대현대 (이진형교수)", tags: ["김"] },
+      {
+        time: "16:00~18:00",
+        title: "한경인미디어 (게임영화 및 EG-BIM 소개)",
+        tags: ["염"],
+      },
+      { time: "", title: "안양, 과천, 방문일박 선정", tags: ["김"] },
+      { time: "", title: "캐드데필콜 가격정보 취수박", tags: ["염"] },
+      {
+        time: "",
+        title: "가족식 부산팀 CAD 프로그램 사용현황 파악",
+        tags: ["권"],
+      },
+    ],
+    "2025-11-06": [
+      { time: "09:00~10:00", title: "피엘근건너너너님", tags: ["염"] },
+      { time: "11:00~12:00", title: "영양대선거 이공리", tags: ["권", "김"] },
+      {
+        time: "",
+        title:
+          "삼양 CM현장 방문일박 : 통복공관외수권지석 횔 (KG, 강인, 세철 : 9명 이장가능)",
+        tags: ["염"],
+      },
+    ],
+    "2025-11-07": [
+      {
+        time: "14:00~15:00",
+        title: "미어디스아이더 게임월외 (가덕중)",
+        tags: ["김", "염"],
+      },
+      { time: "", title: "삼양 & 한백 CM현장 방문일박", tags: ["권"] },
+      {
+        time: "",
+        title: "구조기술사람 합격사람 단소사람 창업자",
+        tags: ["권"],
+      },
+      { time: "", title: "인덱유전 교수님 변화식 합의", tags: ["염"] },
+    ],
+    "2025-11-10": [
+      {
+        time: "10:00~12:00",
+        title: "큰길 게임자 최승리팀",
+        tags: ["김", "염"],
+      },
+      { time: "15:00~16:00", title: "시장님 영업방교고", tags: ["권", "김"] },
+      { time: "17:00~18:00", title: "강화대선거드 작업", tags: ["염"] },
+    ],
+    "2025-11-11": [
+      {
+        time: "10:30~11:30",
+        title:
+          "삼양 CM현장 : 통복공관외수지 러시식, 잠백 플러기전임(공동도급보림 5계사) 리터",
+        tags: ["김"],
+      },
+      {
+        time: "13:00~14:000",
+        title:
+          "관리비수자 숙가 숨칼공사식 등 7 개조 동림감사식업리더 (동명가슬공업 외) 감민코러자",
+        tags: ["권", "김"],
+      },
+      { time: "15:00~16:00", title: "서럼수백코리", tags: ["김"] },
+      { time: "", title: "영갈네선거드 기획", tags: ["권"] },
+      { time: "", title: "DREAM PLUS", tags: ["권"] },
+    ],
+    "2025-11-12": [
+      { time: "13:00~14:00", title: "대전대 유병주 교수", tags: ["권"] },
+      { time: "15:00~16:00", title: "우승대 언어교고수", tags: ["김"] },
+      { time: "17:00~18:00", title: "CIVIL EXPO 방자실석설", tags: ["권"] },
+      {
+        time: "17:00~18:00",
+        title: "한국형일자너너이어림 기획팀 방본",
+        tags: ["권"],
+      },
+      { time: "", title: "합전성(중숙): 오전", tags: ["김"] },
+    ],
+    "2025-11-13": [
+      {
+        time: "14:00~15:00",
+        title: "니오스푸트 (연구소 팀장, 유신 팀전)",
+        tags: ["김"],
+      },
+      { time: "", title: "업무지침 (칭찬식임, 일진공정)", tags: ["염"] },
+      { time: "", title: "CIVIL EXPO 참석", tags: ["권"] },
+      {
+        time: "",
+        title: "영일 대선너드 기획 (9,10팀 영업내대 전임)",
+        tags: ["권"],
+      },
+    ],
+    "2025-11-14": [
+      {
+        time: "10:00~11:00",
+        title: "피엘근, 오토데스크 이숙 연석팀 미팀",
+        tags: ["김"],
+      },
+      { time: "", title: "CIVIL EXPO 참석", tags: ["권"] },
+      {
+        time: "",
+        title: "각 부서 주사용 DREAM PLUS 영업아 게임",
+        tags: ["김"],
+      },
+    ],
+    "2025-11-17": [
+      { time: "", title: "의공도시공식 (MOU 초안 작성)", tags: ["권", "김"] },
+      {
+        time: "",
+        title: "한국대대교 (강화대게임팀 초안 작성)",
+        tags: ["권", "염"],
+      },
+      { time: "", title: "인덕유전 DB 작업", tags: ["염"] },
+      { time: "", title: "영양대선거드 DB 작업", tags: ["김"] },
+    ],
+    "2025-11-18": [
+      { time: "13:30", title: "인더대 김수전교수", tags: ["권"] },
+      {
+        time: "14:00~15:00",
+        title:
+          "Smart Construction x OSC x SKECT (오토데스크 인터뷰 3계사, 인 보수업 외)",
+        tags: ["염"],
+      },
+      { time: "17:00~18:00", title: "인덕유전 낙선보교수", tags: ["권"] },
+      { time: "", title: "인진사전", tags: ["권"] },
+      {
+        time: "",
+        title: "회원코리스트팀 flow작성(EG-BIM / KNGIL)",
+        tags: ["김"],
+      },
+    ],
+    "2025-11-19": [
+      {
+        time: "11:00~12:00",
+        title:
+          "폐현문지너이어림 토목사업팀 및 도담대생식 토목내생식 (복팀전 다 연신) 3강수식 칭찬구 1숨보로 1896년밀 20 년킹",
+        tags: ["김"],
+      },
+      {
+        time: "13:00~14:00",
+        title:
+          "중아기슬단 일전선팀널 방문팀 외(중숙) 3강수식 팀수구 풀리도 150년밀 28",
+        tags: ["권"],
+      },
+      {
+        time: "13:00~14:00",
+        title: "중아기슬단 중주간 팀 방문 외(중숙)",
+        tags: ["권"],
+      },
+      { time: "", title: "중아기슬로 김슬긴 보팀닙", tags: ["김"] },
+      {
+        time: "",
+        title: "회원코리스트팀 flow작성(EG-BIM / KNGIL)",
+        tags: ["권"],
+      },
+      { time: "", title: "대팀네 게정 생성(10copy)", tags: ["권"] },
+      {
+        time: "",
+        title: "드림포러스 주사용 영업아 가팀식 조식 시트 작업",
+        tags: ["권"],
+      },
+    ],
+    "2025-11-20": [
+      {
+        time: "11:00~12:00",
+        title:
+          "삼양 CM현장 : 대건선거단지석 숨직림식... (대길 가슬 토목내생식) 및 사 대대구 대책로 150년길 147-10",
+        tags: ["김", "염"],
+      },
+      {
+        time: "15:00~16:00",
+        title:
+          "삼양 CM현장 : 대건다경제석숙 도느뭄... (설수 / 도오 일자석선박)중수식 숙 석구업석 67",
+        tags: ["김", "염"],
+      },
+      { time: "", title: "폐현교감식 flow보로", tags: ["김", "권"] },
+      {
+        time: "",
+        title: "드림포러스 주사용 영업아 가팀식 조식 시트 작업",
+        tags: ["김"],
+      },
+      { time: "", title: "게이어스메 게정 생성(10copy)", tags: ["김"] },
+    ],
+    "2025-11-21": [
+      {
+        time: "10:00~11:00",
+        title: "삼영낙 영업보고고 (팀 세미나)",
+        tags: ["권", "김"],
+      },
+      { time: "", title: "대현대 대석립식 낙설공럼 작업", tags: ["권"] },
+      { time: "", title: "회원코리스목 flow보로", tags: ["권"] },
+      { time: "", title: "토건 평현코리 시스팀 flow 보로", tags: ["김"] },
+      { time: "", title: "호건교과이어 교육실 EG-BIM 설지", tags: ["김"] },
+    ],
+    "2025-11-24": [
+      {
+        time: "",
+        title: "한건대대교 (강화대게임팀 초안 작성)",
+        tags: ["염", "권"],
+      },
+      {
+        time: "",
+        title: "브로존자 우분도 팀콜 게팀 (오드로, 선박 외)",
+        tags: ["김", "권"],
+      },
+      { time: "", title: "교육기관 미게팀 보고서 작성", tags: ["권"] },
+      {
+        time: "",
+        title: "교육기관 EG-BIM 라이선스 배포 탐발 보고서 작성",
+        tags: ["김"],
+      },
+      {
+        time: "",
+        title: "대현대대교 탐험 기개로 지석 사팀 작석",
+        tags: ["권"],
+      },
+    ],
+    "2025-11-25": [
+      {
+        time: "10:30~11:30",
+        title:
+          "삼양 CM현장 : 해안, 방신(오리) 공관외수권지식 , 낙뭄 외부사정낙 (강일콜 벌미식보 영미식보 방부식보 110년밀 14)",
+        tags: ["김", "염"],
+      },
+      {
+        time: "13:00~14:00",
+        title: "삼지대, 지납공정협석 미만",
+        tags: ["김", "염"],
+      },
+    ],
+    "2025-11-26": [
+      {
+        time: "10:30~11:30",
+        title: "한국형일가임 (초림도부각 - 김 박사전님오, 폐현로수석님 외)",
+        tags: ["권"],
+      },
+      {
+        time: "14:00~15:00",
+        title: "이랩 대토이사낙 면닙삼양 CM현 장 6개소 방문일박 보고식",
+        tags: ["김"],
+      },
+      { time: "16:00~17:00", title: "이랑선석 방문, 미게팀 외", tags: ["염"] },
+      { time: "16:00~17:00", title: "의공도시공식 MOU보급", tags: ["김"] },
+      { time: "", title: "삼양 (서울대 교육 지석)", tags: ["김"] },
+    ],
+    "2025-11-27": [
+      {
+        time: "15:00~16:00",
+        title: "시칭낙 영업보교고, (PM 팀동 ) 교육기기, 폐현, 디기프로그팀 외",
+        tags: ["권", "김", "염"],
+      },
+      { time: "", title: "시석 (팀 데이터)", tags: ["권", "김"] },
+    ],
+  };
+</script>
+<script>
+  const radios = document.querySelectorAll('input[name="toggle"]');
+
+  radios.forEach((radio) => {
+    radio.addEventListener("change", (e) => {
+      const calendarDaysEl = document.getElementById("calendarDays");
+      if (e.target.value === "접기") {
+        calendarDaysEl.classList.add("collapsed");
+      } else {
+        calendarDaysEl.classList.remove("collapsed");
+      }
+    });
+  });
+
+  // 모달 배경 클릭시 닫기
+  const modal = document.getElementById("scheduleModal");
+  modal.addEventListener("click", function (e) {
+    if (e.target === modal) {
+      closeModal();
+    }
+  });
+</script>
+<script>
+  let currentYear = 2025;
+  let currentMonth = 10;
+  let selectedFilters = ["green", "purple", "teal"];
+
+  const tagMapping = {
+    권: "green",
+    염: "purple",
+    김: "teal",
+  };
+
+  function renderCalendar() {
+    const calendarDays = document.getElementById("calendarDays");
+    const currentDate = document.getElementById("currentDate");
+
+    currentDate.textContent = `${currentYear}.${String(currentMonth + 1).padStart(2, "0")}`;
+
+    const firstDay = new Date(currentYear, currentMonth, 1);
+    const lastDay = new Date(currentYear, currentMonth + 1, 0);
+    const prevLastDay = new Date(currentYear, currentMonth, 0);
+
+    const firstDayOfWeek = firstDay.getDay();
+    const lastDate = lastDay.getDate();
+    const prevLastDate = prevLastDay.getDate();
+
+    let days = "";
+
+    // Previous month days
+    const prevMonth = currentMonth === 0 ? 11 : currentMonth - 1;
+    const prevYear = currentMonth === 0 ? currentYear - 1 : currentYear;
+
+    for (let i = firstDayOfWeek - 1; i >= 0; i--) {
+      const dayNum = prevLastDate - i;
+      const dateKey = `${prevYear}-${String(prevMonth + 1).padStart(2, "0")}-${String(dayNum).padStart(2, "0")}`;
+      const dayEvents = eventsData[dateKey] || [];
+
+      const filteredEvents = dayEvents.filter((event) =>
+        event.tags.some((tag) => selectedFilters.includes(tagMapping[tag]))
+      );
+
+      let eventsHtml = "";
+      filteredEvents.forEach((event) => {
+        const tagsHtml = event.tags
+          .filter((tag) => selectedFilters.includes(tagMapping[tag]))
+          .map(
+            (tag) =>
+              `<span class="event-tag badge-${tagMapping[tag]}">${tag}</span>`
+          )
+          .join("");
+
+        eventsHtml += `
+                        <div class="event-item">
+                            ${event.time ? `<span class="event-time">${event.time}</span>` : ""}
+                            <span class="event-title">${event.title}${tagsHtml}</span>
+                        </div>
+                    `;
+      });
+
+      days += `<div class="day other-month">
+                    <div class="day-number">${dayNum}</div>
+                    <div class="day-content">${eventsHtml}</div>
+                </div>`;
+    }
+
+    // Current month days
+    const today = new Date();
+    let todayWeekStart = -1;
+    let todayWeekEnd = -1;
+
+    for (let i = 1; i <= lastDate; i++) {
+      const isToday =
+        i === today.getDate() &&
+        currentMonth === today.getMonth() &&
+        currentYear === today.getFullYear();
+
+      if (isToday) {
+        const currentDate = new Date(currentYear, currentMonth, i);
+        const dayOfWeek = currentDate.getDay();
+        todayWeekStart = i - dayOfWeek;
+        todayWeekEnd = i + (6 - dayOfWeek);
+        break;
+      }
+    }
+
+    for (let i = 1; i <= lastDate; i++) {
+      const isToday =
+        i === today.getDate() &&
+        currentMonth === today.getMonth() &&
+        currentYear === today.getFullYear();
+
+      const isCurrentWeek =
+        i >= todayWeekStart && i <= todayWeekEnd && todayWeekStart > 0;
+
+      const dateKey = `${currentYear}-${String(currentMonth + 1).padStart(2, "0")}-${String(i).padStart(2, "0")}`;
+      const dayEvents = eventsData[dateKey] || [];
+
+      const filteredEvents = dayEvents.filter((event) =>
+        event.tags.some((tag) => selectedFilters.includes(tagMapping[tag]))
+      );
+
+      let eventsHtml = "";
+      filteredEvents.forEach((event) => {
+        const tagsHtml = event.tags
+          .filter((tag) => selectedFilters.includes(tagMapping[tag]))
+          .map(
+            (tag) =>
+              `<span class="event-tag badge-${tagMapping[tag]}">${tag}</span>`
+          )
+          .join("");
+
+        eventsHtml += `
+                        <div class="event-item">
+                            ${event.time ? `<span class="event-time">${event.time}</span>` : ""}
+                            <span class="event-title">${event.title}${tagsHtml}</span>
+                        </div>
+                    `;
+      });
+
+      days += `<div class="day ${isToday ? "today" : ""} ${isCurrentWeek ? "current-week" : ""}">
+                    <div class="day-number">${i}</div>
+                    <div class="day-content">${eventsHtml}</div>
+                </div>`;
+    }
+
+    // Next month days
+    const nextMonth = currentMonth === 11 ? 0 : currentMonth + 1;
+    const nextYear = currentMonth === 11 ? currentYear + 1 : currentYear;
+    const remainingDays = 42 - (firstDayOfWeek + lastDate);
+
+    for (let i = 1; i <= remainingDays; i++) {
+      const dateKey = `${nextYear}-${String(nextMonth + 1).padStart(2, "0")}-${String(i).padStart(2, "0")}`;
+      const dayEvents = eventsData[dateKey] || [];
+
+      const filteredEvents = dayEvents.filter((event) =>
+        event.tags.some((tag) => selectedFilters.includes(tagMapping[tag]))
+      );
+
+      let eventsHtml = "";
+      filteredEvents.forEach((event) => {
+        const tagsHtml = event.tags
+          .filter((tag) => selectedFilters.includes(tagMapping[tag]))
+          .map(
+            (tag) =>
+              `<span class="event-tag badge-${tagMapping[tag]}">${tag}</span>`
+          )
+          .join("");
+
+        eventsHtml += `
+                        <div class="event-item">
+                            ${event.time ? `<span class="event-time">${event.time}</span>` : ""}
+                            <span class="event-title">${event.title}${tagsHtml}</span>
+                        </div>
+                    `;
+      });
+
+      days += `<div class="day other-month">
+                    <div class="day-number">${i}</div>
+                    <div class="day-content">${eventsHtml}</div>
+                </div>`;
+    }
+
+    calendarDays.innerHTML = days;
+
+    document.querySelectorAll(".day:not(.other-month)").forEach((day) => {
+      day.addEventListener("click", function () {
+        document
+          .querySelectorAll(".day")
+          .forEach((d) => d.classList.remove("selected"));
+        this.classList.add("selected");
+      });
+    });
+  }
+
+  document.getElementById("prevMonth").addEventListener("click", () => {
+    currentMonth--;
+    if (currentMonth < 0) {
+      currentMonth = 11;
+      currentYear--;
+    }
+    renderCalendar();
+  });
+
+  document.getElementById("nextMonth").addEventListener("click", () => {
+    currentMonth++;
+    if (currentMonth > 11) {
+      currentMonth = 0;
+      currentYear++;
+    }
+    renderCalendar();
+  });
+
+  // 필터 체크박스
+  const filterCheckboxes = document.querySelectorAll(
+    '.filter-options input[type="checkbox"]'
+  );
+  filterCheckboxes.forEach((checkbox) => {
+    checkbox.addEventListener("change", () => {
+      selectedFilters = Array.from(filterCheckboxes)
+        .filter((cb) => cb.checked)
+        .map((cb) => cb.value);
+      renderCalendar();
+    });
+  });
+
+  // 접기/펼치기 토글
+  const calendarDaysEl = document.getElementById("calendarDays");
+  const toggleRadios = document.querySelectorAll('input[name="toggle"]');
+
+  toggleRadios.forEach((radio) => {
+    radio.addEventListener("change", (e) => {
+      if (e.target.value === "접기") {
+        calendarDaysEl.classList.add("collapsed");
+      } else {
+        calendarDaysEl.classList.remove("collapsed");
+      }
+    });
+  });
+
+  calendarDaysEl.classList.add("collapsed");
+  renderCalendar();
+</script>

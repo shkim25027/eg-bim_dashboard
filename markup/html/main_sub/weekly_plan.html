@@ -1,4 +1,4 @@
-<div class="main-weekly weekly">
+<div class="main-weekly weekly" id="weekly">
   <div class="weekly-grid">
     <div class="weekly-header">
       <div class="weekly-title">
@@ -94,7 +94,7 @@
       <div class="day-card" data-date="2025-11-27">
         <div class="day-title">27일 <span>(목)</span></div>
         <ul class="day-list">
-          <li data-start="15:00" data-end="17:00">
+          <li data-start="12:00" data-end="17:00">
             15:00 ~ 17:00 사장님 영업보고 ( PM 활용 ) 교육기관, 가격정책,
             기능개선, 단가프로그램 등
             <span class="badge-green">권</span>
@@ -117,90 +117,76 @@
   </div>
 </div>
 
-<!-- Modal -->
-<div id="scheduleModal" class="modal">
-  <div class="modal-content">
-    <div class="modal-header">
-      <h2>일정 상세</h2>
-      <button class="modal-close" onclick="closeModal()">&times;</button>
-    </div>
-    <div class="modal-body" id="modalBody">
-      <div class="modal-loading">
-        <div class="spinner"></div>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-secondary" onclick="closeModal()">닫기</button>
-      <button class="btn btn-primary">수정</button>
-    </div>
-  </div>
-</div>
 <script src="./assets/js/schedule-manager.min.js"></script>
 <script>
   // 사용
   const scheduleManager = new ScheduleManager();
   scheduleManager.initialize();
 
+  let isCalendarLoaded = false;
   // 모달 열기
-  function openModal(scheduleId) {
-    const modal = document.getElementById("scheduleModal");
-    const modalBody = document.getElementById("modalBody");
+  function openModal() {
+    const existingModal = document.getElementById("scheduleModal");
 
-    modal.classList.add("active");
+    // 기존 모달이 있으면 제거
+    if (existingModal) {
+      existingModal.remove();
+    }
 
-    // 로딩 표시
-    modalBody.innerHTML =
-      '<div class="modal-loading"><div class="spinner"></div></div>';
-
-    // AJAX로 상세 정보 가져오기
-    fetchScheduleDetail(scheduleId);
+    // 항상 새로 로드 (데이터 최신화)
+    fetchScheduleDetail();
   }
 
   // 모달 닫기
   function closeModal() {
     const modal = document.getElementById("scheduleModal");
-    modal.classList.remove("active");
+    modal.remove();
   }
 
   // AJAX로 calendar.html 페이지 가져오기
-  function fetchScheduleDetail(scheduleId) {
-    const modalBody = document.getElementById("modalBody");
+  function fetchScheduleDetail() {
+    const weekly = document.getElementById("weekly");
 
-    // calendar.html 페이지를 AJAX로 로드
-    fetch(`calendar.html?id=${scheduleId}`)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("페이지를 불러올 수 없습니다.");
-        }
-        return response.text();
-      })
+    fetch(`/main_sub/calendar.html`)
+      .then((response) => response.text())
       .then((html) => {
-        // 받아온 HTML을 모달에 삽입
-        modalBody.innerHTML = html;
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, "text/html");
+        const content = doc.body.childNodes;
 
-        // calendar.html에 포함된 script 태그 실행
-        const scripts = modalBody.querySelectorAll("script");
-        scripts.forEach((script) => {
-          const newScript = document.createElement("script");
-          if (script.src) {
-            newScript.src = script.src;
-          } else {
-            newScript.textContent = script.textContent;
-          }
-          document.body.appendChild(newScript);
+        content.forEach((node) => {
+          weekly.append(node.cloneNode(true));
         });
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-        modalBody.innerHTML = `
-            <div style="text-align: center; padding: 40px; color: #ef4444;">
-              <p style="font-size: 16px; margin-bottom: 10px;">페이지를 불러오는데 실패했습니다.</p>
-              <p style="font-size: 14px; color: #9ca3af;">${error.message}</p>
-            </div>
-          `;
+
+        // 🔑 핵심: script는 한 번만 로드
+        if (!isCalendarLoaded) {
+          const scripts = doc.querySelectorAll("script");
+          scripts.forEach((script) => {
+            const newScript = document.createElement("script");
+            if (script.src) {
+              newScript.src = script.src;
+            } else {
+              newScript.textContent = script.textContent;
+            }
+            document.body.appendChild(newScript);
+          });
+          isCalendarLoaded = true;
+        } else {
+          // 두 번째부터는 직접 스크립트 실행
+          const scripts = doc.querySelectorAll("script");
+          scripts.forEach((script) => {
+            if (!script.src) {
+              // inline 스크립트만 실행 (함수 정의 제외하고 실행 부분만)
+              try {
+                eval(script.textContent);
+              } catch (e) {
+                console.error("Script execution error:", e);
+              }
+            }
+          });
+        }
       });
   }
-
   // 일정 항목 클릭 이벤트
   document.addEventListener("DOMContentLoaded", function () {
     const scheduleItems = document.querySelectorAll(".schedule-item");
@@ -208,18 +194,9 @@
     scheduleItems.forEach((item) => {
       item.addEventListener("click", function (e) {
         e.preventDefault();
-        console.log("ii");
         const scheduleId = this.getAttribute("data-id");
         openModal(scheduleId);
       });
-    });
-
-    // 모달 배경 클릭시 닫기
-    const modal = document.getElementById("scheduleModal");
-    modal.addEventListener("click", function (e) {
-      if (e.target === modal) {
-        closeModal();
-      }
     });
   });
 </script>

@@ -1,0 +1,729 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>주간 영업 계획</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+        background-color: #f5f5f5;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+      }
+
+      .weekly-header {
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .weekly-title h3 {
+        font-size: 28px;
+        color: #333;
+        margin-bottom: 5px;
+      }
+
+      .weekly-title p {
+        color: #666;
+        font-size: 14px;
+      }
+
+      .person-list {
+        display: flex;
+        gap: 30px;
+        list-style: none;
+      }
+
+      .person-list li {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .badge-green {
+        background: #10b981;
+      }
+      .badge-purple {
+        background: #8b5cf6;
+      }
+      .badge-teal {
+        background: #14b8a6;
+      }
+
+      .person-list .badge-green,
+      .person-list .badge-purple,
+      .person-list .badge-teal {
+        color: white;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-weight: bold;
+        font-size: 12px;
+      }
+
+      .schedule {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 15px;
+      }
+
+      .day-card {
+        background: white;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .day-title {
+        background: #2563eb;
+        color: white;
+        padding: 15px;
+        font-weight: bold;
+        font-size: 18px;
+      }
+
+      .day-title span {
+        font-size: 14px;
+        opacity: 0.9;
+      }
+
+      .day-list {
+        padding: 15px;
+        list-style: none;
+      }
+
+      .day-list li {
+        margin-bottom: 10px;
+      }
+
+      .day-list li:last-child {
+        margin-bottom: 0;
+      }
+
+      .schedule-item {
+        display: block;
+        width: 100%;
+        padding: 12px;
+        background: #f9fafb;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-align: left;
+      }
+
+      .schedule-item:hover {
+        background: #eff6ff;
+        border-color: #3b82f6;
+      }
+
+      .schedule-time {
+        font-size: 11px;
+        color: #2563eb;
+        font-weight: bold;
+        margin-bottom: 8px;
+      }
+
+      .schedule-title {
+        font-size: 13px;
+        color: #1f2937;
+        margin-bottom: 8px;
+        line-height: 1.4;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+
+      .schedule-badges {
+        display: flex;
+        gap: 4px;
+        flex-wrap: wrap;
+      }
+
+      .schedule-badges span {
+        color: white;
+        padding: 2px 6px;
+        border-radius: 3px;
+        font-size: 11px;
+        font-weight: bold;
+      }
+
+      /* Modal */
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
+
+      .modal.active {
+        display: flex;
+      }
+
+      .modal-content {
+        background: white;
+        border-radius: 12px;
+        width: 100%;
+        max-width: 700px;
+        max-height: 90vh;
+        overflow-y: auto;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      }
+
+      .modal-header {
+        position: sticky;
+        top: 0;
+        background: white;
+        border-bottom: 1px solid #e5e7eb;
+        padding: 25px 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        z-index: 10;
+      }
+
+      .modal-header h2 {
+        font-size: 24px;
+        color: #1f2937;
+      }
+
+      .modal-close {
+        background: none;
+        border: none;
+        font-size: 32px;
+        color: #9ca3af;
+        cursor: pointer;
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        transition: all 0.2s;
+      }
+
+      .modal-close:hover {
+        background: #f3f4f6;
+        color: #4b5563;
+      }
+
+      .modal-body {
+        padding: 30px;
+      }
+
+      .modal-loading {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 60px;
+      }
+
+      .spinner {
+        border: 3px solid #e5e7eb;
+        border-top: 3px solid #2563eb;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .detail-section {
+        margin-bottom: 25px;
+      }
+
+      .detail-section:last-child {
+        margin-bottom: 0;
+      }
+
+      .detail-label {
+        font-size: 13px;
+        font-weight: 600;
+        color: #6b7280;
+        margin-bottom: 8px;
+        display: block;
+      }
+
+      .detail-value {
+        color: #1f2937;
+        font-size: 15px;
+        line-height: 1.6;
+      }
+
+      .detail-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+      }
+
+      .participant-item {
+        background: #f9fafb;
+        padding: 15px;
+        border-radius: 8px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+
+      .participant-item:last-child {
+        margin-bottom: 0;
+      }
+
+      .participant-name {
+        font-weight: 600;
+        color: #1f2937;
+      }
+
+      .participant-role {
+        color: #6b7280;
+        font-size: 13px;
+        margin-left: 8px;
+      }
+
+      .participant-phone {
+        color: #6b7280;
+        font-size: 13px;
+      }
+
+      .attachment-item {
+        background: #f9fafb;
+        padding: 15px;
+        border-radius: 8px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .attachment-item:hover {
+        background: #f3f4f6;
+      }
+
+      .attachment-item:last-child {
+        margin-bottom: 0;
+      }
+
+      .attachment-name {
+        color: #1f2937;
+        font-size: 14px;
+      }
+
+      .attachment-size {
+        color: #9ca3af;
+        font-size: 12px;
+      }
+
+      .note-box {
+        background: #fef3c7;
+        border: 1px solid #fcd34d;
+        border-radius: 8px;
+        padding: 15px;
+        color: #78350f;
+        font-size: 14px;
+        line-height: 1.6;
+      }
+
+      .modal-footer {
+        position: sticky;
+        bottom: 0;
+        background: #f9fafb;
+        border-top: 1px solid #e5e7eb;
+        padding: 20px 30px;
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+      }
+
+      .btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 600;
+        transition: all 0.2s;
+      }
+
+      .btn-secondary {
+        background: #e5e7eb;
+        color: #4b5563;
+      }
+
+      .btn-secondary:hover {
+        background: #d1d5db;
+      }
+
+      .btn-primary {
+        background: #2563eb;
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background: #1d4ed8;
+      }
+
+      @media (max-width: 1200px) {
+        .schedule {
+          grid-template-columns: repeat(3, 1fr);
+        }
+      }
+
+      @media (max-width: 768px) {
+        .schedule {
+          grid-template-columns: 1fr;
+        }
+
+        .weekly-header {
+          flex-direction: column;
+          gap: 20px;
+          align-items: flex-start;
+        }
+
+        .person-list {
+          flex-direction: column;
+          gap: 10px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="weekly-header">
+        <div class="weekly-title">
+          <h3>11월 5주차</h3>
+          <p>주간 영업 계획</p>
+        </div>
+        <ul class="person-list">
+          <li>
+            <span class="badge-green">권</span>
+            <span class="name">권혁진 <small>수석</small></span>
+          </li>
+          <li>
+            <span class="badge-purple">염</span>
+            <span class="name">염승호 <small>수석</small></span>
+          </li>
+          <li>
+            <span class="badge-teal">김</span>
+            <span class="name">김지영 <small>수석</small></span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="schedule">
+        <div class="day-card" data-date="2025-11-24">
+          <div class="day-title">24일 <span>(월)</span></div>
+          <ul class="day-list">
+            <li>
+              <a href="#" class="schedule-item" data-id="1">
+                <div class="schedule-time">09:00 - 10:00</div>
+                <div class="schedule-title">
+                  한라대학교 (강의커리큐럼 초안 작성)
+                </div>
+                <div class="schedule-badges">
+                  <span class="badge-green">권</span>
+                  <span class="badge-purple">염</span>
+                </div>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="schedule-item" data-id="2">
+                <div class="schedule-time">10:00 - 11:00</div>
+                <div class="schedule-title">
+                  브로슈어 우편물 발송 계획 ( 수도권, 선별 외 )
+                </div>
+                <div class="schedule-badges">
+                  <span class="badge-green">권</span>
+                  <span class="badge-teal">김</span>
+                </div>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="schedule-item" data-id="3">
+                <div class="schedule-time">13:00 - 14:00</div>
+                <div class="schedule-title">교육기관 마케팅 보고서 작성</div>
+                <div class="schedule-badges">
+                  <span class="badge-purple">염</span>
+                </div>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="schedule-item" data-id="4">
+                <div class="schedule-time">14:00 - 15:00</div>
+                <div class="schedule-title">
+                  교육기관 EG-BIM 라이선스 배포 현황 보고서 작성
+                </div>
+                <div class="schedule-badges">
+                  <span class="badge-teal">김</span>
+                </div>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="schedule-item" data-id="5">
+                <div class="schedule-time">15:00 - 18:00</div>
+                <div class="schedule-title">
+                  대림대학교 현물 기부금 처리 서류 작성
+                </div>
+                <div class="schedule-badges">
+                  <span class="badge-teal">김</span>
+                </div>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <div class="day-card" data-date="2025-11-25">
+          <div class="day-title">25일 <span>(화)</span></div>
+          <ul class="day-list">
+            <li>
+              <a href="#" class="schedule-item" data-id="6">
+                <div class="schedule-time">10:20 - 12:00</div>
+                <div class="schedule-title">
+                  삼안 CM현장 : 해안.방산 ( 오미) 공공하수처리시설 신동훈
+                  부사장님
+                </div>
+                <div class="schedule-badges">
+                  <span class="badge-green">권</span>
+                  <span class="badge-purple">염</span>
+                </div>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="schedule-item" data-id="7">
+                <div class="schedule-time">13:00 - 15:00</div>
+                <div class="schedule-title">상지대, 지반공학회장 미팅</div>
+                <div class="schedule-badges">
+                  <span class="badge-green">권</span>
+                  <span class="badge-purple">염</span>
+                </div>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <div class="day-card" data-date="2025-11-26">
+          <div class="day-title">26일 <span>(수)</span></div>
+          <ul class="day-list">
+            <li>
+              <a href="#" class="schedule-item" data-id="8">
+                <div class="schedule-time">10:30 - 14:00</div>
+                <div class="schedule-title">
+                  한국종합기술 ( 총괄본부장 - 김원식전무님, 복진훈수석님 동행 )
+                </div>
+                <div class="schedule-badges">
+                  <span class="badge-green">권</span>
+                  <span class="badge-purple">염</span>
+                </div>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="schedule-item" data-id="9">
+                <div class="schedule-time">15:00 - 15:30</div>
+                <div class="schedule-title">
+                  삼안 대표이사님 면담 / 삼안 CM현장 6개소 방문결과 보고 외
+                </div>
+                <div class="schedule-badges">
+                  <span class="badge-green">권</span>
+                </div>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="schedule-item" data-id="10">
+                <div class="schedule-time">16:00 - 18:00</div>
+                <div class="schedule-title">의왕도시공사 MOU체결</div>
+                <div class="schedule-badges">
+                  <span class="badge-green">권</span>
+                  <span class="badge-purple">염</span>
+                </div>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="schedule-item" data-id="11">
+                <div class="schedule-title">삼안 ( 서울대 교육 지원 )</div>
+                <div class="schedule-badges">
+                  <span class="badge-purple">염</span>
+                </div>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <div class="day-card" data-date="2025-11-27">
+          <div class="day-title">27일 <span>(목)</span></div>
+          <ul class="day-list">
+            <li>
+              <a href="#" class="schedule-item" data-id="12">
+                <div class="schedule-time">15:00 - 17:00</div>
+                <div class="schedule-title">
+                  사장님 영업보고 ( PM 활용 ) 교육기관, 가격정책, 기능개선,
+                  단가프로그램 등
+                </div>
+                <div class="schedule-badges">
+                  <span class="badge-green">권</span>
+                  <span class="badge-purple">염</span>
+                  <span class="badge-teal">김</span>
+                </div>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="schedule-item" data-id="13">
+                <div class="schedule-title">석식 (팀 + 이웃집 )</div>
+                <div class="schedule-badges">
+                  <span class="badge-green">권</span>
+                  <span class="badge-purple">염</span>
+                  <span class="badge-teal">김</span>
+                </div>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <div class="day-card" data-date="2025-11-28">
+          <div class="day-title">28일 <span>(금)</span></div>
+          <ul class="day-list">
+            <li style="text-align: center; color: #9ca3af; padding: 20px">
+              일정 없음
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="scheduleModal" class="modal">
+      <div class="modal-content" id="modal">
+        <div class="modal-header">
+          <h2>일정 상세</h2>
+          <button class="modal-close" onclick="closeModal()">&times;</button>
+        </div>
+        <div class="modal-body" id="modalBody">
+          <div class="modal-loading">
+            <div class="spinner"></div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" onclick="closeModal()">닫기</button>
+          <button class="btn btn-primary">수정</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // 모달 열기
+      function openModal(scheduleId) {
+        const modal = document.getElementById("scheduleModal");
+        const modalBody = document.getElementById("modalBody");
+
+        modal.classList.add("active");
+
+        // 로딩 표시
+        modalBody.innerHTML =
+          '<div class="modal-loading"><div class="spinner"></div></div>';
+
+        // AJAX로 상세 정보 가져오기
+        fetchScheduleDetail(scheduleId);
+      }
+
+      // 모달 닫기
+      function closeModal() {
+        const modal = document.getElementById("scheduleModal");
+        modal.classList.remove("active");
+      }
+
+      // AJAX로 calendar.html 페이지 가져오기
+      function fetchScheduleDetail(scheduleId) {
+        const modalBody = document.getElementById("modalBody");
+
+        // calendar.html 페이지를 AJAX로 로드
+        fetch(`calendar.html?id=${scheduleId}`)
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("페이지를 불러올 수 없습니다.");
+            }
+            return response.text();
+          })
+          .then((html) => {
+            // 받아온 HTML을 모달에 삽입
+            modalBody.innerHTML = html;
+
+            // calendar.html에 포함된 script 태그 실행
+            const scripts = modalBody.querySelectorAll("script");
+            scripts.forEach((script) => {
+              const newScript = document.createElement("script");
+              if (script.src) {
+                newScript.src = script.src;
+              } else {
+                newScript.textContent = script.textContent;
+              }
+              document.body.appendChild(newScript);
+            });
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+            modalBody.innerHTML = `
+            <div style="text-align: center; padding: 40px; color: #ef4444;">
+              <p style="font-size: 16px; margin-bottom: 10px;">페이지를 불러오는데 실패했습니다.</p>
+              <p style="font-size: 14px; color: #9ca3af;">${error.message}</p>
+            </div>
+          `;
+          });
+      }
+
+      // 일정 항목 클릭 이벤트
+      document.addEventListener("DOMContentLoaded", function () {
+        const scheduleItems = document.querySelectorAll(".schedule-item");
+
+        scheduleItems.forEach((item) => {
+          item.addEventListener("click", function (e) {
+            e.preventDefault();
+            const scheduleId = this.getAttribute("data-id");
+            openModal(scheduleId);
+          });
+        });
+
+        // 모달 배경 클릭시 닫기
+        const modal = document.getElementById("scheduleModal");
+        modal.addEventListener("click", function (e) {
+          if (e.target === modal) {
+            closeModal();
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

@@ -197,7 +197,3 @@ class ScheduleManager {
     setInterval(() => this.checkSchedule(true), this.updateInterval);
   }
 }
-
-// 사용
-const scheduleManager = new ScheduleManager();
-scheduleManager.initialize();

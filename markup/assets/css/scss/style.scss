@@ -840,3 +840,198 @@ $grid-heights: (
     }
   }
 }
+
+// ============================================
+// calendar Component
+// ============================================
+
+.calendar {
+  &.modal {
+    display: flex;
+    align-items: flex-end;
+    padding: 0;
+  }
+  .modal {
+    &-content {
+      max-width: 100%;
+      border-radius: 32px 32px 0 0;
+      border-top: 3px solid #fff;
+      background: var(--bg-calendar);
+      box-shadow: 0 -3px 30px 0 rgba(0, 0, 0, 0.8);
+      overflow: hidden;
+    }
+    &-header {
+      padding: 0 24px;
+      height: 80px;
+    }
+    &-body {
+      height: calc(var(--window-inner-height) - 160px);
+    }
+  }
+  .filter-options {
+    gap: 6px;
+    @include flex();
+    .checkbox-group {
+      border-radius: 4px;
+      padding: 8px 12px;
+      border: 1px solid rgba(0, 0, 0, 0.15);
+      font-size: 16px;
+      font-weight: 500;
+      gap: 8px;
+      @include flex();
+      &.green {
+        background: rgba(43, 143, 16, 0.05);
+        input[type="checkbox"]:checked {
+          border-color: #257a0e;
+          background-color: #2b8f10;
+        }
+      }
+      &.purple {
+        background: rgba(124, 16, 143, 0.05);
+        input[type="checkbox"]:checked {
+          border-color: #6a0e7a;
+          background-color: #7c108f;
+        }
+      }
+      &.teal {
+        background: rgba(4, 164, 175, 0.05);
+        input[type="checkbox"]:checked {
+          border-color: #008b94;
+          background-color: #00a3ae;
+        }
+      }
+      input[type="checkbox"] {
+        appearance: none;
+        -webkit-appearance: none;
+        width: 16px;
+        height: 16px;
+        border-radius: 4px;
+        border: 1.5px solid rgba(0, 0, 0, 0.15);
+        background-color: #fff;
+        &:checked {
+          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10' fill='none'%3E%3Cpath d='M3.67169 10C3.33979 10 3.03554 9.84159 2.84193 9.60398L0.186696 6.19818C0.10372 6.09258 0.0484027 5.98697 0.020744 5.85496C-0.00691467 5.72296 -0.00691467 5.59095 0.020744 5.45894C0.020744 5.32693 0.0760614 5.19493 0.159037 5.08932C0.242014 4.98371 0.32499 4.87811 0.435624 4.7989C0.546259 4.7197 0.656894 4.6669 0.795187 4.6405C0.933481 4.61409 1.07177 4.58769 1.21007 4.6405C1.34836 4.6405 1.48665 4.6933 1.59729 4.7725C1.70792 4.85171 1.81856 4.93091 1.90153 5.03652L3.64403 7.28064L8.06942 0.46906C8.20772 0.257848 8.45664 0.0994388 8.73323 0.0202343C9.00982 -0.0325687 9.28641 0.0202343 9.50768 0.152242C10.0055 0.442658 10.1438 1.04989 9.83958 1.52512L4.58443 9.52477C4.50145 9.65678 4.36316 9.78879 4.22486 9.86799C4.08657 9.9472 3.92062 10 3.75467 10C3.75467 10 3.72701 10 3.69935 10H3.67169Z' fill='white'/%3E%3C/svg%3E%0A");
+          background-position: center;
+          background-repeat: no-repeat;
+          background-size: 10px;
+        }
+      }
+    }
+  }
+  .date-navigation {
+    gap: 24px;
+    @include flex();
+    .nav-btn {
+      width: 32px;
+      height: 32px;
+      padding: 8px 12px;
+      gap: 8px;
+      border-radius: 50px;
+      border: 1px solid rgba(0, 0, 0, 0.4);
+      background: linear-gradient(180deg, #f0f0f0 0%, #e1e0de 100%);
+      box-shadow: 0 1px 2px 1px rgba(0, 0, 0, 0.2);
+      @include flex();
+    }
+  }
+  .current-date {
+    position: relative;
+    font-size: 40px;
+    font-weight: 700;
+    background: linear-gradient(180deg, #777 0%, #000 100%);
+    @include textClip();
+    &:before {
+      content: attr(data-text);
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      color: transparent;
+      z-index: -1;
+      @include textStroke(rgba(255, 255, 255));
+    }
+  }
+  .flex {
+    gap: 38px;
+    padding-right: 16px;
+  }
+  .weekdays {
+    display: grid;
+    grid-template-columns: minmax(100px, 5.2083%) repeat(5, 1fr) minmax(
+        100px,
+        5.2083%
+      );
+    height: 32px;
+    background:
+      linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.2) 0%,
+        rgba(255, 255, 255, 0) 100%
+      ),
+      #895d24;
+    border: 2px solid rgba(0, 0, 0, 0.05);
+    box-shadow: 0 -8px 16px 0 rgba(0, 0, 0, 0.2) inset;
+    font-size: 16px;
+    font-weight: 700;
+    text-align: center;
+    color: #fff;
+    @include textStroke();
+    .weekday {
+      &:not(:last-child) {
+        border-right: 0.5px solid rgba(0, 0, 0, 0.2);
+      }
+    }
+  }
+  .calendar-days {
+    height: calc(var(--window-inner-height) - 160px);
+    overflow-y: auto;
+  }
+  .days {
+    display: grid;
+    grid-template-columns: minmax(100px, 5.2083%) repeat(5, 1fr) minmax(
+        100px,
+        5.2083%
+      );
+    height: 100%;
+    &.collapsed {
+      grid-auto-rows: 1fr;
+      max-height: none;
+      overflow-y: visible;
+      .day {
+        min-height: 0;
+        height: 100%;
+        overflow: hidden;
+      }
+    }
+    .day {
+      padding: 8px 8px 16px 8px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+      &:not(:nth-child(7n + 1)) {
+        border-left: 1px solid rgba(0, 0, 0, 0.1);
+      }
+      &:nth-child(7n) {
+        background: rgba(0, 107, 188, 0.03);
+        .day-number {
+          color: #006bbc;
+        }
+      }
+      &:nth-child(7n + 1) {
+        background: rgba(188, 0, 0, 0.03);
+        .day-number {
+          color: #bc0000;
+        }
+      }
+      &.other-month {
+        color: rgba(0, 0, 0, 0.5);
+      }
+      &.current-week {
+        background: #fff;
+      }
+      &.today {
+        background: rgba(255, 92, 0, 0.25);
+      }
+      &-content {
+        gap: 8px;
+        flex-direction: column;
+        @include flex(flex-start, center);
+      }
+    }
+  }
+}
