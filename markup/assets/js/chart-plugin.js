@@ -457,6 +457,19 @@ const totalCenterPluginFactory = (labelText = "총") => ({
     const meta = chart.getDatasetMeta(0);
     if (meta && meta.data && meta.data.length > 0) {
       const innerRadius = meta.data[0].innerRadius;
+      if (meta.data.length > 0) {
+        const innerRadius = meta.data[0].innerRadius;
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, innerRadius, 0, 2 * Math.PI);
+        ctx.shadowOffsetX = 0;
+        ctx.shadowOffsetY = 0;
+        ctx.shadowBlur = 20;
+        ctx.shadowColor = "rgba(0, 0, 0, 0.4)";
+        ctx.fillStyle = "#F7F7F7";
+        ctx.fill();
+        ctx.shadowBlur = 0;
+        ctx.shadowColor = "transparent";
+      }
       if (innerRadius > 5) {
         ctx.beginPath();
         ctx.arc(centerX, centerY, innerRadius - 5, 0, Math.PI * 2);
