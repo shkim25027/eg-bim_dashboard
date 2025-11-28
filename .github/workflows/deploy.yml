@@ -1,9 +1,8 @@
-
 name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -21,8 +20,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 18
-          cache: 'npm'
+          node-version: 20
+          cache: "npm"
 
       - name: Install dependencies
         run: npm ci
@@ -52,7 +51,7 @@ jobs:
           path: ./dist/
 
   deploy:
-    needs: build  # build 성공해야 실행
+    needs: build # build 성공해야 실행
     runs-on: ubuntu-latest
     environment:
       name: github-pages
