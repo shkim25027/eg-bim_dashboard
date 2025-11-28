@@ -737,6 +737,7 @@ const externalLabelPlugin = {
     });
   },
 };
+
 // 값 표시 플러그인 (게이지 차트용 - 좁은 공간은 라인으로 외부 표시)
 const gaugeValuePlugin = {
   id: "gaugeValuePlugin",
