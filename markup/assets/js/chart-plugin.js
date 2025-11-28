@@ -113,7 +113,7 @@ function createMixedValuePlugin(padding = 10) {
           //if (value === 0) return;
 
           const textValue = String(value);
-          ctx.font = "bold 1.2rem Arial";
+          ctx.font = "bold 1.2rem Noto Sans KR, sans-serif";
           const textWidth = ctx.measureText(textValue).width;
           const textHeight = 20;
 
@@ -222,7 +222,7 @@ function createMixedValuePlugin(padding = 10) {
         const dataset = chart.data.datasets[pos.datasetIndex];
 
         ctx.save();
-        ctx.font = "bold 1.2rem Arial";
+        ctx.font = "bold 1.2rem Noto Sans KR, sans-serif";
         ctx.textAlign = "center";
         ctx.textBaseline = "bottom";
 
@@ -326,8 +326,18 @@ function createPointGradientPluginWithBorder(datasetColors = {}) {
             : (dataset.pointRadius ?? 3);
           if (radius === 0) return;
 
-          // 그라데이션을 포인트 중심에서 시작
-          const gradient = ctx.createRadialGradient(x, y, 0, x, y, radius);
+          // 그라데이션을 위에서 아래로 (radial gradient의 중심을 위쪽으로)
+          const gradCenterX = x - radius + 2 * radius * 0.3333;
+          const gradCenterY = y - radius + 2 * radius * 0.3333;
+          const outerRadius = radius * 0.7862;
+          const gradient = ctx.createRadialGradient(
+            gradCenterX,
+            gradCenterY,
+            0,
+            gradCenterX,
+            gradCenterY,
+            outerRadius
+          );
 
           const colors = datasetColors[dataset.label];
           if (colors && Array.isArray(colors)) {
@@ -372,7 +382,7 @@ function createPointGradientPluginWithBorder(datasetColors = {}) {
 
           // 텍스트 위치 정보 저장 (null이 아니면 0도 포함)
           if (value !== null && value !== undefined) {
-            ctx.font = "bold 1.2rem Arial";
+            ctx.font = "bold 1.6rem Noto Sans KR";
             const textValue = String(value);
             const textWidth = ctx.measureText(textValue).width;
 
@@ -411,7 +421,7 @@ function createPointGradientPluginWithBorder(datasetColors = {}) {
       // 3단계: 텍스트 렌더링
       textPositions.forEach((pos) => {
         ctx.save();
-        ctx.font = "bold 1.2rem Arial";
+        ctx.font = "bold 1.6rem Noto Sans KR";
         ctx.textAlign = "center";
         ctx.textBaseline = "bottom";
 
@@ -455,14 +465,14 @@ const totalCenterPluginFactory = (labelText = "총") => ({
       }
 
       // 텍스트 설정
-      ctx.font = "bold 20px -apple-system, sans-serif";
+      ctx.font = "bold 2rem Noto Sans KR, sans-serif";
       ctx.fillStyle = "#121212";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
 
       // 텍스트 너비 측정
       const textWidth = ctx.measureText(labelText).width;
-      const availableWidth = (innerRadius - 5) * 1.4; // 원 지름의 70% 정도 사용
+      const availableWidth = (innerRadius - 5) * 1.6; // 원 지름의 80% 정도 사용
 
       // 텍스트가 너무 길면 2줄로 분리
       if (textWidth > availableWidth && labelText.length > 1) {
@@ -480,6 +490,7 @@ const totalCenterPluginFactory = (labelText = "총") => ({
     ctx.restore();
   },
 });
+
 const externalLabelPlugin = {
   id: "externalLabel",
   afterDatasetsDraw(chart) {
@@ -501,6 +512,7 @@ const externalLabelPlugin = {
       const isSmall = value / total < smallThreshold;
       const isLeft = midAngle > Math.PI / 2 && midAngle < Math.PI * 1.5;
 
+      // 섹션의 중심점 (도넛 링 바깥쪽)
       const baseR = outerRadius + 15;
       const baseX = arc.x + Math.cos(midAngle) * baseR;
       const baseY = arc.y + Math.sin(midAngle) * baseR;
@@ -596,36 +608,78 @@ const externalLabelPlugin = {
         const lineX2 = arcX + Math.cos(midAngle) * lineEndR;
         const lineY2 = arcY + Math.sin(midAngle) * lineEndR;
 
-        // 수직으로 아래로 내려가는 선
-        // const textStartX = isLeft ? finalX + 5 : finalX - 5;
-
         // 시작점 점 (bullet)
         ctx.beginPath();
         ctx.arc(lineX1, lineY1, 4, 0, Math.PI * 2);
         ctx.fillStyle = "#333";
         ctx.fill();
 
-        //ctx.strokeStyle = sectionColor;
         ctx.strokeStyle = "#333";
         ctx.lineWidth = 1.5;
         ctx.beginPath();
         ctx.moveTo(lineX1, lineY1);
         ctx.lineTo(lineX2, lineY2);
         ctx.lineTo(lineX2, finalY); // 수직으로 아래로
-        // ctx.lineTo(textStartX, finalY); // 수평으로 텍스트까지
         ctx.stroke();
       }
 
-      // 텍스트
-      ctx.textAlign = isLeft ? "right" : "left";
+      // 텍스트 그리기
       ctx.textBaseline = "middle";
-      ctx.font = "bold 18px -apple-system, sans-serif";
       ctx.fillStyle = sectionColor;
-      ctx.fillText(
-        `${labels[index]} ${value} (${percentage}%)`,
-        finalX,
-        finalY
-      );
+
+      if (isLeft) {
+        // 왼쪽 정렬: 오른쪽에서 왼쪽으로 (퍼센트 -> 값 -> 라벨)
+        let currentX = finalX;
+        ctx.textAlign = "right";
+
+        // 1. 퍼센트 (14px)
+        ctx.font = "500 1.4rem Noto Sans KR, sans-serif";
+        ctx.fillText(`(${percentage}%)`, currentX, finalY);
+        const percentWidth = ctx.measureText(`(${percentage}%)`).width;
+        currentX = currentX - percentWidth;
+
+        // 2. 공백
+        ctx.font = "bold 1.8rem Noto Sans KR, sans-serif";
+        const spaceWidth = ctx.measureText(" ").width;
+        currentX = currentX - spaceWidth;
+
+        // 3. 데이터값 (18px)
+        ctx.fillText(value.toString(), currentX, finalY);
+        const valueWidth = ctx.measureText(value.toString()).width;
+        currentX = currentX - valueWidth;
+
+        // 4. 공백
+        currentX = currentX - spaceWidth;
+
+        // 5. 라벨 (18px)
+        ctx.fillText(labels[index], currentX, finalY);
+      } else {
+        // 오른쪽 정렬: 왼쪽에서 오른쪽으로 (라벨 -> 값 -> 퍼센트)
+        let currentX = finalX;
+        ctx.textAlign = "left";
+
+        // 1. 라벨 (18px)
+        ctx.font = "bold 1.8rem Noto Sans KR, sans-serif";
+        ctx.fillText(labels[index], currentX, finalY);
+        const labelWidth = ctx.measureText(labels[index]).width;
+        currentX = currentX + labelWidth;
+
+        // 2. 공백
+        const spaceWidth = ctx.measureText(" ").width;
+        currentX = currentX + spaceWidth;
+
+        // 3. 데이터값 (18px)
+        ctx.fillText(value.toString(), currentX, finalY);
+        const valueWidth = ctx.measureText(value.toString()).width;
+        currentX = currentX + valueWidth;
+
+        // 4. 공백
+        currentX = currentX + spaceWidth;
+
+        // 5. 퍼센트 (14px)
+        ctx.font = "500 1.4rem Noto Sans KR, sans-serif";
+        ctx.fillText(`(${percentage}%)`, currentX, finalY);
+      }
 
       ctx.restore();
     });
@@ -715,7 +769,7 @@ const gaugeValuePlugin = {
         ctx.setLineDash([]); // 점선 해제
 
         // 텍스트 (검정 테두리 + 흰색 채우기)
-        ctx.font = "bold 2rem -apple-system, sans-serif";
+        ctx.font = "bold 2rem Noto Sans KR, sans-serif";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
 
@@ -734,7 +788,7 @@ const gaugeValuePlugin = {
         ctx.fillText(value, textX, textY);
       } else {
         // 넓은 공간: 내부에 텍스트
-        ctx.font = "bold 2rem Arial";
+        ctx.font = "bold 2rem Noto Sans KR, sans-serif";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
 
@@ -759,5 +813,70 @@ const gaugeValuePlugin = {
     });
 
     ctx.restore();
+  },
+};
+
+// HTML 범례를 반원 차트 14px 아래에 자동 배치하는 플러그인
+const htmlLegendPlugin = {
+  id: "htmlLegend",
+  afterUpdate(chart, args, options) {
+    const legendContainer = document.getElementById(options.containerID);
+    if (!legendContainer) return;
+
+    // 기존 범례 제거
+    legendContainer.innerHTML = "";
+
+    // ul 생성
+    const ul = document.createElement("ul");
+    ul.className = "chart-legend";
+
+    // 범례 아이템 생성
+    const items = chart.data.labels || [];
+    const colors = chart.data.datasets[0].backgroundColor || [];
+    const activeWeek = options.activeWeek || null; // 현재 주차 (예: 3 = 3주차)
+
+    items.forEach((label, index) => {
+      // "남은 목표"는 제외
+      if (label === "남은 목표") return;
+
+      const li = document.createElement("li");
+
+      // 현재 주차면 active 클래스 추가
+      const weekNumber = parseInt(label.replace("주차", ""));
+      if (activeWeek && weekNumber === activeWeek) {
+        li.className = "active";
+      }
+
+      // 색상 점
+      const dot = document.createElement("span");
+      dot.className = "legend-dot";
+      dot.style.backgroundColor = colors[index];
+
+      // 텍스트
+      const text = document.createTextNode(` ${label}`);
+
+      li.appendChild(dot);
+      li.appendChild(text);
+      ul.appendChild(li);
+    });
+
+    legendContainer.appendChild(ul);
+
+    // 위치 계산 및 적용
+    const meta = chart.getDatasetMeta(0);
+    if (meta && meta.data && meta.data.length > 0) {
+      const firstArc = meta.data[0];
+      const canvas = chart.canvas;
+      const rect = canvas.getBoundingClientRect();
+
+      // 캔버스 내 반원 중심 Y 좌표
+      const centerY = firstArc.y;
+
+      // 범례 컨테이너를 반원 중심에서 14px 아래로 배치
+      legendContainer.style.position = "absolute";
+      legendContainer.style.top = `${centerY + 44}px`;
+      legendContainer.style.left = "50%";
+      legendContainer.style.transform = "translateX(-50%)";
+    }
   },
 };

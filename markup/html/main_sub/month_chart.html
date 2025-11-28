@@ -36,6 +36,7 @@
     </div>
     <div class="chart-body">
       <canvas id="weekly_chart"></canvas>
+      <div id="weekly_legend"></div>
     </div>
   </div>
 </section>
@@ -73,9 +74,9 @@
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        animation: false,
         plugins: {
           legend: {
+            display: false,
             position: "bottom",
             align: "center",
             onClick: null,
@@ -105,6 +106,7 @@
             },
           },
           tooltip: {
+            enabled: false,
             callbacks: {
               label: function (context) {
                 const label = context.label || "";
@@ -116,6 +118,10 @@
               },
             },
           },
+          htmlLegend: {
+            containerID: "weekly_legend", // 범례를 넣을 div의 ID
+            activeWeek: 5, // 현재 주차 지정
+          },
         },
         cutout: "55%",
         layout: {
@@ -123,7 +129,7 @@
         },
       },
       // plugins 배열은 그대로 유지
-      plugins: [gaugeValuePlugin],
+      plugins: [htmlLegendPlugin, gaugeValuePlugin],
     });
   })();
 </script>

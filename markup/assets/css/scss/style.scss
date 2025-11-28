@@ -136,11 +136,11 @@ $grid-heights: (
       }
 
       .big-num {
-        font-size: 52px;
+        font-size: rem(52px);
       }
 
       .unit {
-        font-size: 12px;
+        font-size: rem(12px);
       }
     }
   }
@@ -205,19 +205,21 @@ $grid-heights: (
       line-height: 1;
       height: 48px;
       padding: 12px 14px;
+      border: 1px solid rgba(0, 0, 0, 0.05);
       color: var(--card-title);
       background: var(--bg-title);
       display: inline-flex;
       @include textStroke();
-
+      &::before,
       &::after {
         content: "";
         position: absolute;
-        top: 0;
+        top: -1px;
         right: -48px;
         width: 48px;
         height: 48px;
         background: var(--bg-title);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
         @include maskContents(url("/assets/images/mask_tail.svg"));
       }
     }
@@ -409,7 +411,7 @@ $grid-heights: (
   }
 
   .unit {
-    font-size: 18px;
+    font-size: rem(18px);
   }
 
   .big-num,
@@ -434,7 +436,6 @@ $grid-heights: (
 
   &-header {
     width: 100%;
-    font-size: 14px;
     @include flex(center, space-between);
   }
 
@@ -442,7 +443,6 @@ $grid-heights: (
     position: relative;
     flex-grow: 1;
     width: 100%;
-    padding: 12px;
 
     .badge-box {
       position: absolute;
@@ -455,10 +455,11 @@ $grid-heights: (
 // ============================================
 // Badge Component
 // ============================================
-@mixin badge-style($border-color, $bg-color, $text-color) {
+@mixin badge-style($border-color, $bg-color, $text-color, $font-size: 14px) {
   border-color: $border-color;
   background: $bg-color;
   color: $text-color;
+  font-size: $font-size;
 }
 
 [class^="badge"] {
@@ -712,13 +713,13 @@ $grid-heights: (
       padding-top: 16px;
       color: #555;
 
-      &:not(:last-child) {
-        border-right: 1px solid var(--border-base);
-      }
-
       &.today {
-        background: rgba(255, 92, 0, 0.25);
+        background-color: #f4e1d3;
         color: #000;
+        .active {
+          background: rgba(255, 92, 0, 0.25);
+          font-weight: 500;
+        }
       }
     }
 
@@ -727,53 +728,41 @@ $grid-heights: (
       padding: 0 8px;
       height: 48px;
       font-weight: 700;
+      border-bottom: 1px solid var(--border-base);
+      box-shadow: 0 1px 0 0 #fff;
       @include flex();
 
       span {
         font-weight: 400;
       }
-
-      &::after {
-        content: " ";
-        position: absolute;
-        bottom: 0;
-        left: 8px;
-        width: calc(100% - 16px);
-        height: 1px;
-        background: var(--border-base);
-      }
     }
 
     &-list {
-      padding: 16px 8px;
+      padding: 0 0 16px 0px;
       height: calc(var(--grid-height) - 70px);
       min-height: calc(#{map-get($grid-heights, "min")} - 70px);
       overflow: auto;
 
       li {
         position: relative;
-        padding-left: rem(24px);
+        padding: 8px 8px 8px 32px;
         word-break: keep-all;
 
-        &:not(:last-child) {
-          margin-bottom: 8px;
+        &:first-child {
+          padding-top: 16px;
         }
 
         &::before {
           content: " ";
           position: absolute;
-          left: 10px;
-          top: rem(10px);
+          left: 18px;
+          top: rem(26px);
           display: inline-block;
           width: 4px;
           height: 4px;
           background-color: #555;
           border-radius: 50%;
         }
-      }
-
-      .active {
-        font-weight: 500;
       }
     }
   }
@@ -838,6 +827,37 @@ $grid-heights: (
 
         dd {
           color: var(--stat-individual02);
+        }
+      }
+    }
+  }
+}
+
+// ============================================
+// month Component
+// ============================================
+.month {
+  .chart {
+    &-legend {
+      position: absolute;
+      bottom: 5%;
+      width: 100%;
+      gap: 4px;
+      @include flex();
+      li {
+        padding: 4px 8px;
+        gap: 4px;
+        white-space: nowrap;
+        border-radius: 2px;
+        @include flex();
+        &.active {
+          border: 1px solid rgba(0, 0, 0, 0.1);
+          background: rgba(255, 92, 0, 0.25);
+        }
+        .legend-dot {
+          width: 12px;
+          height: 12px;
+          margin-top: 2px;
         }
       }
     }
@@ -1008,8 +1028,8 @@ $grid-heights: (
     overflow-y: auto;
   }
   .days {
+    display: grid;
     &.collapsed {
-      display: grid;
       height: calc(var(--window-inner-height) - 194px);
       max-height: none;
       overflow: hidden;
@@ -1034,6 +1054,7 @@ $grid-heights: (
     &.current-week-row {
       box-shadow: 0 0 32px 0 rgba(0, 0, 0, 0.15);
       height: max-content;
+      min-height: 100%;
     }
     .day {
       padding: 8px 8px 16px 8px;

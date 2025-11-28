@@ -101,7 +101,12 @@
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        plugins: { legend: { display: false } },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            enabled: false,
+          },
+        },
 
         scales: {
           y: {
@@ -133,7 +138,7 @@
                   size: 18,
                 };
               },
-              padding: 8,
+              padding: 10,
             },
             border: {
               display: true,
