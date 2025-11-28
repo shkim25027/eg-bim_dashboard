@@ -41,8 +41,9 @@
           clearTimeout(resizeTimer);
           resizeTimer = setTimeout(() => {
             createYearlyChart();
-            createIndustryChart();
+            createIndividualChart();
             createMonthChart();
+            createIndustryChart();
           }, 250); // 250ms 디바운스
         });
       })();

@@ -66,22 +66,18 @@
     </div>
   </div>
 </section>
-
 <script>
   (() => {
     const labels12 = Array.from({ length: 12 }, (_, i) => String(i + 1));
 
-    let individualInstance = null;
-    // 차트 생성 함수
+    let individualInstance = null; // 차트 생성 함수
     function createIndividualChart() {
-      const individual_chart = document.getElementById("individual_chart");
+      const individual_chart = document.getElementById("individual_chart"); // 기존 차트가 있으면 제거
 
-      // 기존 차트가 있으면 제거
       if (individualInstance) {
         individualInstance.destroy();
-      }
+      } // 라인 + 영역
 
-      // 라인 + 영역
       individualInstance = new Chart(individual_chart, {
         type: "line",
         data: {
@@ -146,16 +142,18 @@
           },
           scales: {
             y: {
-              display: false,
-              //suggestedMax: 350, //목표 값
+              display: false, //suggestedMax: 350, //목표 값
               suggestedMax: 189 + 12, // 최대값 + 여백
             },
             x: {
-              offset: true,
+              offset: true, // `offset: true` 유지
               grid: {
                 drawTicks: false,
-                display: true, // 그리드 라인 표시
+                lineWidth: 1,
+                display: true,
                 color: cssVar("--grid-border") || "#e0e0e0",
+                drawOnChartArea: true, // 차트 영역에 그리기
+                z: -1, // 또는 z-index를 낮춰서 뒤로 보내기
               },
               ticks: {
                 color: function (context) {
@@ -179,6 +177,14 @@
                   };
                 },
                 padding: 12,
+                callback: (value, index) => labels12[index] ?? "",
+                sample: 0,
+              },
+              afterBuildTicks: (axis) => {
+                // 각 틱의 위치를 0.5만큼 이동시켜 그리드 사이에 위치
+                axis.ticks.forEach((tick) => {
+                  // tick.value += 0.5;
+                });
               },
               border: {
                 display: true,
@@ -191,8 +197,8 @@
         },
         plugins: [
           highlightXFactory("11"), //현재 월 값 전달
-          createPointGradientPluginWithBorder(),
           hideNullPointsPlugin,
+          createPointGradientPluginWithBorder(),
         ],
       });
     }

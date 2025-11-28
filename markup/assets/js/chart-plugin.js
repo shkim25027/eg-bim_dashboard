@@ -932,3 +932,40 @@ const htmlLegendPlugin = {
     }
   },
 };
+
+const customPointPlugin = {
+  id: "customPointPlugin",
+  afterDatasetsDraw(chart, args, opts) {
+    const { ctx } = chart;
+
+    chart.data.datasets.forEach((dataset, datasetIndex) => {
+      const meta = chart.getDatasetMeta(datasetIndex);
+
+      meta.data.forEach((point, index) => {
+        const value = dataset.data[index];
+
+        // null 이면 패스
+        if (value === null || value === undefined) return;
+
+        const x = point.x;
+        const y = point.y;
+
+        // 🔼 블렛을 위로 올리고 싶으면 offset 조절
+        const offsetY = opts.offsetY ?? 10;
+
+        ctx.save();
+
+        // 🔵 블렛 그리기
+        ctx.beginPath();
+        ctx.fillStyle = opts.bulletColor?.[datasetIndex] ?? "#000";
+        ctx.strokeStyle = "#fff";
+        ctx.lineWidth = 2;
+        ctx.arc(x, y - offsetY, 6, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.restore();
+      });
+    });
+  },
+};
