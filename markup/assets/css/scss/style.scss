@@ -45,6 +45,8 @@ $grid-heights: (
     grid-template-columns: 418fr 335fr 247fr;
     grid-template-rows: repeat(2, 2fr);
     gap: $card-gap;
+    height: calc(var(--window-inner-height) - var(--grid-height) - 108px);
+    min-height: 656px;
   }
 
   &-weekly {
@@ -60,7 +62,7 @@ $grid-heights: (
       ),
       #f3efea;
     height: var(--grid-height);
-    min-height: map-get($grid-heights, "min");
+    min-height: calc(map-get($grid-heights, "min") - 4px);
     box-shadow: 0 -4px 40px 0 rgba(0, 0, 0, 0.3);
     overflow: hidden;
 
@@ -87,15 +89,10 @@ $grid-heights: (
   background: var(--bg-card);
   overflow: hidden;
 
-  // Default card height
-  &:not(.individual, .sales) {
-    height: calc(var(--grid-height) + 4px);
-  }
-
   // Double height cards
   &.individual,
   &.sales {
-    $double-card-height: calc((var(--grid-height) * 2) + $grid-gap);
+    $double-card-height: calc((var(--grid-height) * 2) + $card-gap);
     height: $double-card-height;
     min-height: 656px;
     display: grid;
@@ -146,7 +143,7 @@ $grid-heights: (
 
   // Sales card
   &.sales {
-    $sales-base-height: 650px;
+    $sales-base-height: 656px;
     $sales-header: 48px;
     $sales-stat: calc(($sales-base-height - $sales-header - $card-gap) / 6);
     $sales-min: calc(($sales-base-height - $sales-header - $sales-stat) / 2);
@@ -261,7 +258,7 @@ $grid-heights: (
     $yearly-min: 320px;
     $yearly-max: var(--grid-height);
     $yearly-chart: clamp($yearly-min, $yearly-max, $yearly-max);
-
+    height: $yearly-chart;
     .chart {
       &-wrap {
         grid-column-start: 2;
