@@ -73,7 +73,7 @@ $grid-heights: (
       bottom: 0;
       width: 276px;
       height: 134px;
-      background: url(/assets/images/bg_weekly_logo.svg) no-repeat left bottom /
+      background: url(../images/bg_weekly_logo.svg) no-repeat left bottom /
         cover;
     }
   }
@@ -216,7 +216,7 @@ $grid-heights: (
           height: 44px;
           background: var(--bg-title);
           box-sizing: border-box;
-          @include maskContents(url("/assets/images/mask_tail.svg"));
+          @include maskContents(url("../images/mask_tail.svg"));
         }
         &::before {
           top: 0;
