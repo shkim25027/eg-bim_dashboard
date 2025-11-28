@@ -50,7 +50,7 @@ $grid-heights: (
 
   &-weekly {
     position: relative;
-    padding: 0 $grid-gap;
+    padding-left: $grid-gap;
     border-radius: 32px 32px 0 0;
     border-top: 4px solid #fff;
     background:
@@ -204,23 +204,41 @@ $grid-heights: (
       font-weight: 700;
       line-height: 1;
       height: 48px;
-      padding: 12px 14px;
-      border: 1px solid rgba(0, 0, 0, 0.05);
+      padding: 12px 4px 12px 14px;
       color: var(--card-title);
       background: var(--bg-title);
       display: inline-flex;
       @include textStroke();
-      &::before,
+      .tail {
+        &::before,
+        &::after {
+          content: "";
+          position: absolute;
+          top: 2px;
+          right: -48px;
+          width: 48px;
+          height: 44px;
+          background: var(--bg-title);
+          box-sizing: border-box;
+          @include maskContents(url("/assets/images/mask_tail.svg"));
+        }
+        &::before {
+          top: 0;
+          height: 48px;
+          background: var(--border-title);
+        }
+      }
+
       &::after {
         content: "";
         position: absolute;
-        top: -1px;
-        right: -48px;
-        width: 48px;
-        height: 48px;
-        background: var(--bg-title);
-        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-        @include maskContents(url("/assets/images/mask_tail.svg"));
+        top: 0px; // border 2px에 맞춰 조정
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: var(--border-title);
+        @include maskContents(null);
+        padding: 2px 0 2px;
       }
     }
 
@@ -727,6 +745,7 @@ $grid-heights: (
       position: relative;
       padding: 0 8px;
       height: 48px;
+      font-size: 20px;
       font-weight: 700;
       border-bottom: 1px solid var(--border-base);
       box-shadow: 0 1px 0 0 #fff;
@@ -742,21 +761,24 @@ $grid-heights: (
       height: calc(var(--grid-height) - 70px);
       min-height: calc(#{map-get($grid-heights, "min")} - 70px);
       overflow: auto;
-
       li {
         position: relative;
-        padding: 8px 8px 8px 32px;
+        padding: 4px 8px 4px 32px;
+        font-size: rem(18px);
         word-break: keep-all;
 
         &:first-child {
           padding-top: 16px;
+          &::before {
+            top: rem(26px);
+          }
         }
 
         &::before {
           content: " ";
           position: absolute;
           left: 18px;
-          top: rem(26px);
+          top: rem(16px);
           display: inline-block;
           width: 4px;
           height: 4px;

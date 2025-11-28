@@ -88,7 +88,7 @@ class ScheduleManager {
     const isActive = status === "active";
 
     this.updateItemClasses(item, status);
-    this.updateBadge(item, isActive);
+    // this.updateBadge(item, isActive);
 
     return isActive;
   }
