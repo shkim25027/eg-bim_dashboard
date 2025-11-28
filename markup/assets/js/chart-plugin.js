@@ -563,15 +563,21 @@ const externalLabelPlugin = {
       }
 
       let finalY = info.baseY;
+      let finalX = info.baseX;
       let needsLine = false;
       let offset = 0;
 
+      // 다른 라벨과의 충돌 검사
       for (const placed of placedLabels) {
         const dy = Math.abs(finalY - placed.y);
-        const dx = Math.abs(info.baseX - placed.x);
+        const dx = Math.abs(finalX - placed.x);
 
-        if (dx < 150 && dy < labelHeight) {
-          offset += labelHeight;
+        const collisionThreshold = info.isSmall
+          ? labelHeight * 0.8
+          : labelHeight;
+
+        if (dx < 100 && dy < collisionThreshold) {
+          offset += labelHeight * 0.4;
           needsLine = true;
         }
       }
@@ -581,7 +587,29 @@ const externalLabelPlugin = {
         info.needsLine = true;
       }
 
-      info.finalX = info.baseX;
+      // 라벨의 실제 너비 계산
+      const labelText = `${labels[info.index]} ${info.value} (${info.percentage}%)`;
+      ctx.font = "bold 1.8rem Noto Sans KR, sans-serif";
+      const estimatedWidth = ctx.measureText(labelText).width;
+
+      // 라벨이 차지하는 X 범위 계산
+      const labelStartX = info.isLeft ? finalX - estimatedWidth : finalX;
+      const labelEndX = info.isLeft ? finalX : finalX + estimatedWidth;
+
+      // 라벨 영역의 중심점이 도넛과 겹치는지 확인
+      const labelCenterX = (labelStartX + labelEndX) / 2;
+      const distFromCenter = Math.sqrt(
+        Math.pow(labelCenterX - info.arcX, 2) + Math.pow(finalY - info.arcY, 2)
+      );
+
+      // 도넛 내부와 실제로 겹치면 옆으로 이동
+      if (distFromCenter < info.outerRadius + 10) {
+        const diagonalOffset = info.isLeft ? -50 : 50;
+        finalX = info.baseX + diagonalOffset;
+        info.needsLine = true;
+      }
+
+      info.finalX = finalX;
       info.finalY = finalY;
       placedLabels.push({
         x: info.finalX,
@@ -602,6 +630,8 @@ const externalLabelPlugin = {
         arcX,
         arcY,
         isLeft,
+        baseX,
+        baseY,
         finalX,
         finalY,
         needsLine,
@@ -617,7 +647,7 @@ const externalLabelPlugin = {
         const lineY1 = arcY + Math.sin(midAngle) * lineStartR;
 
         // 바깥 지점
-        const lineEndR = outerRadius + 10;
+        const lineEndR = outerRadius + 5;
         const lineX2 = arcX + Math.cos(midAngle) * lineEndR;
         const lineY2 = arcY + Math.sin(midAngle) * lineEndR;
 
@@ -632,7 +662,16 @@ const externalLabelPlugin = {
         ctx.beginPath();
         ctx.moveTo(lineX1, lineY1);
         ctx.lineTo(lineX2, lineY2);
-        ctx.lineTo(lineX2, finalY); // 수직으로 아래로
+
+        // 옆으로 이동이 필요한 경우 사선으로
+        if (Math.abs(baseX - finalX) > 5) {
+          // 사선으로 한 번에 연결
+          ctx.lineTo(finalX, finalY);
+        } else {
+          // 그냥 수직으로 한 번만
+          ctx.lineTo(lineX2, finalY);
+        }
+
         ctx.stroke();
       }
 
@@ -698,7 +737,6 @@ const externalLabelPlugin = {
     });
   },
 };
-
 // 값 표시 플러그인 (게이지 차트용 - 좁은 공간은 라인으로 외부 표시)
 const gaugeValuePlugin = {
   id: "gaugeValuePlugin",
