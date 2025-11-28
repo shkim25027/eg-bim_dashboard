@@ -478,7 +478,7 @@ const totalCenterPluginFactory = (labelText = "총") => ({
       }
 
       // 텍스트 설정
-      ctx.font = "bold 2rem Noto Sans KR, sans-serif";
+      ctx.font = "500 2.2rem Noto Sans KR, sans-serif";
       ctx.fillStyle = "#121212";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
