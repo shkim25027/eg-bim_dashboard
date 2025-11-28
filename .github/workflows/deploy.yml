@@ -1,1 +1,63 @@
 
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build with Gulp
+        run: npx gulp build
+
+      # 디버깅: dist 폴더 상세 확인 (여기서 문제 원인 파악!)
+      - name: Verify dist folder contents
+        run: |
+          echo "=== Dist folder structure ==="
+          ls -la dist/
+          echo "=== HTML files ==="
+          find dist/ -name "*.html" -type f
+          echo "=== Total files in dist ==="
+          find dist/ | wc -l
+          if [ ! -f "dist/index.html" ]; then
+            echo "❌ ERROR: index.html not found in dist! Gulp build failed."
+            exit 1
+          fi
+        shell: bash
+
+      # Artifact 업로드 (v4, 이름 자동 "github-pages")
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: ./dist/
+
+  deploy:
+    needs: build  # build 성공해야 실행
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
