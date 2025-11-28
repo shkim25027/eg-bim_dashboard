@@ -598,6 +598,19 @@
       });
     }
 
+    function checkOverflow() {
+      const calendarDaysEl = document.getElementById("calendarDays");
+      if (!calendarDaysEl.classList.contains("collapsed")) return;
+
+      document.querySelectorAll(".day-content").forEach((content) => {
+        // 스크롤 높이가 실제 높이보다 크면 overflow 발생
+        if (content.scrollHeight > content.clientHeight) {
+          content.classList.add("has-overflow");
+        } else {
+          content.classList.remove("has-overflow");
+        }
+      });
+    }
     document.getElementById("prevMonth").addEventListener("click", () => {
       currentMonth--;
       if (currentMonth < 0) {
@@ -605,6 +618,7 @@
         currentYear--;
       }
       renderCalendar();
+      checkOverflow();
     });
 
     document.getElementById("nextMonth").addEventListener("click", () => {
@@ -614,6 +628,7 @@
         currentYear++;
       }
       renderCalendar();
+      checkOverflow();
     });
 
     // 필터 체크박스
@@ -626,6 +641,7 @@
           .filter((cb) => cb.checked)
           .map((cb) => cb.value);
         renderCalendar();
+        checkOverflow();
       });
     });
 
@@ -645,5 +661,6 @@
 
     calendarDaysEl.classList.add("collapsed");
     renderCalendar();
+    checkOverflow();
   </script>
 </div>

@@ -47,89 +47,98 @@
     const goal = 125;
     const total = cumulative.reduce((sum, val) => sum + val, 0);
     const remaining = Math.max(0, goal - total);
+    let weeklyInstance = null;
+    function createMonthChart() {
+      const weekly_chart = document.getElementById("weekly_chart");
+      // 기존 차트가 있으면 제거
+      if (weeklyInstance) {
+        weeklyInstance.destroy();
+      }
 
-    const weekly_chart = document.getElementById("weekly_chart");
-    new Chart(weekly_chart, {
-      type: "doughnut",
-      data: {
-        labels: ["1주차", "2주차", "3주차", "4주차", "5주차", "남은 목표"],
-        datasets: [
-          {
-            data: [...cumulative, remaining],
-            backgroundColor: [
-              "#78F2D9",
-              "#45C5AB",
-              "#1B7D6A",
-              "#369885",
-              "#1B7D6A",
-              "#0D4137",
-            ],
-            borderWidth: 2,
-            borderColor: "#fff",
-            circumference: 180,
-            rotation: 270,
-          },
-        ],
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            display: false,
-            position: "bottom",
-            align: "center",
-            onClick: null,
-            labels: {
-              font: { size: 16 },
-              padding: 15,
-              boxWidth: 12,
-              boxHeight: 12,
-              usePointStyle: true,
-              generateLabels: function (chart) {
-                const data = chart.data;
-                return data.labels
-                  .map((label, i) => {
-                    if (i === 5) return null;
-                    return {
-                      text: `${label}`,
-                      fillStyle: data.datasets[0].backgroundColor[i],
-                      hidden: false,
-                      strokeStyle: "transparent",
-                      lineWidth: 0,
-                      index: i,
-                      pointStyle: "rectRounded",
-                    };
-                  })
-                  .filter((item) => item !== null);
+      weeklyInstance = new Chart(weekly_chart, {
+        type: "doughnut",
+        data: {
+          labels: ["1주차", "2주차", "3주차", "4주차", "5주차", "남은 목표"],
+          datasets: [
+            {
+              data: [...cumulative, remaining],
+              backgroundColor: [
+                "#78F2D9",
+                "#45C5AB",
+                "#1B7D6A",
+                "#369885",
+                "#1B7D6A",
+                "#0D4137",
+              ],
+              borderWidth: 2,
+              borderColor: "#fff",
+              circumference: 180,
+              rotation: 270,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: false,
+              position: "bottom",
+              align: "center",
+              onClick: null,
+              labels: {
+                font: { size: 16 },
+                padding: 15,
+                boxWidth: 12,
+                boxHeight: 12,
+                usePointStyle: true,
+                generateLabels: function (chart) {
+                  const data = chart.data;
+                  return data.labels
+                    .map((label, i) => {
+                      if (i === 5) return null;
+                      return {
+                        text: `${label}`,
+                        fillStyle: data.datasets[0].backgroundColor[i],
+                        hidden: false,
+                        strokeStyle: "transparent",
+                        lineWidth: 0,
+                        index: i,
+                        pointStyle: "rectRounded",
+                      };
+                    })
+                    .filter((item) => item !== null);
+                },
               },
             },
-          },
-          tooltip: {
-            enabled: false,
-            callbacks: {
-              label: function (context) {
-                const label = context.label || "";
-                const value = context.parsed;
-                if (context.dataIndex === 5) {
-                  return `남은 목표: ${value}`;
-                }
-                return `${label}: ${value}`;
+            tooltip: {
+              enabled: false,
+              callbacks: {
+                label: function (context) {
+                  const label = context.label || "";
+                  const value = context.parsed;
+                  if (context.dataIndex === 5) {
+                    return `남은 목표: ${value}`;
+                  }
+                  return `${label}: ${value}`;
+                },
               },
             },
+            htmlLegend: {
+              containerID: "weekly_legend", // 범례를 넣을 div의 ID
+              activeWeek: 5, // 현재 주차 지정
+            },
           },
-          htmlLegend: {
-            containerID: "weekly_legend", // 범례를 넣을 div의 ID
-            activeWeek: 5, // 현재 주차 지정
+          cutout: "55%",
+          layout: {
+            padding: { top: 20, bottom: 20, left: 40, right: 40 },
           },
         },
-        cutout: "55%",
-        layout: {
-          padding: { top: 20, bottom: 20, left: 40, right: 40 },
-        },
-      },
-      // plugins 배열은 그대로 유지
-      plugins: [htmlLegendPlugin, gaugeValuePlugin],
-    });
+        // plugins 배열은 그대로 유지
+        plugins: [htmlLegendPlugin, gaugeValuePlugin],
+      });
+    }
+    // 초기 차트 생성
+    createMonthChart();
   })();
 </script>

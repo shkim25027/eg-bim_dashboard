@@ -62,99 +62,109 @@
       ],
     };
 
-    // 복합 막대 + 라인
-    const yearly_chart = document.getElementById("yearly_chart");
-    new Chart(yearly_chart, {
-      type: "bar",
-      data: {
-        labels: labels12,
-        datasets: [
-          {
-            type: "line",
-            order: 1,
-            data: [0, 0, 0, 0, 0, 0, 0, 83, 315, 460, 684, null],
-            borderColor: cssVar("--chart-mixline"),
-            borderWidth: 1,
-            pointRadius: 6,
-            tension: 0,
-            fill: false,
-          },
-          {
-            type: "bar",
-            order: 2,
-            data: [0, 0, 0, 0, 0, 0, 0, 83, 232, 145, 224, null],
-            backgroundColor: function (context) {
-              const chart = context.chart;
-              const { ctx, chartArea } = chart;
+    let yearlyInstance = null;
 
-              if (!chartArea) {
-                // 차트가 아직 초기화되지 않은 경우
-                return "#4CAE9B"; // 기본 색상
-              }
+    // 차트 생성 함수
+    function createYearlyChart() {
+      const yearly_chart = document.getElementById("yearly_chart");
 
-              return safeGrad(ctx, chartArea, theme.mixbar);
+      // 기존 차트가 있으면 제거
+      if (yearlyInstance) {
+        yearlyInstance.destroy();
+      }
+
+      yearlyInstance = new Chart(yearly_chart, {
+        type: "bar",
+        data: {
+          labels: labels12,
+          datasets: [
+            {
+              type: "line",
+              order: 1,
+              data: [0, 0, 0, 0, 0, 0, 0, 83, 315, 460, 684, null],
+              borderColor: cssVar("--chart-mixline"),
+              borderWidth: 1,
+              pointRadius: 6,
+              tension: 0,
+              fill: false,
             },
-            borderRadius: { topLeft: 2, topRight: 2 },
-          },
-        ],
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            enabled: false,
-          },
-        },
+            {
+              type: "bar",
+              order: 2,
+              data: [0, 0, 0, 0, 0, 0, 0, 83, 232, 145, 224, null],
+              backgroundColor: function (context) {
+                const chart = context.chart;
+                const { ctx, chartArea } = chart;
 
-        scales: {
-          y: {
-            display: false,
-            suggestedMax: 800, //목표 값
-          },
-          x: {
-            grid: {
-              drawTicks: false,
-            },
-            ticks: {
-              color: function (context) {
-                //현재 월 체크
-                if (context.tick.label === "11") {
-                  return cssVar("--chart-point");
+                if (!chartArea) {
+                  return "#4CAE9B";
                 }
-                return cssVar("--chart-base");
+
+                return safeGrad(ctx, chartArea, theme.mixbar);
               },
-              font: function (context) {
-                //현재 월 체크
-                if (context.tick.label === "11") {
+              borderRadius: { topLeft: 2, topRight: 2 },
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              enabled: false,
+            },
+          },
+
+          scales: {
+            y: {
+              display: false,
+              suggestedMax: 800,
+            },
+            x: {
+              grid: {
+                drawTicks: false,
+              },
+              ticks: {
+                color: function (context) {
+                  if (context.tick.label === "11") {
+                    return cssVar("--chart-point");
+                  }
+                  return cssVar("--chart-base");
+                },
+                font: function (context) {
+                  if (context.tick.label === "11") {
+                    return {
+                      weight: "bold",
+                      size: 18,
+                    };
+                  }
                   return {
-                    weight: "bold",
+                    weight: "normal",
                     size: 18,
                   };
-                }
-                return {
-                  weight: "normal",
-                  size: 18,
-                };
+                },
+                padding: 10,
               },
-              padding: 10,
-            },
-            border: {
-              display: true,
-              dash: [3, 3],
-              color: cssVar("--grid-border-dashed"),
-              width: 1,
+              border: {
+                display: true,
+                dash: [3, 3],
+                color: cssVar("--grid-border-dashed"),
+                width: 1,
+              },
             },
           },
         },
-      },
-      plugins: [
-        createMixedValuePlugin(12),
-        createMixedPointGradientPlugin(),
-        highlightXFactory("11"), //현재 월 값 전달
-        hideNullPointsPlugin,
-      ],
-    });
+        plugins: [
+          createMixedValuePlugin(12),
+          createMixedPointGradientPlugin(),
+          highlightXFactory("11"),
+          hideNullPointsPlugin,
+        ],
+      });
+    }
+
+    // 초기 차트 생성
+    createYearlyChart();
   })();
 </script>

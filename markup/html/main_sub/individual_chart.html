@@ -70,120 +70,132 @@
 <script>
   (() => {
     const labels12 = Array.from({ length: 12 }, (_, i) => String(i + 1));
-    // 라인 + 영역
-    new Chart(document.getElementById("individual_chart"), {
-      type: "line",
-      data: {
-        labels: labels12,
-        datasets: [
-          {
-            label: "권혁진 수석",
-            data: [0, 0, 0, 0, 0, 0, 0, 1, 74, 57, 30, null],
-            fill: true,
-            backgroundColor: (ctx) => {
-              const a = ctx.chart.chartArea;
-              return !a
-                ? cssVar("--bg-chart-area01")
-                : safeGrad(
-                    ctx.chart.ctx,
-                    a,
-                    [
-                      { stop: 0, color: cssVar("--bg-chart-area01") },
-                      { stop: 1, color: "rgba(255, 255, 255, 0.3)" },
-                    ],
-                    true
-                  );
-            },
-            borderColor: cssVar("--bg-chart-linearea01"),
-            borderWidth: 1,
-            pointRadius: 6,
-            tension: 0,
-          },
-          {
-            label: "염승호 수석 ",
-            data: [0, 0, 0, 0, 0, 0, 0, 82, 153, 84, 189, null],
-            fill: true,
-            backgroundColor: (ctx) => {
-              const a = ctx.chart.chartArea;
-              return !a
-                ? cssVar("--bg-chart-area02")
-                : safeGrad(
-                    ctx.chart.ctx,
-                    a,
-                    [
-                      { stop: 0, color: cssVar("--bg-chart-area02") },
-                      { stop: 1, color: "rgba(255, 255, 255, 0.3)" },
-                    ],
-                    true
-                  );
-            },
-            borderColor: cssVar("--bg-chart-linearea02"),
-            borderWidth: 1,
-            pointRadius: 6,
-            tension: 0,
-          },
-        ],
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        animation: false,
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            enabled: false,
-          },
-        },
-        scales: {
-          y: {
-            display: false,
-            //suggestedMax: 350, //목표 값
-            suggestedMax: 189 + 12, // 최대값 + 여백
-          },
-          x: {
-            offset: true,
-            grid: {
-              drawTicks: false,
-              display: true, // 그리드 라인 표시
-              color: cssVar("--grid-border") || "#e0e0e0",
-            },
-            ticks: {
-              color: function (context) {
-                //현재 월 체크
-                if (context.tick.label === "11") {
-                  return cssVar("--chart-point");
-                }
-                return cssVar("--chart-base");
+
+    let individualInstance = null;
+    // 차트 생성 함수
+    function createIndividualChart() {
+      const individual_chart = document.getElementById("individual_chart");
+
+      // 기존 차트가 있으면 제거
+      if (individualInstance) {
+        individualInstance.destroy();
+      }
+
+      // 라인 + 영역
+      individualInstance = new Chart(individual_chart, {
+        type: "line",
+        data: {
+          labels: labels12,
+          datasets: [
+            {
+              label: "권혁진 수석",
+              data: [0, 0, 0, 0, 0, 0, 0, 1, 74, 57, 30, null],
+              fill: true,
+              backgroundColor: (ctx) => {
+                const a = ctx.chart.chartArea;
+                return !a
+                  ? cssVar("--bg-chart-area01")
+                  : safeGrad(
+                      ctx.chart.ctx,
+                      a,
+                      [
+                        { stop: 0, color: cssVar("--bg-chart-area01") },
+                        { stop: 1, color: "rgba(255, 255, 255, 0.3)" },
+                      ],
+                      true
+                    );
               },
-              font: function (context) {
-                //현재 월 체크
-                if (context.tick.label === "11") {
+              borderColor: cssVar("--bg-chart-linearea01"),
+              borderWidth: 1,
+              pointRadius: 6,
+              tension: 0,
+            },
+            {
+              label: "염승호 수석 ",
+              data: [0, 0, 0, 0, 0, 0, 0, 82, 153, 84, 189, null],
+              fill: true,
+              backgroundColor: (ctx) => {
+                const a = ctx.chart.chartArea;
+                return !a
+                  ? cssVar("--bg-chart-area02")
+                  : safeGrad(
+                      ctx.chart.ctx,
+                      a,
+                      [
+                        { stop: 0, color: cssVar("--bg-chart-area02") },
+                        { stop: 1, color: "rgba(255, 255, 255, 0.3)" },
+                      ],
+                      true
+                    );
+              },
+              borderColor: cssVar("--bg-chart-linearea02"),
+              borderWidth: 1,
+              pointRadius: 6,
+              tension: 0,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              enabled: false,
+            },
+          },
+          scales: {
+            y: {
+              display: false,
+              //suggestedMax: 350, //목표 값
+              suggestedMax: 189 + 12, // 최대값 + 여백
+            },
+            x: {
+              offset: true,
+              grid: {
+                drawTicks: false,
+                display: true, // 그리드 라인 표시
+                color: cssVar("--grid-border") || "#e0e0e0",
+              },
+              ticks: {
+                color: function (context) {
+                  //현재 월 체크
+                  if (context.tick.label === "11") {
+                    return cssVar("--chart-point");
+                  }
+                  return cssVar("--chart-base");
+                },
+                font: function (context) {
+                  //현재 월 체크
+                  if (context.tick.label === "11") {
+                    return {
+                      weight: "bold",
+                      size: 18,
+                    };
+                  }
                   return {
-                    weight: "bold",
+                    weight: "normal",
                     size: 18,
                   };
-                }
-                return {
-                  weight: "normal",
-                  size: 18,
-                };
+                },
+                padding: 12,
               },
-              padding: 12,
-            },
-            border: {
-              display: true,
-              dash: [3, 3],
-              color: cssVar("--grid-border-dashed"),
-              width: 1,
+              border: {
+                display: true,
+                dash: [3, 3],
+                color: cssVar("--grid-border-dashed"),
+                width: 1,
+              },
             },
           },
         },
-      },
-      plugins: [
-        highlightXFactory("11"), //현재 월 값 전달
-        createPointGradientPluginWithBorder(),
-        hideNullPointsPlugin,
-      ],
-    });
+        plugins: [
+          highlightXFactory("11"), //현재 월 값 전달
+          createPointGradientPluginWithBorder(),
+          hideNullPointsPlugin,
+        ],
+      });
+    }
+    createIndividualChart();
   })();
 </script>

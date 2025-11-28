@@ -35,70 +35,88 @@
 </section>
 <script>
   (() => {
-    const industry_chart = document.getElementById("industry_chart");
-    new Chart(industry_chart, {
-      type: "doughnut",
-      data: {
-        labels: ["교육", "제작", "감리", "시공", "설계"],
-        datasets: [
-          {
-            data: [305, 36, 72, 15, 162],
-            backgroundColor: [
-              "#D08A5D",
-              "#8F4818",
-              "#5F2F0E",
-              "#45220A",
-              "#B66532",
-            ],
-            borderWidth: 2,
-            borderColor: "#fff",
-            rotation: 245,
-          },
-        ],
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        cutout: "55%",
-        layout: {
-          padding: { top: 60, bottom: 60, left: 100, right: 100 },
-        },
-        plugins: {
-          legend: { display: false },
-          tooltip: { enabled: false },
-        },
-      },
-      plugins: [totalCenterPluginFactory("산업/업종별"), externalLabelPlugin],
-    });
+    let industryInstance = null;
+    let institutionInstance = null;
+    // 차트 생성 함수
+    function createIndustryChart() {
+      const industry_chart = document.getElementById("industry_chart");
+      const institution_chart = document.getElementById("institution_chart");
 
-    const institution_chart = document.getElementById("institution_chart");
-    new Chart(institution_chart, {
-      type: "doughnut",
-      data: {
-        labels: ["일반", "교육기관", "공공기관", "기타"],
-        datasets: [
-          {
-            data: [343, 305, 18, 19],
-            backgroundColor: ["#C4964B", "#885D1A", "#5C3E0F", "#3C2500"],
-            borderWidth: 2,
-            borderColor: "#fff",
-            rotation: 125,
+      // 기존 차트가 있으면 제거
+      if (industryInstance) {
+        industryInstance.destroy();
+      }
+
+      industryInstance = new Chart(industry_chart, {
+        type: "doughnut",
+        data: {
+          labels: ["교육", "제작", "감리", "시공", "설계"],
+          datasets: [
+            {
+              data: [305, 36, 72, 15, 162],
+              backgroundColor: [
+                "#D08A5D",
+                "#8F4818",
+                "#5F2F0E",
+                "#45220A",
+                "#B66532",
+              ],
+              borderWidth: 2,
+              borderColor: "#fff",
+              rotation: 245,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          cutout: "55%",
+          layout: {
+            padding: { top: 60, bottom: 60, left: 100, right: 100 },
           },
-        ],
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        cutout: "55%",
-        layout: {
-          padding: { top: 60, bottom: 60, left: 100, right: 100 },
+          plugins: {
+            legend: { display: false },
+            tooltip: { enabled: false },
+          },
         },
-        plugins: {
-          legend: { display: false },
-          tooltip: { enabled: false },
+        plugins: [totalCenterPluginFactory("산업/업종별"), externalLabelPlugin],
+      });
+
+      // 기존 차트가 있으면 제거
+      if (institutionInstance) {
+        institutionInstance.destroy();
+      }
+      institutionInstance = new Chart(institution_chart, {
+        type: "doughnut",
+        data: {
+          labels: ["일반", "교육기관", "공공기관", "기타"],
+          datasets: [
+            {
+              data: [343, 305, 18, 19],
+              backgroundColor: ["#C4964B", "#885D1A", "#5C3E0F", "#3C2500"],
+              borderWidth: 2,
+              borderColor: "#fff",
+              rotation: 125,
+            },
+          ],
         },
-      },
-      plugins: [totalCenterPluginFactory("기관별"), externalLabelPlugin],
-    });
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          cutout: "55%",
+          layout: {
+            padding: { top: 60, bottom: 60, left: 100, right: 100 },
+          },
+          plugins: {
+            legend: { display: false },
+            tooltip: { enabled: false },
+          },
+        },
+        plugins: [totalCenterPluginFactory("기관별"), externalLabelPlugin],
+      });
+    }
+
+    // 초기 차트 생성
+    createIndustryChart();
   })();
 </script>
