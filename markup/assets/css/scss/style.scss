@@ -51,7 +51,7 @@ $card-heights: (
   &-contents {
     display: grid;
     min-height: calc(var(--window-inner-height) - var(--header-height));
-    grid-template-rows: var(--grid-height) $weekly-height;
+    grid-template-rows: auto $weekly-height;
     gap: $grid-gap;
   }
 
