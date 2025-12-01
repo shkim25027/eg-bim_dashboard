@@ -11,21 +11,37 @@ $header-height: 80px;
 $footer-height: 48px;
 $grid-gap: 24px;
 $card-gap: 16px;
+$weekly-height: 400px; // 고정 높이
 
 // CSS Custom Properties (동적 계산)
 :root {
   --header-height: #{$header-height};
   --footer-height: #{$footer-height};
   --grid-gap: #{$grid-gap};
+  --weekly-height: #{$weekly-height};
   --total-offset: calc(var(--header-height) + var(--footer-height));
-  --grid-height: calc((var(--window-inner-height) - var(--total-offset)) / 3);
+
+  // main-grid 높이 계산: 전체 높이 - 헤더 - 주간 영역 - gap들
+  --grid-height: calc(
+    var(--window-inner-height) - var(--header-height) - var(
+        --weekly-height
+      ) - var(--grid-gap)
+  );
+
+  // 개별 카드 높이 (main-grid를 2등분)
+  --card-height: calc((var(--grid-height) - #{$card-gap}) / 2);
 }
 
 // Grid height variants
 $grid-heights: (
-  "min": 320px,
+  "min": 576px,
   "default": var(--grid-height),
-  "individual": calc((var(--grid-height) * 2) + $card-gap - 228px),
+  "individual": calc((var(--card-height) * 2) + $card-gap),
+);
+
+$card-heights: (
+  "min": 280px,
+  "default": calc((var(--grid-height) - var(--card-gap)) / 2),
 );
 
 // ============================================
@@ -35,7 +51,7 @@ $grid-heights: (
   &-contents {
     display: grid;
     min-height: calc(var(--window-inner-height) - var(--header-height));
-    grid-template-rows: auto var(--grid-height);
+    grid-template-rows: var(--grid-height) $weekly-height;
     gap: $grid-gap;
   }
 
@@ -45,8 +61,8 @@ $grid-heights: (
     grid-template-columns: 418fr 335fr 247fr;
     grid-template-rows: repeat(2, 2fr);
     gap: $card-gap;
-    height: calc(var(--window-inner-height) - var(--grid-height) - 108px);
-    min-height: 656px;
+    height: var(--grid-height);
+    min-height: map-get($grid-heights, "min");
   }
 
   &-weekly {
@@ -61,21 +77,9 @@ $grid-heights: (
         rgba(255, 255, 255, 0) 15%
       ),
       #f3efea;
-    height: var(--grid-height);
-    min-height: calc(map-get($grid-heights, "min") - 4px);
+    height: $weekly-height; // 고정 높이
     box-shadow: 0 -4px 40px 0 rgba(0, 0, 0, 0.3);
     overflow: hidden;
-
-    &::before {
-      content: " ";
-      position: absolute;
-      left: 0;
-      bottom: 0;
-      width: 276px;
-      height: 134px;
-      background: url(../images/bg_weekly_logo.svg) no-repeat left bottom /
-        cover;
-    }
   }
 }
 
@@ -92,9 +96,9 @@ $grid-heights: (
   // Double height cards
   &.individual,
   &.sales {
-    $double-card-height: calc((var(--grid-height) * 2) + $card-gap);
+    $double-card-height: var(--grid-height);
     height: $double-card-height;
-    min-height: 656px;
+    min-height: map-get($grid-heights, "min");
     display: grid;
     grid-template-columns: 100%;
     grid-row: 1 / 3;
@@ -102,8 +106,8 @@ $grid-heights: (
 
   // Individual card
   &.individual {
-    $individual-min: calc(650px - 228px);
-    $individual-max: calc((var(--grid-height) * 2) + $card-gap - 228px);
+    $individual-min: calc(map-get($grid-heights, "min") - 228px);
+    $individual-max: calc(var(--grid-height) - 228px);
     $individual-chart: clamp($individual-min, $individual-max, $individual-max);
 
     grid-column-start: 2;
@@ -143,13 +147,11 @@ $grid-heights: (
 
   // Sales card
   &.sales {
-    $sales-base-height: 656px;
+    $sales-base-height: map-get($grid-heights, "min");
     $sales-header: 48px;
     $sales-stat: calc(($sales-base-height - $sales-header - $card-gap) / 6);
     $sales-min: calc(($sales-base-height - $sales-header - $sales-stat) / 2);
-    $sales-max: calc(
-      ((var(--grid-height) * 2) - $sales-header - $sales-stat) / 2
-    );
+    $sales-max: calc((var(--grid-height) - $sales-header - $sales-stat) / 2);
     $sales-chart: clamp($sales-min, $sales-max, $sales-max);
 
     grid-column-start: 3;
@@ -253,10 +255,9 @@ $grid-heights: (
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: 48px auto;
-    min-height: map-get($grid-heights, "min");
+    $yearly-min: map-get($card-heights, "min");
 
-    $yearly-min: 320px;
-    $yearly-max: var(--grid-height);
+    $yearly-max: var(--card-height);
     $yearly-chart: clamp($yearly-min, $yearly-max, $yearly-max);
     height: $yearly-chart;
     .chart {
@@ -264,7 +265,7 @@ $grid-heights: (
         grid-column-start: 2;
         grid-row-start: 1;
         height: $yearly-chart;
-        min-height: map-get($grid-heights, "min");
+        min-height: map-get($card-heights, "min");
         padding: 12px;
         border-left: 1px solid var(--border-base);
       }
@@ -289,9 +290,10 @@ $grid-heights: (
 // Stat Row Component
 // ============================================
 @mixin stat-style($color, $gradient) {
+  /*
   .label {
     color: $color;
-  }
+  }*/
 
   .big-num,
   .unit {
@@ -313,30 +315,24 @@ $grid-heights: (
   }
 
   &.accrue {
-    @include stat-style(var(--stat-accrue), var(--stat-unit-accrue));
+    @include stat-style(var(--stat-accrue), var(--stat-primary));
   }
 
   &.month {
-    @include stat-style(var(--stat-month), var(--stat-unit-month));
+    @include stat-style(var(--stat-month), var(--stat-primary));
   }
 
   &.individual01 {
-    @include stat-style(
-      var(--stat-individual01),
-      var(--stat-unit-individual01)
-    );
+    @include stat-style(var(--unit-primary), var(--unit-primary));
   }
 
   &.individual02 {
-    @include stat-style(
-      var(--stat-individual02),
-      var(--stat-unit-individual02)
-    );
+    @include stat-style(var(--unit-secondary), var(--unit-secondary));
   }
 
   &.sales {
     padding: 16px 24px;
-    @include stat-style(var(--stat-sales), var(--stat-unit-sales));
+    @include stat-style(var(--stat-sales), var(--stat-secondary));
   }
 
   .label-box {
@@ -349,7 +345,7 @@ $grid-heights: (
     font-size: 16px;
     font-weight: 700;
     line-height: 1;
-    color: var(--change-label);
+    color: var(--stat-base);
   }
 
   // Change indicators
@@ -431,10 +427,11 @@ $grid-heights: (
   .big-num,
   .unit {
     font-weight: 700;
-    background: var(--stat-unit-base);
+    /*background: var(--stat-unit-base);
     background-clip: text;
     -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    -webkit-text-fill-color: transparent;*/
+    color: var(--stat-base);
   }
 }
 
@@ -510,17 +507,17 @@ $grid-heights: (
 
   &[class*="individual01"] {
     @include badge-style(
-      var(--stat-individual01),
+      var(--unit-primary),
       var(--bg-badge-linearea01),
-      var(--stat-individual01)
+      var(--unit-primary)
     );
   }
 
   &[class*="individual02"] {
     @include badge-style(
-      var(---stat-individual02),
+      var(---unit-secondary),
       var(--bg-badge-linearea02),
-      var(--stat-individual02)
+      var(--unit-secondary)
     );
   }
 }
@@ -604,7 +601,7 @@ $grid-heights: (
         .person-name {
           @include person-name-style(
             var(--bg-individual01),
-            var(--stat-unit-individual01)
+            var(--unit-primary)
           );
         }
       }
@@ -613,7 +610,7 @@ $grid-heights: (
         .person-name {
           @include person-name-style(
             var(--bg-individual02),
-            var(--stat-unit-individual02)
+            var(--unit-secondary)
           );
         }
       }
@@ -651,6 +648,7 @@ $grid-heights: (
   }
 
   &-header {
+    height: $weekly-height;
     flex-direction: column;
     @include flex(flex-start, space-around);
   }
@@ -699,19 +697,20 @@ $grid-heights: (
     border: none;
     line-height: rem(18px);
     padding: 0;
+    margin: 0 2px;
   }
 
   .badge {
     &-green {
-      background: linear-gradient(180deg, #2b8f10 0%, #1b580b 100%);
+      background: var(--unit-primary);
     }
 
     &-purple {
-      background: linear-gradient(180deg, #7c108f 0%, #41074c 100%);
+      background: var(--unit-secondary);
     }
 
     &-teal {
-      background: linear-gradient(180deg, #00d8e7 0%, #004e53 100%);
+      background: var(--unit-tertiary);
     }
   }
 
@@ -828,11 +827,11 @@ $grid-heights: (
         background-color: var(--bg-individual01);
 
         dt {
-          background: var(--stat-unit-individual01);
+          background: var(--unit-primary);
         }
 
         dd {
-          color: var(--stat-individual01);
+          color: var(--unit-primary);
         }
       }
 
@@ -840,11 +839,11 @@ $grid-heights: (
         background-color: var(--bg-individual02);
 
         dt {
-          background: var(--stat-unit-individual02);
+          background: var(--unit-secondary);
         }
 
         dd {
-          color: var(--stat-individual02);
+          color: var(--unit-secondary);
         }
       }
     }

@@ -2,9 +2,36 @@
   <div class="weekly-grid">
     <div class="weekly-header">
       <div class="weekly-title">
-        <h3>11월 5주차</h3>
+        <h3 id="weekTitle">11월 5주차</h3>
         <p>주간 영업 계획</p>
+        <div class="week-navigation">
+          <button class="week-nav-btn" id="prevWeek" title="이전 주">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M15 18l-6-6 6-6" />
+            </svg>
+          </button>
+          <button class="week-nav-btn" id="nextWeek" title="다음 주">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M9 18l6-6-6-6" />
+            </svg>
+          </button>
+        </div>
       </div>
+
       <ul class="person-list">
         <li>
           <span class="badge-green">권</span
@@ -20,125 +47,121 @@
         </li>
       </ul>
     </div>
-    <div class="schedule">
-      <div class="day-card" data-date="2025-11-24">
-        <div class="day-title">24일 <span>(월)</span></div>
-        <ul class="day-list">
-          <li data-start="09:00" data-end="10:00">
-            <a href="#" class="schedule-item">
-              한라대학교 (강의커리큐럼 초안 작성 )
-              <span class="badge-green">권</span>
-              <span class="badge-purple">염</span>
-            </a>
-          </li>
-          <li data-start="10:00" data-end="11:00">
-            <a href="#" class="schedule-item">
-              브로슈어 우편물 발송 계획 ( 수도권, 선별 외 )
-              <span class="badge-green">권</span>
-              <span class="badge-teal">김</span>
-            </a>
-          </li>
-          <li data-start="13:00" data-end="14:00">
-            <a href="#" class="schedule-item">
-              교육기관 마케팅 보고서 작성
-              <span class="badge-purple">염</span>
-            </a>
-          </li>
-          <li data-start="14:00" data-end="15:00">
-            <a href="#" class="schedule-item">
-              교육기관 EG-BIM 라이선스 배포 현황 보고서 작성
-              <span class="badge-teal">김</span>
-            </a>
-          </li>
-          <li data-start="15:00" data-end="18:00">
-            <a href="#" class="schedule-item">
-              대림대학교 현물 기부금 처리 서류 작성
-              <span class="badge-teal">김</span>
-            </a>
-          </li>
-        </ul>
-      </div>
-      <div class="day-card" data-date="2025-11-25">
-        <div class="day-title">25일 <span>(화)</span></div>
-        <ul class="day-list">
-          <li data-start="10:20" data-end="12:00">
-            <a href="#" class="schedule-item">
-              10:30 ~ 12:00 삼안 CM현장 : 해안.방산 ( 오미) 공공하수처리시설
-              신동훈 부사장님 (강원특별자치도 양구군 방산면 평화로5107번길 14)
-              <span class="badge-green">권</span>
-              <span class="badge-purple">염</span>
-            </a>
-          </li>
-          <li data-start="13:00" data-end="15:00">
-            <a href="#" class="schedule-item">
-              13:00 ~ 15:00 상지대, 지반공학회장 미팅
-              <span class="badge-green">권</span>
-              <span class="badge-purple">염</span>
-            </a>
-          </li>
-        </ul>
-      </div>
-      <div class="day-card" data-date="2025-11-26">
-        <div class="day-title">26일 <span>(수)</span></div>
-        <ul class="day-list">
-          <li data-start="10:30" data-end="14:00">
-            <a href="#" class="schedule-item">
-              10:30 ~ 14:00 한국종합기술 ( 총괄본부장 - 김원식전무님,
-              복진훈수석님 동행 )
-              <span class="badge-green">권</span>
-              <span class="badge-purple">염</span>
-            </a>
-          </li>
-          <li data-start="15:00" data-end="15:30">
-            <a href="#" class="schedule-item">
-              15:00 ~ 15:30 삼안 대표이사님 면담 / 삼안 CM현장 6개소 방문결과
-              보고 외
-              <span class="badge-green">권</span>
-            </a>
-          </li>
-          <li data-start="16:00" data-end="18:00">
-            <a href="#" class="schedule-item">
-              16:00 ~ 18:00 의왕도시공사 MOU체결
-              <span class="badge-green">권</span>
-              <span class="badge-purple">염</span>
-            </a>
-          </li>
-          <li>
-            <a href="#" class="schedule-item">
-              삼안 ( 서울대 교육 지원 )
-              <span class="badge-purple">염</span>
-            </a>
-          </li>
-        </ul>
-      </div>
-      <div class="day-card" data-date="2025-11-27">
-        <div class="day-title">27일 <span>(목)</span></div>
-        <ul class="day-list">
-          <li data-start="15:00" data-end="17:00">
-            <a href="#" class="schedule-item">
-              15:00 ~ 17:00 사장님 영업보고 ( PM 활용 ) 교육기관, 가격정책,
-              기능개선, 단가프로그램 등
-              <span class="badge-green">권</span>
-              <span class="badge-purple">염</span>
-              <span class="badge-teal">김</span>
-            </a>
-          </li>
-        </ul>
-      </div>
-      <div class="day-card" data-date="2025-11-28">
-        <div class="day-title">28일 <span>(금)</span></div>
-        <ul class="day-list"></ul>
-      </div>
-    </div>
+    <div class="schedule" id="scheduleContainer"></div>
   </div>
 </div>
-
 <script src="./assets/js/schedule-manager.min.js"></script>
+<script src="./assets/js/events-data.min.js"></script>
 <script>
-  // 사용
-  const scheduleManager = new ScheduleManager();
-  scheduleManager.initialize();
+  // 태그 매핑
+  const tagMapping = {
+    권: "green",
+    염: "purple",
+    김: "teal",
+  };
 
+  // 현재 주차 상태
+  let currentWeekStart = new Date(2025, 10, 24); // 11월 24일 (월요일)
+
+  // 주차 타이틀 업데이트
+  function updateWeekTitle() {
+    const weekStart = new Date(currentWeekStart);
+    const month = weekStart.getMonth() + 1;
+    const startDate = weekStart.getDate();
+
+    // 해당 월의 몇 번째 주인지 계산
+    const firstDayOfMonth = new Date(
+      weekStart.getFullYear(),
+      weekStart.getMonth(),
+      1
+    );
+    const weekOfMonth = Math.ceil((startDate + firstDayOfMonth.getDay()) / 7);
+
+    document.getElementById("weekTitle").textContent =
+      `${month}월 ${weekOfMonth}주차`;
+  }
+
+  // 요일 이름 가져오기
+  function getDayName(dayIndex) {
+    const days = ["일", "월", "화", "수", "목", "금", "토"];
+    return days[dayIndex];
+  }
+
+  // 주간 일정 렌더링
+  function renderWeeklySchedule() {
+    const container = document.getElementById("scheduleContainer");
+    container.innerHTML = "";
+
+    // 월요일부터 금요일까지 (5일)
+    for (let i = 0; i < 5; i++) {
+      const currentDate = new Date(currentWeekStart);
+      currentDate.setDate(currentWeekStart.getDate() + i);
+
+      const year = currentDate.getFullYear();
+      const month = String(currentDate.getMonth() + 1).padStart(2, "0");
+      const day = String(currentDate.getDate()).padStart(2, "0");
+      const dateKey = `${year}-${month}-${day}`;
+
+      const dayOfWeek = getDayName(currentDate.getDay());
+      const dayEvents = eventsData[dateKey] || [];
+
+      // 카드 생성
+      const dayCard = document.createElement("div");
+      dayCard.className = "day-card";
+      dayCard.dataset.date = dateKey;
+
+      let dayHTML = `
+          <div class="day-title">${day}일 <span>(${dayOfWeek})</span></div>
+          <ul class="day-list">
+        `;
+
+      if (dayEvents.length === 0) {
+        // dayHTML +=
+        //   '<li style="color: #9ca3af; font-size: 12px; padding: 8px;">일정 없음</li>';
+      } else {
+        dayEvents.forEach((event) => {
+          const tagsHTML = event.tags
+            .map(
+              (tag) => `<span class="badge-${tagMapping[tag]}">${tag}</span>`
+            )
+            .join("");
+
+          dayHTML += `
+              <li>
+                <a href="#" class="schedule-item">
+                  ${event.title}
+                  ${tagsHTML}
+                </a>
+              </li>
+            `;
+        });
+      }
+
+      dayHTML += "</ul>";
+      dayCard.innerHTML = dayHTML;
+      container.appendChild(dayCard);
+    }
+
+    updateWeekTitle();
+  }
+
+  // 이전 주로 이동
+  document.getElementById("prevWeek").addEventListener("click", () => {
+    currentWeekStart.setDate(currentWeekStart.getDate() - 7);
+    renderWeeklySchedule();
+  });
+
+  // 다음 주로 이동
+  document.getElementById("nextWeek").addEventListener("click", () => {
+    currentWeekStart.setDate(currentWeekStart.getDate() + 7);
+    renderWeeklySchedule();
+  });
+
+  // 초기 렌더링
+  renderWeeklySchedule();
+</script>
+
+<script>
   let isCalendarLoaded = false;
   // 모달 열기
   function openModal() {

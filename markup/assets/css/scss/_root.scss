@@ -79,6 +79,7 @@
 
   /* border */
   --border-base: rgba(0, 0, 0, 0.2);
+  --border-primary: rgba(0, 0, 0, 0.1);
   --border-stat: #e7decd;
   --border-person: #e3dac8;
   --border-card-inner: rgba(0, 0, 0, 0.1);
@@ -89,10 +90,18 @@
   --text-primary: #555;
   --text-secondary: #777;
 
+  --stat-base: #333;
+  --stat-primary: #dc6700;
+  --stat-secondary: #99572c;
+
+  --unit-primary: #2b8f10;
+  --unit-secondary: #7c108f;
+  --unit-tertiary: #0098df;
+
   --text-weekly-title: #895d24;
+  --card-title: #fff;
 
   --chart-base: #777;
-  --card-title: #fff;
 
   --change-base: #555;
   --change-label: #333;
@@ -102,8 +111,7 @@
 
   --stat-accrue: #d75913;
   --stat-month: #2a6f65;
-  --stat-individual01: #2b8f10;
-  --stat-individual02: #7c108f;
+
   --stat-sales: #885d1a;
   --stat-unit-base: linear-gradient(180deg, #777 0%, #000 100%);
   --stat-unit-accrue: linear-gradient(180deg, #ff5c00 0%, #b94300 100%);
