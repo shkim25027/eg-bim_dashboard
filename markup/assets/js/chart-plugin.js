@@ -274,9 +274,7 @@ function createMixedPointGradientPlugin(gradientColors) {
           );
           (
             gradientColors || [
-              { stop: 0.1475, color: cssVar("--bg-chart-mixbullet01") },
-              { stop: 0.5805, color: cssVar("--bg-chart-mixbullet02") },
-              { stop: 0.9277, color: cssVar("--bg-chart-mixbullet03") },
+              { stop: 1, color: cssVar("--bg-chart-mixbullet") },
             ]
           ).forEach((c) => gradient.addColorStop(c.stop, c.color));
           ctx.save();
@@ -286,14 +284,14 @@ function createMixedPointGradientPlugin(gradientColors) {
           ctx.fill();
 
           // drop-shadow 적용
-          ctx.shadowColor = "rgba(0,0,0,0.5)";
+          ctx.shadowColor = "rgba(0,0,0,0.3)";
           ctx.shadowBlur = 4;
           ctx.shadowOffsetX = 0;
           ctx.shadowOffsetY = 0;
 
           // 외곽선
           ctx.strokeStyle = "rgba(255,255,255)";
-          ctx.lineWidth = 2.5;
+          ctx.lineWidth = 2;
           ctx.stroke();
           ctx.restore();
         });
@@ -344,19 +342,9 @@ function createPointGradientPluginWithBorder(datasetColors = {}) {
             colors.forEach((c) => gradient.addColorStop(c.stop, c.color));
           } else {
             if (datasetIndex === 0) {
-              gradient.addColorStop(0, cssVar("--bg-chart-line01-bullet01"));
-              gradient.addColorStop(
-                0.690678,
-                cssVar("--bg-chart-line01-bullet02")
-              );
-              gradient.addColorStop(1, cssVar("--bg-chart-line01-bullet03"));
+              gradient.addColorStop(1, cssVar("--bg-chart-linearea01"));
             } else if (datasetIndex === 1) {
-              gradient.addColorStop(0, cssVar("--bg-chart-line02-bullet01"));
-              gradient.addColorStop(
-                0.690678,
-                cssVar("--bg-chart-line02-bullet02")
-              );
-              gradient.addColorStop(1, cssVar("--bg-chart-line02-bullet03"));
+              gradient.addColorStop(1, cssVar("--bg-chart-linearea02"));
             }
           }
 
@@ -369,7 +357,7 @@ function createPointGradientPluginWithBorder(datasetColors = {}) {
           ctx.fill();
 
           // drop-shadow 적용
-          ctx.shadowColor = "rgba(0,0,0,0.5)";
+          ctx.shadowColor = "rgba(0,0,0,0.3)";
           ctx.shadowBlur = 4;
           ctx.shadowOffsetX = 0;
           ctx.shadowOffsetY = 0;
@@ -427,9 +415,9 @@ function createPointGradientPluginWithBorder(datasetColors = {}) {
 
         // 텍스트 색상 (datasetIndex에 따라)
         if (pos.datasetIndex === 0) {
-          ctx.fillStyle = cssVar("--stat-individual01") || "#7c108f";
+          ctx.fillStyle = cssVar("--bg-chart-linearea01") || "#2b8f10";
         } else if (pos.datasetIndex === 1) {
-          ctx.fillStyle = cssVar("--stat-individual02") || "#2b8f10";
+          ctx.fillStyle = cssVar("--bg-chart-linearea02") || "#7c108f";
         } else {
           ctx.fillStyle = "#000";
         }

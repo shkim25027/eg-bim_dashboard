@@ -134,6 +134,11 @@
         options: {
           responsive: true,
           maintainAspectRatio: false,
+          layout: {
+            padding: {
+              top: 60,
+            },
+          },
           plugins: {
             legend: { display: false },
             tooltip: {
@@ -142,8 +147,53 @@
           },
           scales: {
             y: {
-              display: false, //suggestedMax: 350, //목표 값
-              suggestedMax: 189 + 12, // 최대값 + 여백
+              afterBuildTicks: (scale) => {
+                const maxValue = scale.chart.data.datasets
+                  .flatMap((d) => d.data)
+                  .filter((n) => typeof n === "number");
+
+                const realMax = Math.max(...maxValue);
+
+                // +50 후 백단위 올림
+                const rawMax = realMax + 50;
+                const targetMax = Math.ceil(rawMax / 100) * 100;
+
+                const mid = Math.round(targetMax / 2);
+
+                scale.max = targetMax;
+                scale.min = 0;
+
+                // tick 3개
+                scale.ticks = [
+                  { value: 0 },
+                  { value: mid },
+                  { value: targetMax },
+                ];
+
+                // 가운데 tick의 index 저장
+                scale._midIndex = 1;
+              },
+
+              grid: {
+                drawTicks: false,
+                color: (context) => {
+                  // 가운데 tick만 라인 보이게
+                  return context.index === context.scale._midIndex
+                    ? cssVar("--grid-border-dashed") // 보여줄 색상
+                    : "rgba(0,0,0,0)"; // 안 보이게 (transparent)
+                },
+                lineWidth: (context) => {
+                  // 가운데만 진하게, 나머지는 0
+                  return context.index === context.scale._midIndex ? 1 : 0;
+                },
+              },
+
+              border: { display: false },
+
+              ticks: {
+                padding: 10,
+                color: cssVar("--chart-base"),
+              },
             },
             x: {
               offset: true, // `offset: true` 유지

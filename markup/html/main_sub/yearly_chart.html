@@ -81,6 +81,8 @@
               borderColor: cssVar("--chart-mixline"),
               borderWidth: 1,
               pointRadius: 6,
+              pointHoverRadius: 6, // 호버 시에도 크기 변화 없음
+              pointHoverBorderWidth: 1,
               tension: 0,
               fill: false,
             },
@@ -92,11 +94,12 @@
                 const chart = context.chart;
                 const { ctx, chartArea } = chart;
 
+                /*
                 if (!chartArea) {
-                  return "#4CAE9B";
-                }
-
-                return safeGrad(ctx, chartArea, theme.mixbar);
+                  return cssVar("--chart-mixbar");
+                }*/
+                return cssVar("--chart-mixbar");
+                //return safeGrad(ctx, chartArea, theme.mixbar);
               },
               borderRadius: { topLeft: 2, topRight: 2 },
             },
@@ -105,6 +108,9 @@
         options: {
           responsive: true,
           maintainAspectRatio: false,
+          interaction: {
+            mode: null, // 또는 'none'
+          },
           plugins: {
             legend: { display: false },
             tooltip: {
