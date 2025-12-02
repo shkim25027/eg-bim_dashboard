@@ -488,6 +488,7 @@ $card-heights: (
     border-style: solid;
     font-weight: 700;
     line-height: 1;
+    overflow: hidden;
   }
 
   &[class*="box"] {
