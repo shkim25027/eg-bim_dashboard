@@ -54,6 +54,7 @@ const paths = {
     ignore: [
       "!./markup/html/_include/", // include 폴더 제외
       "!./markup/html/_sub/", // sub 폴더 제외
+      "!./markup/html/main_sub/", // main_sub 폴더 제외
     ],
     dest: "./dist",
   },
