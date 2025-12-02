@@ -1113,6 +1113,7 @@ $card-heights: (
   }
   .days {
     display: grid;
+    min-height: calc(var(--window-inner-height) - 304px);
     &.collapsed {
       height: calc(var(--window-inner-height) - 194px - 110px);
       max-height: none;
