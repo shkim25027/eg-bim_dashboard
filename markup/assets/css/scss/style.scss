@@ -68,7 +68,7 @@ $card-heights: (
   &-weekly {
     position: relative;
     border-radius: 16px 16px 0 0;
-    background-color: #fcfcfc;
+    background-color: #fafafa;
     height: clamp(320px, 37.03703vh, var(--weekly-height)); // 고정 높이
     box-shadow: 0 -4px 40px 0 rgba(0, 0, 0, 0.3);
     overflow: hidden;
