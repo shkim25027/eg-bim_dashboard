@@ -330,6 +330,9 @@ $card-heights: (
     justify-content: center;
     gap: 40px;
     @include stat-style(var(--stat-sales), var(--stat-secondary));
+    .unit {
+      width: auto;
+    }
   }
 
   .label-box {
