@@ -1200,9 +1200,22 @@ $card-heights: (
   }
   .event {
     &-item {
+      position: relative;
       gap: 4px;
+      padding: 0px 8px 0px 16px;
       //  flex-wrap: nowrap;
       // @include flex(flex-start, center);
+      &:before {
+        background-color: var(--text-primary);
+        border-radius: 50%;
+        content: " ";
+        display: inline-block;
+        height: 4px;
+        left: 8px;
+        position: absolute;
+        top: rem(10px);
+        width: 4px;
+      }
     }
     &-title {
       em {
