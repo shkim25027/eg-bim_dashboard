@@ -67,7 +67,7 @@ $card-heights: (
 
   &-weekly {
     position: relative;
-    border-radius: 32px 32px 0 0;
+    border-radius: 16px 16px 0 0;
     background-color: #fcfcfc;
     height: clamp(320px, 37.03703vh, var(--weekly-height)); // 고정 높이
     box-shadow: 0 -4px 40px 0 rgba(0, 0, 0, 0.3);
@@ -81,7 +81,7 @@ $card-heights: (
 .card {
   position: relative;
   border-radius: 8px;
-  border: 2px solid var(--border-base);
+  outline: 2px solid var(--border-base);
   background: var(--bg-card);
   overflow: hidden;
 
@@ -132,7 +132,10 @@ $card-heights: (
       }
 
       .unit {
-        font-size: rem(12px);
+        font-size: rem(14px);
+        &.copy {
+          font-size: rem(10px);
+        }
       }
     }
   }
@@ -418,7 +421,10 @@ $card-heights: (
   .unit {
     display: inline-flex;
     width: 3rem;
-    font-size: rem(14px);
+    font-size: rem(18px);
+    &.copy {
+      font-size: rem(14px);
+    }
   }
 
   .big-num,
