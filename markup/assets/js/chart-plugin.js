@@ -648,7 +648,7 @@ const externalLabelPlugin = {
 
       if (needsLine) {
         // 지시선 - 도넛 중앙에서 시작
-        const lineStartR = (innerRadius + outerRadius) / 1.75;
+        const lineStartR = (innerRadius + outerRadius) / 2;
         const lineX1 = arcX + Math.cos(midAngle) * lineStartR;
         const lineY1 = arcY + Math.sin(midAngle) * lineStartR;
 
