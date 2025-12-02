@@ -620,6 +620,12 @@ $card-heights: (
           );
         }
       }
+      .stat-row {
+        padding: 16px 0;
+        &:last-child {
+          padding-bottom: 0;
+        }
+      }
     }
 
     &-name {
