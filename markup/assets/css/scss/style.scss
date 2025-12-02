@@ -271,7 +271,7 @@ $card-heights: (
     .card-body {
       grid-column-start: 1;
       grid-row-start: 2;
-      padding: 0 24px 12px;
+      padding: 0 24px;
       display: grid;
       grid-template-columns: 100%;
       grid-template-rows: repeat(3, 1fr);
@@ -572,7 +572,7 @@ $card-heights: (
   .card-body {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    padding: 24px 0 12px;
+    align-items: center;
 
     .person-box {
       padding: 0 24px;
