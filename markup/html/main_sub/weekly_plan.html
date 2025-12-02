@@ -110,12 +110,29 @@
     return days[dayIndex];
   }
 
-  // 주간 일정 렌더링
+  // 시간 문자열 파싱 함수
+  function parseTimeString(timeStr) {
+    if (!timeStr || timeStr.trim() === "") {
+      return { start: "", end: "" };
+    }
+
+    const match = timeStr.match(/(\d{1,2}:\d{2})\s*~\s*(\d{1,2}:\d{2})?/);
+
+    if (match) {
+      return {
+        start: match[1] || "",
+        end: match[2] || "",
+      };
+    }
+
+    return { start: "", end: "" };
+  }
+
+  // 주간 일정 렌더링 (period 포함)
   function renderWeeklySchedule() {
     const container = document.getElementById("scheduleContainer");
     container.innerHTML = "";
 
-    // 월요일부터 금요일까지 (5일)
     for (let i = 0; i < 5; i++) {
       const currentDate = new Date(currentWeekStart);
       currentDate.setDate(currentWeekStart.getDate() + i);
@@ -128,20 +145,16 @@
       const dayOfWeek = getDayName(currentDate.getDay());
       const dayEvents = eventsData[dateKey] || [];
 
-      // 카드 생성
       const dayCard = document.createElement("div");
       dayCard.className = "day-card";
       dayCard.dataset.date = dateKey;
 
       let dayHTML = `
-          <div class="day-title">${day}일 <span>(${dayOfWeek})</span></div>
-          <ul class="day-list">
-        `;
+      <div class="day-title">${day}일 <span>(${dayOfWeek})</span></div>
+      <ul class="day-list">
+    `;
 
-      if (dayEvents.length === 0) {
-        // dayHTML +=
-        //   '<li style="color: #9ca3af; font-size: 12px; padding: 8px;">일정 없음</li>';
-      } else {
+      if (dayEvents.length > 0) {
         dayEvents.forEach((event) => {
           const tagsHTML = event.tags
             .map(
@@ -149,14 +162,35 @@
             )
             .join("");
 
+          // time 필드에서 시작/종료 시간 추출
+          const { start, end } = parseTimeString(event.time);
+
+          // period 자동 판단 (없으면)
+          let period = event.period;
+          if (!period) {
+            if (!start || !end) {
+              period = "종일";
+            } else {
+              const hour = parseInt(start.split(":")[0]);
+              period = hour < 12 ? "오전" : "오후";
+            }
+          }
+
+          // data 속성: period 우선, 없으면 정확한 시간
+          const dataAttrs = period
+            ? `data-period="${period}"`
+            : start && end
+              ? `data-start="${start}" data-end="${end}"`
+              : "";
+
           dayHTML += `
-              <li>
-                <a href="#" class="schedule-item">
-                  ${event.title}
-                  ${tagsHTML}
-                </a>
-              </li>
-            `;
+          <li ${dataAttrs}>
+            <a href="#" class="schedule-item">
+              ${event.title}
+              ${tagsHTML}
+            </a>
+          </li>
+        `;
         });
       }
 
