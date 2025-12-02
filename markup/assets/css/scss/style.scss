@@ -665,25 +665,32 @@ $card-heights: (
   }
 
   &-title {
-    color: var(--text-base);
-    font-size: 28px;
-    font-weight: 700;
-
-    h3 {
-      font: inherit;
+    p {
+      font-size: 20px;
+      color: var(--text-primary);
+      font-weight: 500;
     }
+    h3 {
+      color: var(--text-base);
+      font-size: 28px;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+  }
+  .week-navigation {
+    gap: 10px;
+    @include flex(center, flex-start);
   }
 
   .week-nav-btn {
     width: 26px;
     height: 26px;
     border-radius: 4px;
+    margin-top: 4px;
     border: 1px solid rgba(0, 0, 0, 0.4);
     background: linear-gradient(180deg, #f0f0f0 0%, #e1e0de 100%);
     box-shadow: 0 0.3px 2px 1px rgba(0, 0, 0, 0.1);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+    @include flex();
   }
   .person {
     &-list {
