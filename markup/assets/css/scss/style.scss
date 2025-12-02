@@ -1108,13 +1108,13 @@ $card-heights: (
     }
   }
   .calendar-days {
-    height: calc(var(--window-inner-height) - 194px);
+    height: calc(var(--window-inner-height) - 194px - 110px);
     overflow-y: auto;
   }
   .days {
     display: grid;
     &.collapsed {
-      height: calc(var(--window-inner-height) - 194px);
+      height: calc(var(--window-inner-height) - 194px - 110px);
       max-height: none;
       overflow: hidden;
       .week {
