@@ -11,7 +11,7 @@
               height="20"
               viewBox="0 0 24 24"
               fill="none"
-              stroke="currentColor"
+              stroke="#424242"
               stroke-width="2"
             >
               <path d="M15 18l-6-6 6-6" />
@@ -23,7 +23,7 @@
               height="20"
               viewBox="0 0 24 24"
               fill="none"
-              stroke="currentColor"
+              stroke="#424242"
               stroke-width="2"
             >
               <path d="M9 18l6-6-6-6" />
@@ -203,6 +203,7 @@
   function closeModal() {
     const modal = document.getElementById("scheduleModal");
     modal.classList.add("closing");
+    isCalendarLoaded = false;
     setTimeout(() => {
       modal.remove();
     }, 400);
