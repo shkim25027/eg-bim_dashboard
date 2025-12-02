@@ -55,11 +55,7 @@
   (() => {
     const labels12 = Array.from({ length: 12 }, (_, i) => String(i + 1));
     const theme = {
-      mixbar: [
-        { stop: 0, color: cssVar("--bg-chart-mixbar01") },
-        { stop: 0.3709, color: cssVar("--bg-chart-mixbar02") },
-        { stop: 1, color: cssVar("--bg-chart-mixbar03") },
-      ],
+      mixbar: [{ stop: 1, color: cssVar("--chart-mixbar") }],
     };
 
     let yearlyInstance = null;

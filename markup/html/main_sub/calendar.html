@@ -91,8 +91,9 @@
     });
   </script>
   <script>
-    let currentYear = 2025;
-    let currentMonth = 10;
+    const today = new Date();
+    let currentYear = today.getFullYear(); // 2025 대신
+    let currentMonth = today.getMonth(); // 11 대신
     let selectedFilters = ["green", "purple", "teal"];
 
     function renderCalendar() {
@@ -114,19 +115,18 @@
       let todayWeekStart = -1;
       let todayWeekEnd = -1;
 
-      for (let i = 1; i <= lastDate; i++) {
-        const isToday =
-          i === today.getDate() &&
-          currentMonth === today.getMonth() &&
-          currentYear === today.getFullYear();
+      // 현재 달력에 오늘이 포함되어 있는지 확인
+      if (
+        currentMonth === today.getMonth() &&
+        currentYear === today.getFullYear()
+      ) {
+        const todayDate = today.getDate();
+        const currentDate = new Date(currentYear, currentMonth, todayDate);
+        const dayOfWeek = currentDate.getDay();
 
-        if (isToday) {
-          const currentDate = new Date(currentYear, currentMonth, i);
-          const dayOfWeek = currentDate.getDay();
-          todayWeekStart = i - dayOfWeek;
-          todayWeekEnd = i + (6 - dayOfWeek);
-          break;
-        }
+        // 이번 주의 시작(일요일)과 끝(토요일) 날짜 계산
+        todayWeekStart = todayDate - dayOfWeek;
+        todayWeekEnd = todayDate + (6 - dayOfWeek);
       }
 
       let weeks = "";
@@ -180,7 +180,7 @@
           currentYear === today.getFullYear();
 
         const isCurrentWeek =
-          i >= todayWeekStart && i <= todayWeekEnd && todayWeekStart > 0;
+          todayWeekStart >= 0 && i >= todayWeekStart && i <= todayWeekEnd;
 
         const dateKey = `${currentYear}-${String(currentMonth + 1).padStart(2, "0")}-${String(i).padStart(2, "0")}`;
         const dayEvents = eventsData[dateKey] || [];

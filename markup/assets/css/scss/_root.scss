@@ -1,8 +1,6 @@
 :root {
   /* background */
-  --bg-base:
-    linear-gradient(180deg, #ece3d2 0%, #b7ac96 84.27%),
-    linear-gradient(0deg, #f3efea 0%, #f3efea 100%);
+  --bg-base: linear-gradient(180deg, #ece3d2 0%, #b7ac96 84.27%), #f3efea;
   --bg-transparent: transparent;
   --bg-section: #f3efea;
   --bg-card: #fff;
@@ -16,6 +14,7 @@
     #895d24;
 
   --bg-calendar: #f6f3f0;
+  --bg-change: rgba(0, 0, 0, 0.08);
   --bg-change-up: rgba(230, 4, 3, 0.08);
   --bg-change-down: rgba(0, 47, 255, 0.08);
 
@@ -25,15 +24,13 @@
   --bg-chart-mixbullet02: #d75913;
   --bg-chart-mixbullet03: #ae3607;
 
-  --bg-badge-mixline:
-    linear-gradient(0deg, rgba(255, 92, 0, 0.1) 0%, rgba(255, 92, 0, 0.1) 100%),
-    #fff;
+  --bg-badge-year: rgba(220, 103, 0, 0.15);
 
   --bg-badge-month:
     linear-gradient(
       0deg,
-      rgba(42, 111, 101, 0.1) 0%,
-      rgba(42, 111, 101, 0.1) 100%
+      rgba(255, 119, 0, 0.1) 0%,
+      rgba(255, 119, 0, 0.1) 100%
     ),
     #fff;
 
@@ -91,8 +88,9 @@
   --text-secondary: #777;
 
   --stat-base: #333;
-  --stat-primary: #dc6700;
+  --stat-primary: #d84101;
   --stat-secondary: #99572c;
+  --stat-tertiary: #db6600;
 
   --unit-primary: #2b8f10;
   --unit-secondary: #7c108f;
@@ -106,11 +104,11 @@
   --change-base: #555;
   --change-label: #333;
 
-  --change-up: #e60403;
-  --change-down: #002fff;
+  --change-up: #b00;
+  --change-down: #00198b;
 
-  --stat-accrue: #d75913;
-  --stat-month: #2a6f65;
+  --stat-accrue: #d84101;
+  --stat-month: #f70;
 
   --stat-sales: #885d1a;
   --stat-unit-base: linear-gradient(180deg, #777 0%, #000 100%);
@@ -123,8 +121,8 @@
 
   /* chart color */
   --grid-border-dashed: rgba(0, 0, 0, 0.2);
-  --chart-mixline: #ff5c00;
-  --chart-mixbar: #047051;
+  --chart-mixline: #d84101;
+  --chart-mixbar: #e76c00;
 
   /* etc */
   --title-stroke: drop-shadow(0 0 1px rgba(0, 0, 0, 0.5));
