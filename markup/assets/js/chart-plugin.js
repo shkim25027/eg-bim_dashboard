@@ -247,7 +247,7 @@ function createMixedValuePlugin(padding = 10) {
           const bgWidth = textWidth + padding * 2;
           const bgHeight = textHeight + padding * 2;
 
-          ctx.fillStyle = "rgba(0, 0, 0, 0.06);"; // 회색 반투명 배경
+          ctx.fillStyle = "rgba(0, 0, 0, 0.06)"; // 회색 반투명 배경
           ctx.beginPath();
           ctx.roundRect(bgX, bgY, bgWidth, bgHeight, borderRadius);
           ctx.fill();
