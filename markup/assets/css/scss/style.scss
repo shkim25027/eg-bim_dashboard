@@ -464,7 +464,7 @@ $card-heights: (
     .badge-box {
       position: absolute;
       top: 8px;
-      left: 38px;
+      left: 48px;
     }
   }
 }
@@ -578,6 +578,10 @@ $card-heights: (
 }
 
 .individual {
+  .chart-body {
+    padding: 0 12px;
+    border-bottom: 1px solid var(--border-primary);
+  }
   .card-body {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
