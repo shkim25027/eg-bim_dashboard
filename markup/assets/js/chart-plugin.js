@@ -648,7 +648,7 @@ const externalLabelPlugin = {
 
       if (needsLine) {
         // 지시선 - 도넛 중앙에서 시작
-        const lineStartR = (innerRadius + outerRadius) / 2;
+        const lineStartR = (innerRadius + outerRadius) / 1.75;
         const lineX1 = arcX + Math.cos(midAngle) * lineStartR;
         const lineY1 = arcY + Math.sin(midAngle) * lineStartR;
 
@@ -659,7 +659,7 @@ const externalLabelPlugin = {
 
         // 시작점 점 (bullet)
         ctx.beginPath();
-        ctx.arc(lineX1, lineY1, 4, 0, Math.PI * 2);
+        ctx.arc(lineX1, lineY1, 3, 0, Math.PI * 2);
         // 흰색 테두리
         ctx.strokeStyle = "#fff";
         ctx.lineWidth = 2;
