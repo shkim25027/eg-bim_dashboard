@@ -149,7 +149,6 @@
           },
           scales: {
             y: {
-              grace: 4,
               afterBuildTicks: (scale) => {
                 const maxValue = scale.chart.data.datasets
                   .flatMap((d) => d.data)
@@ -194,7 +193,7 @@
               border: { display: false },
 
               ticks: {
-                padding: 10,
+                padding: 4,
                 color: cssVar("--chart-base"),
               },
             },
