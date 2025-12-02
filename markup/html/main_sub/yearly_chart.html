@@ -169,8 +169,48 @@
               },
             },
             x: {
+              /*
               grid: {
                 drawTicks: false,
+                display: true,
+                drawOnChartArea: true,
+                drawBorder: false, // 경계선도 함께 제거
+                color: (context) => {
+                  // 첫 번째(0)와 마지막 그리드 라인 숨기기
+                  const lastIndex = context.chart.scales.x.ticks.length;
+
+                  if (context.index === 0 || context.index === lastIndex) {
+                    return "rgba(0,0,0,0)";
+                  }
+                  return cssVar("--grid-border-dashed");
+                },
+              },
+              */
+              grid: {
+                drawTicks: false,
+                display: true,
+                drawOnChartArea: true,
+                color: (context) => {
+                  // 디버깅: 실제 인덱스 확인
+                  console.log(
+                    "Grid index:",
+                    context.index,
+                    "Total ticks:",
+                    context.chart.scales.x.ticks.length
+                  );
+
+                  // 첫 번째와 마지막 그리드 라인 숨기기
+                  if (context.index === 0 || context.index === undefined) {
+                    return "rgba(0,0,0,0)";
+                  }
+                  return cssVar("--grid-border-dashed");
+                },
+                lineWidth: (context) => {
+                  if (context.index === 0 || context.index === undefined) {
+                    return 0;
+                  }
+                  return 1;
+                },
               },
               ticks: {
                 color: function (context) {

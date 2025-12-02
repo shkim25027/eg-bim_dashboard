@@ -235,6 +235,24 @@ function createMixedValuePlugin(padding = 10) {
           ctx.strokeText(textValue, pos.x, pos.y);
           ctx.fillText(textValue, pos.x, pos.y);
         } else if (dataset.type === "line") {
+          // 라인 차트 값에 회색 배경 추가
+          const padding = 4;
+          const textWidth = ctx.measureText(textValue).width;
+          const textHeight = 12;
+          const borderRadius = 4;
+
+          // 둥근 배경 그리기
+          const bgX = pos.x - textWidth / 2 - padding;
+          const bgY = pos.y - textHeight - padding;
+          const bgWidth = textWidth + padding * 2;
+          const bgHeight = textHeight + padding * 2;
+
+          ctx.fillStyle = "rgba(128, 128, 128, 0.2)"; // 회색 반투명 배경
+          ctx.beginPath();
+          ctx.roundRect(bgX, bgY, bgWidth, bgHeight, borderRadius);
+          ctx.fill();
+
+          // 텍스트 그리기
           ctx.strokeStyle = "white";
           ctx.lineWidth = 3;
           ctx.fillStyle = cssVar("--chart-mixline");
