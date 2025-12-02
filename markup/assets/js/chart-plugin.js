@@ -302,7 +302,7 @@ function createMixedPointGradientPlugin(gradientColors) {
           ctx.fill();
 
           // drop-shadow 적용
-          ctx.shadowColor = "rgba(0,0,0,0.3)";
+          ctx.shadowColor = "rgba(0,0,0,0.4)";
           ctx.shadowBlur = 4;
           ctx.shadowOffsetX = 0;
           ctx.shadowOffsetY = 0;
