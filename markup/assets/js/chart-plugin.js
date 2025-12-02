@@ -375,14 +375,14 @@ function createPointGradientPluginWithBorder(datasetColors = {}) {
           ctx.fill();
 
           // drop-shadow 적용
-          ctx.shadowColor = "rgba(0,0,0,0.3)";
+          ctx.shadowColor = "rgba(0,0,0,0.4)";
           ctx.shadowBlur = 4;
           ctx.shadowOffsetX = 0;
           ctx.shadowOffsetY = 0;
 
           // 외곽선
           ctx.strokeStyle = "rgba(255,255,255)";
-          ctx.lineWidth = 1.5;
+          ctx.lineWidth = 2;
           ctx.stroke();
           ctx.restore();
 
