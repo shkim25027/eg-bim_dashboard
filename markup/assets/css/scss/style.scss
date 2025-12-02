@@ -483,7 +483,7 @@ $card-heights: (
   &:not([class*="box"]) {
     display: inline-block;
     padding: 4px;
-    border-radius: 2px;
+    border-radius: 4px;
     border-width: 1px;
     border-style: solid;
     font-weight: 700;
@@ -715,17 +715,16 @@ $card-heights: (
   }
 
   [class^="badge"] {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+    display: inline-block;
     width: rem(18px);
     height: rem(18px);
     font-size: rem(12px);
     color: #fff;
     border: none;
-    line-height: 1;
-    padding: 0;
+    line-height: rem(14px);
+    padding: 2px;
     margin: 0 2px;
+    text-align: center;
   }
 
   .badge {
@@ -1213,13 +1212,14 @@ $card-heights: (
       width: 20px;
       height: 20px;
       font-size: 14px;
-      font-weight: 700;
-      border-radius: 2px;
+      line-height: 1;
+      font-weight: 500;
+      border-radius: 4px;
       color: #fff;
       margin: 0 2px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
+      padding: 2px;
+      display: inline-block;
+      text-align: center;
     }
   }
 }
