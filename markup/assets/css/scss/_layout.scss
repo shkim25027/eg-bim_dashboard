@@ -21,12 +21,12 @@ html {
 
 .wrap {
   min-height: var(--window-inner-height);
-  min-width: 1920px;
+  min-width: 1440px;
 }
 
 .header {
   padding: 0 24px;
-  height: 80px;
+  height: 64px;
   @include flex(center, space-between);
   .logo {
     font-size: 28px;
@@ -44,7 +44,7 @@ html {
   }
   h1 {
     position: relative;
-    font-size: 36px;
+    font-size: 32px;
     font-weight: 700;
     color: var(--text-base);
     &::before {
@@ -59,6 +59,8 @@ html {
     }
   }
   .date {
+    align-self: flex-end;
+    margin-bottom: 12px;
     color: var(--text-secondary);
   }
 }

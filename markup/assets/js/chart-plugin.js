@@ -642,11 +642,17 @@ const externalLabelPlugin = {
         // 시작점 점 (bullet)
         ctx.beginPath();
         ctx.arc(lineX1, lineY1, 4, 0, Math.PI * 2);
+        // 흰색 테두리
+        ctx.strokeStyle = "#fff";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
         ctx.fillStyle = "#333";
         ctx.fill();
 
         ctx.strokeStyle = "#333";
         ctx.lineWidth = 1.5;
+        ctx.setLineDash([4, 4]); // 점선 패턴
         ctx.beginPath();
         ctx.moveTo(lineX1, lineY1);
         ctx.lineTo(lineX2, lineY2);
