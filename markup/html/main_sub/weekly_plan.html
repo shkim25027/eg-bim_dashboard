@@ -258,45 +258,39 @@
           weekly.append(node.cloneNode(true));
         });
 
-        // 🔑 핵심: script는 한 번만 로드
-        if (!isCalendarLoaded) {
-          const scripts = doc.querySelectorAll("script");
-          scripts.forEach((script) => {
-            const newScript = document.createElement("script");
-            if (script.src) {
-              newScript.src = script.src;
-            } else {
-              newScript.textContent = script.textContent;
-            }
+        // 🔑 모든 스크립트를 항상 실행
+        const scripts = doc.querySelectorAll("script");
+        scripts.forEach((script) => {
+          const newScript = document.createElement("script");
+          if (script.src) {
+            newScript.src = script.src;
             document.body.appendChild(newScript);
-          });
-          isCalendarLoaded = true;
-        } else {
-          // 두 번째부터는 직접 스크립트 실행
-          const scripts = doc.querySelectorAll("script");
-          scripts.forEach((script) => {
-            if (!script.src) {
-              // inline 스크립트만 실행 (함수 정의 제외하고 실행 부분만)
-              try {
-                eval(script.textContent);
-              } catch (e) {
-                console.error("Script execution error:", e);
-              }
+          } else {
+            // inline 스크립트 직접 실행
+            try {
+              eval(script.textContent);
+            } catch (e) {
+              console.error("Script execution error:", e);
             }
-          });
-        }
+          }
+        });
       });
   }
+
   // 일정 항목 클릭 이벤트
   document.addEventListener("DOMContentLoaded", function () {
-    const scheduleItems = document.querySelectorAll(".schedule-item");
+    const scheduleContainer = document.getElementById("scheduleContainer");
 
-    scheduleItems.forEach((item) => {
-      item.addEventListener("click", function (e) {
+    // 상위 요소에 이벤트 리스너 등록 (동적 생성된 자식 요소도 캐치)
+    scheduleContainer.addEventListener("click", function (e) {
+      // 클릭된 요소가 .schedule-item이거나 그 자식인지 확인
+      const scheduleItem = e.target.closest(".schedule-item");
+
+      if (scheduleItem) {
         e.preventDefault();
-        const scheduleId = this.getAttribute("data-id");
+        const scheduleId = scheduleItem.getAttribute("data-id");
         openModal(scheduleId);
-      });
+      }
     });
   });
 

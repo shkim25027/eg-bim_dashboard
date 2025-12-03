@@ -51,36 +51,41 @@
   </div>
 
   <script>
-    const radios = document.querySelectorAll('input[name="toggle"]');
+    // 접기/펼치기 토글 (이벤트 위임 방식)
+    const toggleContainer = document.querySelector(".toggle-area");
+    if (toggleContainer) {
+      const newToggleContainer = toggleContainer.cloneNode(true);
+      toggleContainer.parentNode.replaceChild(
+        newToggleContainer,
+        toggleContainer
+      );
 
-    radios.forEach((radio) => {
-      radio.addEventListener("change", (e) => {
-        const calendarDaysEl = document.getElementById("calendarDays");
-        if (e.target.value === "접기") {
-          calendarDaysEl.classList.add("collapsed");
-        } else {
-          calendarDaysEl.classList.remove("collapsed");
+      newToggleContainer.addEventListener("change", (e) => {
+        if (e.target.name === "toggle") {
+          const calendarDaysEl = document.getElementById("calendarDays");
 
-          // 스크롤을 맨 아래로 이동
-          setTimeout(() => {
-            const scheduleList = document.querySelector(".calendar-days");
-            const scheduleItem = document.querySelector(".current-week-row");
-            if (scheduleList && scheduleItem) {
-              // 현재 주가 보이도록 + 살짝 아래로 여유 있게
-              scheduleList.scrollTo({
-                top:
-                  scheduleItem.offsetTop -
-                  scheduleList.offsetHeight / 2 +
-                  scheduleItem.offsetHeight / 2,
-                // 또는 그냥 맨 아래로 내리고 싶으면:
-                // top: scheduleList.scrollHeight,
-                behavior: "smooth",
-              });
-            }
-          }, 100);
+          if (e.target.value === "접기") {
+            calendarDaysEl.classList.add("collapsed");
+          } else {
+            calendarDaysEl.classList.remove("collapsed");
+
+            setTimeout(() => {
+              const scheduleList = document.querySelector(".calendar-days");
+              const scheduleItem = document.querySelector(".current-week-row");
+              if (scheduleList && scheduleItem) {
+                scheduleList.scrollTo({
+                  top:
+                    scheduleItem.offsetTop -
+                    scheduleList.offsetHeight / 2 +
+                    scheduleItem.offsetHeight / 2,
+                  behavior: "smooth",
+                });
+              }
+            }, 100);
+          }
         }
       });
-    });
+    }
 
     // 모달 배경 클릭시 닫기
     const modal = document.getElementById("scheduleModal");
@@ -91,260 +96,265 @@
     });
   </script>
   <script>
-    const today = new Date();
-    let currentYear = today.getFullYear(); // 2025 대신
-    let currentMonth = today.getMonth(); // 11 대신
-    let selectedFilters = ["green", "purple", "teal"];
-
-    function renderCalendar() {
-      const calendarDays = document.getElementById("calendarDays");
-      const currentDate = document.getElementById("currentDate");
-
-      currentDate.textContent = `${currentYear}.${String(currentMonth + 1).padStart(2, "0")}`;
-
-      const firstDay = new Date(currentYear, currentMonth, 1);
-      const lastDay = new Date(currentYear, currentMonth + 1, 0);
-      const prevLastDay = new Date(currentYear, currentMonth, 0);
-
-      const firstDayOfWeek = firstDay.getDay();
-      const lastDate = lastDay.getDate();
-      const prevLastDate = prevLastDay.getDate();
-
-      // 오늘 날짜의 주차 계산
+    function initializeCalendar() {
       const today = new Date();
-      let todayWeekStart = -1;
-      let todayWeekEnd = -1;
+      let currentYear = today.getFullYear(); // 2025 대신
+      let currentMonth = today.getMonth(); // 11 대신
+      let selectedFilters = ["green", "purple", "teal"];
 
-      // 현재 달력에 오늘이 포함되어 있는지 확인
-      if (
-        currentMonth === today.getMonth() &&
-        currentYear === today.getFullYear()
-      ) {
-        const todayDate = today.getDate();
-        const currentDate = new Date(currentYear, currentMonth, todayDate);
-        const dayOfWeek = currentDate.getDay();
+      function renderCalendar() {
+        const calendarDays = document.getElementById("calendarDays");
+        const currentDate = document.getElementById("currentDate");
 
-        // 이번 주의 시작(일요일)과 끝(토요일) 날짜 계산
-        todayWeekStart = todayDate - dayOfWeek;
-        todayWeekEnd = todayDate + (6 - dayOfWeek);
-      }
+        currentDate.textContent = `${currentYear}.${String(currentMonth + 1).padStart(2, "0")}`;
 
-      let weeks = "";
-      let currentWeekDays = "";
-      let dayCount = 0;
-      let weekNumber = 0;
+        const firstDay = new Date(currentYear, currentMonth, 1);
+        const lastDay = new Date(currentYear, currentMonth + 1, 0);
+        const prevLastDay = new Date(currentYear, currentMonth, 0);
 
-      // Previous month days
-      const prevMonth = currentMonth === 0 ? 11 : currentMonth - 1;
-      const prevYear = currentMonth === 0 ? currentYear - 1 : currentYear;
+        const firstDayOfWeek = firstDay.getDay();
+        const lastDate = lastDay.getDate();
+        const prevLastDate = prevLastDay.getDate();
 
-      for (let i = firstDayOfWeek - 1; i >= 0; i--) {
-        const dayNum = prevLastDate - i;
-        const dateKey = `${prevYear}-${String(prevMonth + 1).padStart(2, "0")}-${String(dayNum).padStart(2, "0")}`;
-        const dayEvents = eventsData[dateKey] || [];
+        // 오늘 날짜의 주차 계산
+        const today = new Date();
+        let todayWeekStart = -1;
+        let todayWeekEnd = -1;
 
-        const filteredEvents = dayEvents.filter((event) =>
-          event.tags.some((tag) => selectedFilters.includes(tagMapping[tag]))
-        );
+        // 현재 달력에 오늘이 포함되어 있는지 확인
+        if (
+          currentMonth === today.getMonth() &&
+          currentYear === today.getFullYear()
+        ) {
+          const todayDate = today.getDate();
+          const currentDate = new Date(currentYear, currentMonth, todayDate);
+          const dayOfWeek = currentDate.getDay();
 
-        let eventsHtml = "";
-        filteredEvents.forEach((event) => {
-          const tagsHtml = event.tags
-            .filter((tag) => selectedFilters.includes(tagMapping[tag]))
-            .map(
-              (tag) =>
-                `<span class="event-tag badge-${tagMapping[tag]}">${tag}</span>`
-            )
-            .join("");
+          // 이번 주의 시작(일요일)과 끝(토요일) 날짜 계산
+          todayWeekStart = todayDate - dayOfWeek;
+          todayWeekEnd = todayDate + (6 - dayOfWeek);
+        }
 
-          eventsHtml += `
+        let weeks = "";
+        let currentWeekDays = "";
+        let dayCount = 0;
+        let weekNumber = 0;
+
+        // Previous month days
+        const prevMonth = currentMonth === 0 ? 11 : currentMonth - 1;
+        const prevYear = currentMonth === 0 ? currentYear - 1 : currentYear;
+
+        for (let i = firstDayOfWeek - 1; i >= 0; i--) {
+          const dayNum = prevLastDate - i;
+          const dateKey = `${prevYear}-${String(prevMonth + 1).padStart(2, "0")}-${String(dayNum).padStart(2, "0")}`;
+          const dayEvents = eventsData[dateKey] || [];
+
+          const filteredEvents = dayEvents.filter((event) =>
+            event.tags.some((tag) => selectedFilters.includes(tagMapping[tag]))
+          );
+
+          let eventsHtml = "";
+          filteredEvents.forEach((event) => {
+            const tagsHtml = event.tags
+              .filter((tag) => selectedFilters.includes(tagMapping[tag]))
+              .map(
+                (tag) =>
+                  `<span class="event-tag badge-${tagMapping[tag]}">${tag}</span>`
+              )
+              .join("");
+
+            eventsHtml += `
         <div class="event-item">
             ${event.time ? `<span class="event-time">${event.time}</span>` : ""}
             <span class="event-title">${event.title}${tagsHtml}</span>
         </div>
       `;
-        });
+          });
 
-        currentWeekDays += `<div class="day other-month">
+          currentWeekDays += `<div class="day other-month">
         <div class="day-number">${dayNum}</div>
         <div class="day-content">${eventsHtml}</div>
     </div>`;
-        dayCount++;
-      }
+          dayCount++;
+        }
 
-      // Current month days
-      for (let i = 1; i <= lastDate; i++) {
-        const isToday =
-          i === today.getDate() &&
-          currentMonth === today.getMonth() &&
-          currentYear === today.getFullYear();
+        // Current month days
+        for (let i = 1; i <= lastDate; i++) {
+          const isToday =
+            i === today.getDate() &&
+            currentMonth === today.getMonth() &&
+            currentYear === today.getFullYear();
 
-        const isCurrentWeek =
-          todayWeekStart >= 0 && i >= todayWeekStart && i <= todayWeekEnd;
+          const isCurrentWeek =
+            todayWeekStart >= 0 && i >= todayWeekStart && i <= todayWeekEnd;
 
-        const dateKey = `${currentYear}-${String(currentMonth + 1).padStart(2, "0")}-${String(i).padStart(2, "0")}`;
-        const dayEvents = eventsData[dateKey] || [];
+          const dateKey = `${currentYear}-${String(currentMonth + 1).padStart(2, "0")}-${String(i).padStart(2, "0")}`;
+          const dayEvents = eventsData[dateKey] || [];
 
-        const filteredEvents = dayEvents.filter((event) =>
-          event.tags.some((tag) => selectedFilters.includes(tagMapping[tag]))
-        );
+          const filteredEvents = dayEvents.filter((event) =>
+            event.tags.some((tag) => selectedFilters.includes(tagMapping[tag]))
+          );
 
-        let eventsHtml = "";
-        filteredEvents.forEach((event) => {
-          const tagsHtml = event.tags
-            .filter((tag) => selectedFilters.includes(tagMapping[tag]))
-            .map(
-              (tag) =>
-                `<span class="event-tag badge-${tagMapping[tag]}">${tag}</span>`
-            )
-            .join("");
+          let eventsHtml = "";
+          filteredEvents.forEach((event) => {
+            const tagsHtml = event.tags
+              .filter((tag) => selectedFilters.includes(tagMapping[tag]))
+              .map(
+                (tag) =>
+                  `<span class="event-tag badge-${tagMapping[tag]}">${tag}</span>`
+              )
+              .join("");
 
-          eventsHtml += `
+            eventsHtml += `
         <div class="event-item">
             ${event.time ? `<span class="event-time">${event.time}</span>` : ""}
             <span class="event-title">${event.title}${tagsHtml}</span>
         </div>
       `;
-        });
+          });
 
-        currentWeekDays += `<div class="day ${isToday ? "today" : ""} ${isCurrentWeek ? "current-week" : ""}">
+          currentWeekDays += `<div class="day ${isToday ? "today" : ""} ${isCurrentWeek ? "current-week" : ""}">
         <div class="day-number">${i}</div>
         <div class="day-content">${eventsHtml}</div>
     </div>`;
-        dayCount++;
+          dayCount++;
 
-        // 7일마다 한 주 완성
-        if (dayCount === 7) {
-          const hasCurrentWeek =
-            currentWeekDays.includes('class="day today"') ||
-            currentWeekDays.includes("current-week");
-          weeks += `<div class="week ${hasCurrentWeek ? "current-week-row" : ""}">${currentWeekDays}</div>`;
-          currentWeekDays = "";
-          dayCount = 0;
-          weekNumber++;
+          // 7일마다 한 주 완성
+          if (dayCount === 7) {
+            const hasCurrentWeek =
+              currentWeekDays.includes('class="day today"') ||
+              currentWeekDays.includes("current-week");
+            weeks += `<div class="week ${hasCurrentWeek ? "current-week-row" : ""}">${currentWeekDays}</div>`;
+            currentWeekDays = "";
+            dayCount = 0;
+            weekNumber++;
+          }
         }
-      }
 
-      // Next month days
-      const nextMonth = currentMonth === 11 ? 0 : currentMonth + 1;
-      const nextYear = currentMonth === 11 ? currentYear + 1 : currentYear;
-      const remainingDays = 42 - (firstDayOfWeek + lastDate);
+        // Next month days
+        const nextMonth = currentMonth === 11 ? 0 : currentMonth + 1;
+        const nextYear = currentMonth === 11 ? currentYear + 1 : currentYear;
+        const remainingDays = 42 - (firstDayOfWeek + lastDate);
 
-      for (let i = 1; i <= remainingDays; i++) {
-        const dateKey = `${nextYear}-${String(nextMonth + 1).padStart(2, "0")}-${String(i).padStart(2, "0")}`;
-        const dayEvents = eventsData[dateKey] || [];
+        for (let i = 1; i <= remainingDays; i++) {
+          const dateKey = `${nextYear}-${String(nextMonth + 1).padStart(2, "0")}-${String(i).padStart(2, "0")}`;
+          const dayEvents = eventsData[dateKey] || [];
 
-        const filteredEvents = dayEvents.filter((event) =>
-          event.tags.some((tag) => selectedFilters.includes(tagMapping[tag]))
-        );
+          const filteredEvents = dayEvents.filter((event) =>
+            event.tags.some((tag) => selectedFilters.includes(tagMapping[tag]))
+          );
 
-        let eventsHtml = "";
-        filteredEvents.forEach((event) => {
-          const tagsHtml = event.tags
-            .filter((tag) => selectedFilters.includes(tagMapping[tag]))
-            .map(
-              (tag) =>
-                `<span class="event-tag badge-${tagMapping[tag]}">${tag}</span>`
-            )
-            .join("");
+          let eventsHtml = "";
+          filteredEvents.forEach((event) => {
+            const tagsHtml = event.tags
+              .filter((tag) => selectedFilters.includes(tagMapping[tag]))
+              .map(
+                (tag) =>
+                  `<span class="event-tag badge-${tagMapping[tag]}">${tag}</span>`
+              )
+              .join("");
 
-          eventsHtml += `
+            eventsHtml += `
         <div class="event-item">
             ${event.time ? `<span class="event-time">${event.time}</span>` : ""}
             <span class="event-title">${event.title}${tagsHtml}</span>
         </div>
       `;
-        });
+          });
 
-        currentWeekDays += `<div class="day other-month">
+          currentWeekDays += `<div class="day other-month">
         <div class="day-number">${i}</div>
         <div class="day-content">${eventsHtml}</div>
     </div>`;
-        dayCount++;
+          dayCount++;
 
-        // 7일마다 한 주 완성
-        if (dayCount === 7) {
-          weeks += `<div class="week">${currentWeekDays}</div>`;
-          currentWeekDays = "";
-          dayCount = 0;
+          // 7일마다 한 주 완성
+          if (dayCount === 7) {
+            weeks += `<div class="week">${currentWeekDays}</div>`;
+            currentWeekDays = "";
+            dayCount = 0;
+          }
         }
-      }
 
-      calendarDays.innerHTML = weeks;
+        calendarDays.innerHTML = weeks;
 
-      document.querySelectorAll(".day:not(.other-month)").forEach((day) => {
-        day.addEventListener("click", function () {
-          document
-            .querySelectorAll(".day")
-            .forEach((d) => d.classList.remove("selected"));
-          this.classList.add("selected");
+        document.querySelectorAll(".day:not(.other-month)").forEach((day) => {
+          day.addEventListener("click", function () {
+            document
+              .querySelectorAll(".day")
+              .forEach((d) => d.classList.remove("selected"));
+            this.classList.add("selected");
+          });
         });
-      });
-    }
+      }
 
-    function checkOverflow() {
-      const calendarDaysEl = document.getElementById("calendarDays");
-      if (!calendarDaysEl.classList.contains("collapsed")) return;
+      function checkOverflow() {
+        const calendarDaysEl = document.getElementById("calendarDays");
+        if (!calendarDaysEl.classList.contains("collapsed")) return;
 
-      document.querySelectorAll(".day-content").forEach((content) => {
-        // 스크롤 높이가 실제 높이보다 크면 overflow 발생
-        if (content.scrollHeight > content.clientHeight) {
-          content.classList.add("has-overflow");
-        } else {
-          content.classList.remove("has-overflow");
+        document.querySelectorAll(".day-content").forEach((content) => {
+          // 스크롤 높이가 실제 높이보다 크면 overflow 발생
+          if (content.scrollHeight > content.clientHeight) {
+            content.classList.add("has-overflow");
+          } else {
+            content.classList.remove("has-overflow");
+          }
+        });
+      }
+      document.getElementById("prevMonth").addEventListener("click", () => {
+        currentMonth--;
+        if (currentMonth < 0) {
+          currentMonth = 11;
+          currentYear--;
         }
-      });
-    }
-    document.getElementById("prevMonth").addEventListener("click", () => {
-      currentMonth--;
-      if (currentMonth < 0) {
-        currentMonth = 11;
-        currentYear--;
-      }
-      renderCalendar();
-      checkOverflow();
-    });
-
-    document.getElementById("nextMonth").addEventListener("click", () => {
-      currentMonth++;
-      if (currentMonth > 11) {
-        currentMonth = 0;
-        currentYear++;
-      }
-      renderCalendar();
-      checkOverflow();
-    });
-
-    // 필터 체크박스
-    const filterCheckboxes = document.querySelectorAll(
-      '.filter-options input[type="checkbox"]'
-    );
-    filterCheckboxes.forEach((checkbox) => {
-      checkbox.addEventListener("change", () => {
-        selectedFilters = Array.from(filterCheckboxes)
-          .filter((cb) => cb.checked)
-          .map((cb) => cb.value);
         renderCalendar();
         checkOverflow();
       });
-    });
 
-    // 접기/펼치기 토글
-    const calendarDaysEl = document.getElementById("calendarDays");
-    const toggleRadios = document.querySelectorAll('input[name="toggle"]');
-
-    toggleRadios.forEach((radio) => {
-      radio.addEventListener("change", (e) => {
-        if (e.target.value === "접기") {
-          calendarDaysEl.classList.add("collapsed");
-        } else {
-          calendarDaysEl.classList.remove("collapsed");
+      document.getElementById("nextMonth").addEventListener("click", () => {
+        currentMonth++;
+        if (currentMonth > 11) {
+          currentMonth = 0;
+          currentYear++;
         }
+        renderCalendar();
+        checkOverflow();
       });
-    });
 
-    calendarDaysEl.classList.add("collapsed");
-    renderCalendar();
-    checkOverflow();
+      // 필터 체크박스
+      const filterCheckboxes = document.querySelectorAll(
+        '.filter-options input[type="checkbox"]'
+      );
+      filterCheckboxes.forEach((checkbox) => {
+        checkbox.addEventListener("change", () => {
+          selectedFilters = Array.from(filterCheckboxes)
+            .filter((cb) => cb.checked)
+            .map((cb) => cb.value);
+          renderCalendar();
+          checkOverflow();
+        });
+      });
+
+      // 접기/펼치기 토글
+      const calendarDaysEl = document.getElementById("calendarDays");
+      const toggleRadios = document.querySelectorAll('input[name="toggle"]');
+
+      toggleRadios.forEach((radio) => {
+        radio.addEventListener("change", (e) => {
+          if (e.target.value === "접기") {
+            calendarDaysEl.classList.add("collapsed");
+          } else {
+            calendarDaysEl.classList.remove("collapsed");
+          }
+        });
+      });
+
+      calendarDaysEl.classList.add("collapsed");
+      renderCalendar();
+      checkOverflow();
+    }
+
+    // 모달이 로드되면 자동 실행
+    initializeCalendar();
   </script>
 </div>
