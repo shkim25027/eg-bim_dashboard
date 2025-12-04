@@ -296,6 +296,7 @@ $card-heights: (
 .stat-row {
   padding: 10px 0;
   width: 100%;
+  white-space: nowrap;
   @include flex(center, space-between);
 
   &:not(:last-child) {
