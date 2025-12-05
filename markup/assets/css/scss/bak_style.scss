@@ -11,27 +11,25 @@ $header-height: 64px;
 $footer-height: 48px;
 $grid-gap: 24px;
 $card-gap: 16px;
-$weekly-max-height: 400px; // 높이
-$weekly-height: 37.037vh; // 최소 높이
-$weekly-min-height: 270px; // 최소 높이
-$weekly-issue: 80px;
+$weekly-height: 400px; // 고정 높이
 
 // CSS Custom Properties (동적 계산)
 :root {
   --header-height: #{$header-height};
   --footer-height: #{$footer-height};
   --grid-gap: #{$grid-gap};
-
+  --weekly-height: #{$weekly-height};
   --total-offset: calc(var(--header-height) + var(--footer-height));
 
   // main-grid 높이 계산: 전체 높이 - 헤더 - 주간 영역 - gap들
-
-  --grid-height: 576px;
+  --grid-height: calc(
+    var(--window-inner-height) - var(--header-height) - var(
+        --weekly-height
+      ) - var(--grid-gap)
+  );
 
   // 개별 카드 높이 (main-grid를 2등분)
-  --card-height: 280px;
-
-  --weekly-height: calc(var(--window-inner-height) - 576px - 24px - 64px);
+  --card-height: calc((var(--grid-height) - #{$card-gap}) / 2);
 }
 
 // Grid height variants
@@ -41,14 +39,9 @@ $grid-heights: (
   "individual": calc((var(--card-height) * 2) + $card-gap),
 );
 
-/*
 $card-heights: (
   "min": 280px,
   "default": calc((var(--grid-height) - var(--card-gap)) / 2),
-);*/
-$card-heights: (
-  "min": 280px,
-  "default": 25.9259vh,
 );
 
 // ============================================
@@ -58,7 +51,7 @@ $card-heights: (
   &-contents {
     display: grid;
     min-height: calc(var(--window-inner-height) - var(--header-height));
-    grid-template-rows: var(--grid-height) auto;
+    grid-template-rows: auto clamp(320px, 37.03703vh, var(--weekly-height));
     gap: $grid-gap;
   }
 
@@ -69,13 +62,14 @@ $card-heights: (
     grid-template-rows: repeat(2, 2fr);
     gap: $card-gap;
     height: var(--grid-height);
+    min-height: map-get($grid-heights, "min");
   }
 
   &-weekly {
     position: relative;
     border-radius: 16px 16px 0 0;
     background-color: #fafafa;
-    height: var(--weekly-height);
+    height: clamp(320px, 37.03703vh, var(--weekly-height)); // 고정 높이
     box-shadow: 0 -4px 40px 0 rgba(0, 0, 0, 0.3);
     overflow: hidden;
   }
@@ -176,8 +170,7 @@ $card-heights: (
 
       .chart-body {
         padding: 0;
-        height: $sales-max;
-        min-height: $sales-min;
+
         &:not(:last-child) {
           border-bottom: 1px dashed var(--border-base);
         }
@@ -281,7 +274,7 @@ $card-heights: (
     .card-body {
       grid-column-start: 1;
       grid-row-start: 2;
-      padding: 0 16px;
+      padding: 0 24px;
       display: grid;
       grid-template-columns: 100%;
       grid-template-rows: repeat(3, 1fr);
@@ -314,7 +307,7 @@ $card-heights: (
   @include flex(center, space-between);
 
   &:not(:last-child) {
-    border-bottom: 1px solid var(--border-base);
+    border-bottom: 1px solid var(--border-stat);
   }
 
   &.accrue {
@@ -334,6 +327,7 @@ $card-heights: (
   }
 
   &.sales {
+    padding: 16px 24px;
     justify-content: center;
     gap: 40px;
     @include stat-style(var(--stat-sales), var(--stat-secondary));
@@ -588,7 +582,7 @@ $card-heights: (
 .individual {
   .chart-body {
     padding: 0 12px;
-    border-bottom: 1px solid var(--border-base);
+    border-bottom: 1px solid var(--border-primary);
   }
   .card-body {
     display: grid;
@@ -596,7 +590,7 @@ $card-heights: (
     align-items: center;
 
     .person-box {
-      padding: 0 16px;
+      padding: 0 24px;
     }
   }
 
@@ -611,8 +605,8 @@ $card-heights: (
             position: absolute;
             right: 0;
             top: 0;
-            height: 100%;
-            border-right: 1px solid var(--border-base);
+            height: calc(100% - 16px);
+            border-right: 2px solid var(--border-person);
           }
         }
 
@@ -666,27 +660,27 @@ $card-heights: (
     position: relative;
     display: grid;
     grid-template-columns: 260px auto;
-    height: calc(100% - #{$weekly-issue});
+    height: calc(100% - 110px);
     overflow: hidden;
     z-index: 1;
   }
 
   &-header {
-    padding: 18px 24px;
-    height: calc(var(--weekly-height) - #{$weekly-issue});
+    padding: 26px 24px;
+    height: calc(var(--weekly-height) - 110px);
     flex-direction: column;
     @include flex(flex-start, space-between);
   }
 
   &-title {
     p {
-      font-size: 18px;
+      font-size: 20px;
       color: var(--text-primary);
       font-weight: 500;
     }
     h3 {
       color: var(--text-base);
-      font-size: 24px;
+      font-size: 28px;
       font-weight: 700;
       line-height: 1.4;
     }
@@ -708,7 +702,7 @@ $card-heights: (
   }
   .person {
     &-list {
-      gap: 2px;
+      gap: 8px;
       flex-direction: column;
       @include flex();
 
@@ -726,9 +720,6 @@ $card-heights: (
         gap: 6px;
         @include flex();
       }
-      [class^="badge"] {
-        margin-top: 2px;
-      }
     }
   }
 
@@ -741,7 +732,7 @@ $card-heights: (
     border: none;
     line-height: 1;
     padding: 2px;
-    margin: 0px 2px;
+    margin: 0 2px;
     text-align: center;
   }
 
@@ -762,7 +753,8 @@ $card-heights: (
   .schedule {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    height: calc(var(--weekly-height) - #{$weekly-issue});
+    height: var(--grid-height);
+    min-height: map-get($grid-heights, "min");
   }
 
   .day {
@@ -774,7 +766,7 @@ $card-heights: (
         color: #000;
         .active {
           background: rgba(255, 92, 0, 0.25);
-          font-weight: 700;
+          font-weight: 500;
         }
       }
     }
@@ -782,8 +774,8 @@ $card-heights: (
     &-title {
       position: relative;
       padding: 0 8px;
-      height: 48px;
-      font-size: 18px;
+      height: 56px;
+      font-size: 20px;
       font-weight: 700;
       border-bottom: 1px solid var(--border-base);
       box-shadow: 0 1px 0 0 #fff;
@@ -795,8 +787,8 @@ $card-heights: (
     }
 
     &-list {
-      padding: 0 0 4px 0px;
-      height: calc(var(--weekly-height) - #{$footer-height} - #{$weekly-issue});
+      padding: 0 0 16px 0px;
+      height: calc(#{$weekly-height} - 70px - 110px);
       overflow: auto;
       li {
         position: relative;
@@ -823,15 +815,11 @@ $card-heights: (
           border-radius: 50%;
         }
       }
-      [class^="badge"] {
-        margin-bottom: 3px;
-        vertical-align: middle;
-      }
     }
   }
   .main {
     &-issue {
-      height: #{$weekly-issue};
+      height: 110px;
       box-shadow:
         0 -1px 0 0 #fff,
         0 2px 0 0 #fff inset;
@@ -843,20 +831,13 @@ $card-heights: (
     }
   }
   .issue {
-    height: #{$weekly-issue};
-    padding: 4px 0;
-
     &-header {
       padding-left: $grid-gap;
       h3 {
-        font-size: 24px;
+        font-size: 28px;
       }
     }
     &-list {
-      height: 72px;
-      overflow-y: auto;
-      flex-direction: column;
-      @include flex(flex-start, center);
       li {
         position: relative;
         padding: 4px 8px 4px 32px;
@@ -962,15 +943,13 @@ $card-heights: (
         font-size: 1.5rem;
         @include flex();
         &.active {
-          border: 1px solid var(--border-base);
+          border: 1px solid rgba(0, 0, 0, 0.1);
           background: rgba(255, 92, 0, 0.25);
-          font-weight: 500;
         }
         .legend-dot {
           width: 12px;
           height: 12px;
           margin-top: 2px;
-          border: 1px solid var(--border-base);
         }
       }
     }

@@ -82,12 +82,17 @@ function images() {
 
 // SCSS → CSS
 function scss() {
-  return src([paths.scss.src, paths.scss.ignore])
-    .pipe(sassCompiler({ quietDeps: true }).on("error", sassCompiler.logError))
-    .pipe(postcss([autoprefixer(), cssnano()]))
-    .pipe(rename({ suffix: ".min" }))
-    .pipe(dest(paths.scss.dest))
-    .pipe(browserSync.stream());
+  return (
+    src([paths.scss.src, paths.scss.ignore])
+      .pipe(
+        sassCompiler({ quietDeps: true }).on("error", sassCompiler.logError)
+      )
+      .pipe(postcss([autoprefixer()])) // 압축 안됨
+      //.pipe(postcss([autoprefixer(), cssnano()]))  // 압축
+      //.pipe(rename({ suffix: ".min" }))
+      .pipe(dest(paths.scss.dest))
+      .pipe(browserSync.stream())
+  );
 }
 
 // CSS Library copy

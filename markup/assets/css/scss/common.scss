@@ -240,6 +240,7 @@
 
 /* media query */
 // 3840px 초과: 4K 이상
+/*
 @media all and (min-width: 3841px) {
   html {
     //font-size: 14px;
@@ -257,15 +258,20 @@
     //font-size: 12px;
   }
 }
-
-// 1920px 초과 ~ 2560px: 큰 데스크톱
+  // 1920px 초과 ~ 2560px: 큰 데스크톱
 @media all and (min-width: 1921px) and (max-width: 2560px) {
   html {
     //font-size: 11px;
     font-size: 10px;
   }
 }
+*/
 
+@media all and (min-width: 1024px) {
+  html {
+    font-size: 9px;
+  }
+}
 // 1024px ~ 1920px: 기본 데스크톱
 @media all and (min-width: 1024px) and (max-width: 1920px) {
   html {

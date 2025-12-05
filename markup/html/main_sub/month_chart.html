@@ -94,23 +94,6 @@
                 boxWidth: 12,
                 boxHeight: 12,
                 usePointStyle: true,
-                generateLabels: function (chart) {
-                  const data = chart.data;
-                  return data.labels
-                    .map((label, i) => {
-                      if (i === 5) return null;
-                      return {
-                        text: `${label}`,
-                        fillStyle: data.datasets[0].backgroundColor[i],
-                        hidden: false,
-                        strokeStyle: "transparent",
-                        lineWidth: 0,
-                        index: i,
-                        pointStyle: "rectRounded",
-                      };
-                    })
-                    .filter((item) => item !== null);
-                },
               },
             },
             tooltip: {
@@ -128,7 +111,7 @@
             },
             htmlLegend: {
               containerID: "weekly_legend", // 범례를 넣을 div의 ID
-              activeWeek: 5, // 현재 주차 지정
+              activeWeek: 1, // 현재 주차 지정
             },
           },
           cutout: "45%",
