@@ -121,10 +121,6 @@ $card-heights: (
       height: 228px;
     }
 
-    .label {
-      font-size: 14px;
-    }
-
     .stat-row {
       [class^="change"] {
         font-size: 10px;
@@ -181,6 +177,14 @@ $card-heights: (
         &:not(:last-child) {
           border-bottom: 1px dashed var(--border-base);
         }
+      }
+      .chart-tit {
+        position: absolute;
+        left: 0px;
+        top: 10px;
+        font-size: 16px;
+        font-weight: 700;
+        line-height: 1;
       }
     }
   }
@@ -941,14 +945,6 @@ $card-heights: (
       }
     }
   }
-  .chart-tit {
-    position: absolute;
-    left: 0;
-    top: 10px;
-    font-size: 20px;
-    font-weight: 700;
-    line-height: 1;
-  }
 }
 
 // ============================================
@@ -986,12 +982,12 @@ $card-heights: (
   .chart-wrap {
     &:has(.badge-month) {
       canvas {
-        margin-top: 20px;
+        margin-top: 25px;
       }
     }
     canvas {
-      margin-top: 40px;
-      max-height: 200px;
+      margin-top: 50px;
+      max-height: 180px;
     }
   }
 }
