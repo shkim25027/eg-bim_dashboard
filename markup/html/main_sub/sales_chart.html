@@ -16,17 +16,41 @@
       <span class="unit">(단위:업체수)</span>
     </div>
     <div class="chart-body">
+      <h4 class="chart-tit">산업/업종별</h4>
       <canvas id="industry_chart"></canvas>
     </div>
     <div class="chart-body">
+      <h4 class="chart-tit">기관별</h4>
       <canvas id="institution_chart"></canvas>
     </div>
   </div>
 </section>
+
 <script>
   (() => {
     let industryInstance = null;
     let institutionInstance = null;
+
+    // 산업/업종별 색상
+    const industryColors = [
+      "#EBA170",
+      "#E08042",
+      "#BB5E21",
+      "#8A471B",
+      "#603213",
+      "#3F1A01",
+    ];
+
+    // 기관별 색상
+    const institutionColors = [
+      "#EBBA69",
+      "#D59C3D",
+      "#B1802C",
+      "#855B17",
+      "#603E06",
+      "#382200",
+    ];
+
     // 차트 생성 함수
     function createIndustryChart() {
       const industry_chart = document.getElementById("industry_chart");
@@ -38,38 +62,126 @@
       }
 
       industryInstance = new Chart(industry_chart, {
-        type: "doughnut",
+        type: "bar",
         data: {
           labels: ["설계", "교육", "제작", "감리", "시공"],
           datasets: [
             {
               data: [162, 305, 36, 72, 15],
-              backgroundColor: [
-                "#B66532",
-                "#D08A5D",
-                "#8F4818",
-                "#5F2F0E",
-                "#45220A",
-              ],
-              borderWidth: 2,
-              borderColor: "#fff",
-              rotation: 145,
+              backgroundColor: industryColors,
+              borderWidth: 0,
             },
           ],
         },
         options: {
+          indexAxis: "y",
           responsive: true,
           maintainAspectRatio: false,
-          cutout: "50%",
           layout: {
-            padding: { top: 40, bottom: 40, left: 0, right: 0 },
+            padding: { top: 40, bottom: 10, left: 0, right: 0 },
           },
           plugins: {
             legend: { display: false },
             tooltip: { enabled: false },
+            datalabels: {
+              anchor: "end",
+              align: "end",
+              formatter: function (value, context) {
+                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                const percentage = Math.round((value / total) * 100);
+                // 임시로 데이터를 저장
+                context.dataset._labelData = context.dataset._labelData || [];
+                context.dataset._labelData[context.dataIndex] = {
+                  value,
+                  percentage,
+                };
+                return ""; // 빈 문자열 반환
+              },
+              listeners: {
+                afterDatasetsDraw: function (chart) {
+                  const ctx = chart.ctx;
+                  const meta = chart.getDatasetMeta(0);
+
+                  meta.data.forEach((bar, index) => {
+                    const data = chart.data.datasets[0]._labelData[index];
+                    if (!data) return;
+
+                    const x = bar.x + bar.width + 5;
+                    const y = bar.y + bar.height / 2;
+
+                    // 값 그리기 (굵게, 16px)
+                    ctx.font = "bold 16px sans-serif";
+                    ctx.fillStyle = industryColors[index];
+                    ctx.textAlign = "left";
+                    ctx.textBaseline = "middle";
+                    const valueWidth = ctx.measureText(data.value).width;
+                    ctx.fillText(data.value, x, y);
+
+                    // 퍼센트 그리기 (보통, 12px)
+                    ctx.font = "normal 12px sans-serif";
+                    ctx.fillText(
+                      " (" + data.percentage + "%)",
+                      x + valueWidth,
+                      y
+                    );
+                  });
+                },
+              },
+            },
+          },
+          scales: {
+            x: {
+              afterBuildTicks: (scale) => {
+                const maxValue = scale.chart.data.datasets
+                  .flatMap((d) => d.data)
+                  .filter((n) => typeof n === "number");
+
+                const realMax = Math.max(...maxValue);
+
+                // +100 후 백단위 올림
+                const rawMax = realMax + 100;
+                const targetMax = Math.ceil(rawMax / 100) * 100;
+
+                const mid = Math.round(targetMax / 2);
+
+                scale.max = targetMax;
+                scale.min = 0;
+
+                // tick 3개
+                scale.ticks = [
+                  { value: 0 },
+                  { value: mid },
+                  { value: targetMax },
+                ];
+
+                scale._midIndex = 1;
+              },
+              beginAtZero: true,
+              border: { display: false },
+              grid: {
+                display: false,
+              },
+            },
+            y: {
+              grid: {
+                display: false,
+              },
+              ticks: {
+                color: function (context) {
+                  return industryColors[context.index];
+                },
+                font: {
+                  size: 16,
+                  weight: "500",
+                },
+              },
+            },
           },
         },
-        plugins: [totalCenterPluginFactory("산업/업종별"), externalLabelPlugin],
+        plugins: [
+          createCustomGridPlugin(),
+          createCustomLabelPlugin(industryColors),
+        ],
       });
 
       // 기존 차트가 있으면 제거
@@ -77,32 +189,81 @@
         institutionInstance.destroy();
       }
       institutionInstance = new Chart(institution_chart, {
-        type: "doughnut",
+        type: "bar",
         data: {
-          labels: ["일반", "교육기관", "공공기관", "기타"],
+          labels: ["일반", "교육", "공공", "기타"],
           datasets: [
             {
               data: [343, 305, 18, 19],
-              backgroundColor: ["#C4964B", "#885D1A", "#5C3E0F", "#3C2500"],
-              borderWidth: 2,
-              borderColor: "#fff",
-              rotation: 145,
+              backgroundColor: institutionColors,
+              borderWidth: 0,
             },
           ],
         },
         options: {
+          indexAxis: "y",
           responsive: true,
           maintainAspectRatio: false,
-          cutout: "50%",
           layout: {
-            padding: { top: 40, bottom: 40, left: 0, right: 0 },
+            padding: { top: 40, bottom: 10, left: 0, right: 0 },
           },
           plugins: {
             legend: { display: false },
             tooltip: { enabled: false },
           },
+          scales: {
+            x: {
+              afterBuildTicks: (scale) => {
+                const maxValue = scale.chart.data.datasets
+                  .flatMap((d) => d.data)
+                  .filter((n) => typeof n === "number");
+
+                const realMax = Math.max(...maxValue);
+
+                // +100 후 백단위 올림
+                const rawMax = realMax + 100;
+                const targetMax = Math.ceil(rawMax / 100) * 100;
+
+                const mid = Math.round(targetMax / 2);
+
+                scale.max = targetMax;
+                scale.min = 0;
+
+                // tick 3개
+                scale.ticks = [
+                  { value: 0 },
+                  { value: mid },
+                  { value: targetMax },
+                ];
+
+                scale._midIndex = 1;
+              },
+              beginAtZero: true,
+              border: { display: false },
+              grid: {
+                display: false,
+              },
+            },
+            y: {
+              grid: {
+                display: false,
+              },
+              ticks: {
+                color: function (context) {
+                  return institutionColors[context.index];
+                },
+                font: {
+                  size: 16,
+                  weight: "500",
+                },
+              },
+            },
+          },
         },
-        plugins: [totalCenterPluginFactory("기관별"), externalLabelPlugin],
+        plugins: [
+          createCustomGridPlugin(),
+          createCustomLabelPlugin(institutionColors),
+        ],
       });
     }
 

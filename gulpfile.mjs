@@ -102,12 +102,14 @@ function csscopy() {
 
 // JS
 function scripts() {
-  return src([paths.js.src, paths.js.ignore])
-    .pipe(babel({ presets: ["@babel/preset-env"] }))
-    .pipe(terser())
-    .pipe(rename({ suffix: ".min" }))
-    .pipe(dest(paths.js.dest))
-    .pipe(browserSync.stream());
+  return (
+    src([paths.js.src, paths.js.ignore])
+      .pipe(babel({ presets: ["@babel/preset-env"] }))
+      // .pipe(terser())
+      // .pipe(rename({ suffix: ".min" }))
+      .pipe(dest(paths.js.dest))
+      .pipe(browserSync.stream())
+  );
 }
 
 // JS Library copy

@@ -981,3 +981,121 @@ const customPointPlugin = {
     });
   },
 };
+// 공통 데이터 레이블 플러그인
+function createCustomLabelPlugin(colors) {
+  return {
+    afterDatasetsDraw: function (chart) {
+      const ctx = chart.ctx;
+      const meta = chart.getDatasetMeta(0);
+      const dataset = chart.data.datasets[0];
+      const total = dataset.data.reduce((a, b) => a + b, 0);
+
+      meta.data.forEach((bar, index) => {
+        const value = dataset.data[index];
+        const percentage = Math.round((value / total) * 100);
+
+        // 가로 바 차트에서는 bar.x + bar.width가 바의 끝
+        const x = bar.x + 5; // 바의 끝에서 5px 오른쪽
+        const y = bar.y; // 바의 중앙
+
+        // 값 그리기 (굵게, 16px)
+        ctx.font = "bold 16px sans-serif";
+        ctx.fillStyle = colors[index];
+        ctx.textAlign = "left";
+        ctx.textBaseline = "middle";
+        const valueWidth = ctx.measureText(value).width;
+        ctx.fillText(value, x, y);
+
+        // 퍼센트 그리기 (보통, 12px)
+        ctx.font = "normal 12px sans-serif";
+        ctx.fillText(" (" + percentage + "%)", x + valueWidth, y);
+      });
+    },
+  };
+}
+
+// 대시 그리드 라인 플러그인
+function createDashedGridPlugin() {
+  return {
+    afterDraw: function (chart) {
+      const ctx = chart.ctx;
+      const xScale = chart.scales.x;
+      const yScale = chart.scales.y;
+
+      const max = xScale.max;
+      const mid = max / 2;
+
+      // 0과 중간값 사이의 중간 지점
+      const quarter = mid / 2;
+      // 중간값과 최대값 사이의 중간 지점
+      const threeQuarter = mid + (max - mid) / 2;
+
+      const dashedValues = [quarter, threeQuarter];
+
+      ctx.save();
+      ctx.strokeStyle = "#e0e0e0";
+      ctx.lineWidth = 1;
+      ctx.setLineDash([5, 5]); // 대시 패턴 [선길이, 공백길이]
+
+      dashedValues.forEach((value) => {
+        const x = xScale.getPixelForValue(value);
+
+        ctx.beginPath();
+        ctx.moveTo(x, yScale.top);
+        ctx.lineTo(x, yScale.bottom);
+        ctx.stroke();
+      });
+
+      ctx.restore();
+    },
+  };
+}
+
+// 대시 그리드 라인 플러그인
+function createCustomGridPlugin() {
+  return {
+    beforeDatasetsDraw: function (chart) {
+      const ctx = chart.ctx;
+      const xScale = chart.scales.x;
+      const yScale = chart.scales.y;
+
+      const max = xScale.max;
+      const mid = max / 2;
+
+      // 0과 중간값 사이의 중간 지점
+      const quarter = mid / 2;
+      // 중간값과 최대값 사이의 중간 지점
+      const threeQuarter = mid + (max - mid) / 2;
+
+      ctx.save();
+
+      // 실선 그리드 (0, 중간, 최대)
+      ctx.strokeStyle = "#e0e0e0";
+      ctx.lineWidth = 1;
+      ctx.setLineDash([]); // 실선
+
+      [0, mid, max].forEach((value) => {
+        const x = xScale.getPixelForValue(value);
+
+        ctx.beginPath();
+        ctx.moveTo(x, yScale.top);
+        ctx.lineTo(x, yScale.bottom);
+        ctx.stroke();
+      });
+
+      // 대시 그리드 (1/4, 3/4)
+      ctx.setLineDash([5, 5]); // 대시 패턴
+
+      [quarter, threeQuarter].forEach((value) => {
+        const x = xScale.getPixelForValue(value);
+
+        ctx.beginPath();
+        ctx.moveTo(x, yScale.top);
+        ctx.lineTo(x, yScale.bottom);
+        ctx.stroke();
+      });
+
+      ctx.restore();
+    },
+  };
+}

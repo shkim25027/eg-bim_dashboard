@@ -941,6 +941,14 @@ $card-heights: (
       }
     }
   }
+  .chart-tit {
+    position: absolute;
+    left: 0;
+    top: 10px;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1;
+  }
 }
 
 // ============================================
