@@ -975,6 +975,17 @@ $card-heights: (
       }
     }
   }
+  .chart-wrap {
+    &:has(.badge-month) {
+      canvas {
+        margin-top: 20px;
+      }
+    }
+    canvas {
+      margin-top: 40px;
+      max-height: 200px;
+    }
+  }
 }
 
 // ============================================
